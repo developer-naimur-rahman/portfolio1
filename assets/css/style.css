@@ -606,10 +606,28 @@ section {
   transition: 0.3s;
   width: 50%;
 }
+.portfolio-wrap {
+  position: relative;
+}
 
 .portfolio .portfolio-wrap .portfolio-links a:hover {
   background: rgba(20, 157, 221, 0.95);
 }
+
+.portfolio-wrap {
+  position: relative;
+}
+
+.thumbnail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1; /* Ensure it's above the video */
+}
+
 
 .portfolio .portfolio-wrap .portfolio-links a+a {
   border-left: 1px solid #37b3ed;
