@@ -27,8 +27,8 @@
           <li class="nav-item active"> <a class="nav-link" href="#">Home</a> </li>
           <li class="nav-item"> <a class="nav-link" href="about me.html" tabindex="-1" aria-disabled="true">About</a></li>
           <li class="nav-item"> <a class="nav-link" href="service.html" tabindex="-1" aria-disabled="true">SERVICE</a></li>
-          <li class="nav-item"> <a class="nav-link" href="#portfolio" tabindex="-1" aria-disabled="true">Portfolio</a></li>
-          <li class="nav-item"> <a class="nav-link" href="#testimonial" tabindex="-1" aria-disabled="true">Testimonial</a></li>
+          <li class="nav-item"> <a class="nav-link" href="portfolio.html" tabindex="-1" aria-disabled="true">Portfolio</a></li>
+          <li class="nav-item"> <a class="nav-link" href="testimonial.html" tabindex="-1" aria-disabled="true">Testimonial</a></li>
           <li class="nav-item"> <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">Blog</a></li>
           <li class="nav-item"> <a class="nav-link" href="#contact" tabindex="-1" aria-disabled="true">Contact</a></li>
         </ul>
@@ -150,7 +150,7 @@
       <h2>Portfolios</h2>
       <div class="row">
         <div class="bx bx-1">
-          <div class="card"> <img class="card-img" src="assets/img/port younus.jpg" alt="">
+          <div class=""><iframe width="540" height="305" src="https://www.youtube.com/embed/WzxSly4QeaA?si=4uDI4qkFLmEgww6N" title="YouTube video player" frameborder="0" allow="accelerometer; ?autoplay=1&mute=1; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             <div class="card-img-overlay"> <a href="#"><img src="assets/img/heart.png" class="heart" alt="heart icon"></a>
               <div class="bottom-text">
                 <h5 class="card-title">Dr. Younus Short Documentary </h5>
@@ -338,11 +338,14 @@
       </div>
       <div class="col-md-6 content-us">
         <div class="contact-form" id="contact">
+          <form action="https://formspree.io/f/mkgnwzpr"
+          method="POST">
           <h3 class="text-uppercase">Contact me</h3>
-          <input type="text" class="form-control" placeholder="Your Name">
-          <input type="text" class="form-control" placeholder="Your Email">
-          <textarea class="form-control" placeholder="Your Message"></textarea>
+          <input type="text" name="name" class="form-control" placeholder="Your Name">
+          <input type="email" name="email" class="form-control" placeholder="Your Email">
+          <textarea class="form-control" name="message" placeholder="Your Message"></textarea>
           <button type="submit">Send</button>
+        </form>
         </div>
       </div>
     </div>

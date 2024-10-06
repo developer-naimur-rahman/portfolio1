@@ -76,7 +76,7 @@ h2 {
         padding: 7px 10px;
         color: #fff; }
     .maine-menu .collapse.show {
-      background: rgba(0, 0, 0, 0.5); } }
+       } }
 
 .card {
   border: none;
@@ -438,7 +438,9 @@ h2 {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s; }
     .recent .card .card-img {
-      border-radius: 15px; }
+      border-radius: 15px;
+    
+    }
     .recent .card h5 {
       font-size: 20px;
       color: #fff;
@@ -950,10 +952,27 @@ footer {
         font-size: 30px; } }
     @media (max-width: 600px) {
       .blog-content-inner .card-title {
-        font-size: 18px; } }
+        font-size: 18px; } 
+      
+        .home-page-card{
+         padding-top: 50px ;
+        }
+
+
+
+      
+      }
   @media (max-width: 767px) {
     .blog-content-inner {
-      padding: 40px; } }
+      padding: 40px; } 
+      .home-page-card{
+        padding-top: 50px ;
+       }
+
+
+
+
+    }
   @media (max-width: 600px) {
     .blog-content-inner {
       padding: 20px 0; } }
@@ -978,3 +997,17 @@ footer {
       .single-blog:last-child {
         padding-bottom: 0;
         border-bottom: none; } }
+
+        .home-page-card{
+          background-size: cover;
+          background-position: center center;
+          width: 100%;
+          padding-top:70px ;
+        }
+
+        @media (min-width:0px) and (max-width:765px){
+          .home-page-card{
+            padding-top:50px ;
+           }
+   
+        }
