@@ -1,137 +1,316 @@
 <!DOCTYPE html>
-<!--
-  Girly by FreeHTML5.co
-  Twitter: https://twitter.com/fh5co
-  Facebook: https://fb.com/fh5co
-  URL: https://freehtml5.co
--->
-<html lang="en">
+<html lang="zxx">
+
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/css/style.css">
-  <title>Girly</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Videograph Template">
+    <meta name="keywords" content="Videograph, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title> Blog | Naimur Rahman Emon</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-md bg-dark fixed-top maine-menu">
-    <div class="container">
-      <button class="navbar-toggler ml-auto" data-target="#my-nav" onclick="myFunction(this)" data-toggle="collapse"> <span class="bar1"></span> <span class="bar2"></span> <span class="bar3"></span> </button>
-      <div id="my-nav" class="w-100 ">
-        <ul class="navbar-nav justify-content-center mx-auto">
-          
-          <li class="nav-item"> <a class="nav-link" href="index.html" tabindex="-1" aria-disabled="true">Home</a></li>
-         
-          <li class="nav-item"> <a class="nav-link" href="about" tabindex="-1" aria-disabled="true">about me</a></li>
-          <li class="nav-item"> <a class="nav-link" href="service.html" tabindex="-1" aria-disabled="true">SERVICE</a></li>
-          <li class="nav-item"> <a class="nav-link" href="#portfolio" tabindex="-1" aria-disabled="true">Portfolio</a></li>
-          <li class="nav-item"> <a class="nav-link" href="testimonial.html" tabindex="-1" aria-disabled="true">Testimonial</a></li>
-          <li class="nav-item active"> <a class="nav-link" href="">blog</a> </li>
-          <li class="nav-item"> <a class="nav-link" href="#contact" tabindex="-1" aria-disabled="true">Contact</a></li>
-        </ul>
-      </div>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
     </div>
-  </nav>
 
-  <div class=" fh5co-home-banner">
-    <div class="card"> <img class="card-img home-page-card" src="assets/img/naimur hero 2.jpg" alt="">
-      <div class="card-img-overlay">
-        <div class="center-text">
-          <h2 class="card-title">We always keep you informed</h2>
-          <a href="#" class="btn">
-            <svg width="201" height="51" viewBox="0 0 201 51">
-              <defs>
-                <style>
-                .cls-1 {
-                  fill: none;
-                  stroke-width: 1px;
-                  stroke: url(#linear-gradient);
-                }
-              </style>
-              <linearGradient id="linear-gradient" x1="140.508" y1="50.5" x2="60.492" y2="0.5" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="#1DA1F2"/>
-                <stop offset="1" stop-color="#fff"/>
-              </linearGradient>
-            </defs>
-            <rect id="Rounded_Rectangle_1" data-name="Rounded Rectangle 1" class="cls-1" x="0.5" y="0.5" width="200" height="50" rx="25" ry="25"/>
-          </svg>
-        Explore</a> </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- Blog content section -->
-  <section class="fh5co-blog-content">
-    <div class="blog-content-bckg">
-      <div class="blog-content-inner">
-        <div class="container-fluid">
-          <h2 class="card-title">Our latest blog news</h2>
-          <div class="row single-blog">
-            <div class="col-xl-4 col-lg-12 single-blog__img">
-              <img class="card-img w-100" src="assets/img/girl3.jpg" alt="">
+    <!-- Header Section Begin -->
+    <header class="header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="header__logo">
+                        <a href="./index.html"><img src="img/logo.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-10">
+                    <div class="header__nav__option">
+                        <nav class="header__nav__menu mobile-menu">
+                            <ul>
+                                <li><a href="./index.html">Home</a></li>
+                                <li><a href="./about.html">About</a></li>
+                                <li><a href="./portfolio.html">Portfolio</a></li>
+                                <li class="active"><a href="./services.html">Services</a></li>
+                                <li><a href="#">Pages</a>
+                                    <ul class="dropdown">
+                                        <li><a href="./about.html">About</a></li>
+                                        <li><a href="./portfolio.html">Portfolio</a></li>
+                                        <li><a href="./blog.html">Blog</a></li>
+                                        <li><a href="./blog-details.html">Blog Details</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="./contact.html">Contact</a></li>
+                            </ul>
+                        </nav>
+                        <div class="header__nav__social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-linkedin"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-xl-8 col-lg-12 single-blog__text">
-              <h2>Lorem ipsum dolor sit amet</h2>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin faucibus tempus lorem sollicitudin sagittis. Vestibulum eu placerat tortor. Sed eu magna quis sapien ultricies euismod. Quisque ligula erat, tempus porttitor sem ac, congue malesuada nunc. Vestibulum lobortis turpis quis nisl commodo, vel scelerisque nisl fermentum. Cras scelerisque lectus eget aliquet auctor. Curabitur vestibulum orci ante, in bibendum dolor euismod quis. Nullam nulla nisi, malesuada vitae accumsan ac, blandit eu dui. Pellentesque ut ligula ex. Donec lacinia eros et arcu rhoncus, sit amet vestibulum justo efficitur. Nulla facilisi. Integer a sem aliquet, dapibus ipsum eu, vehicula dui. Fusce id leo tellus. Ut eu accumsan arcu. Aliquam at vestibulum felis.</p>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin faucibus tempus lorem sollicitudin sagittis. Vestibulum eu placerat tortor. Sed eu magna quis sapien ultricies euismod. Quisque ligula erat, tempus porttitor sem ac, congue malesuada nunc. Vestibulum lobortis turpis quis nisl commodo, vel scelerisque nisl fermentum. Cras scelerisque lectus eget aliquet auctor. Curabitur vestibulum orci ante, in bibendum dolor euismod quis.</p>
-            </div>
-          </div>
-          <div class="row single-blog">
-            <div class="col-xl-4 col-lg-12 single-blog__img">
-              <img class="card-img w-100" src="assets/img/girl1.jpg" alt="">
-            </div>
-            <div class="col-xl-8 col-lg-12 single-blog__text">
-              <h2>Lorem ipsum dolor sit amet</h2>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin faucibus tempus lorem sollicitudin sagittis. Vestibulum eu placerat tortor. Sed eu magna quis sapien ultricies euismod. Quisque ligula erat, tempus porttitor sem ac, congue malesuada nunc. Vestibulum lobortis turpis quis nisl commodo, vel scelerisque nisl fermentum. Cras scelerisque lectus eget aliquet auctor. Curabitur vestibulum orci ante, in bibendum dolor euismod quis. Nullam nulla nisi, malesuada vitae accumsan ac, blandit eu dui. Pellentesque ut ligula ex. Donec lacinia eros et arcu rhoncus, sit amet vestibulum justo efficitur. Nulla facilisi. Integer a sem aliquet, dapibus ipsum eu, vehicula dui. Fusce id leo tellus. Ut eu accumsan arcu. Aliquam at vestibulum felis.</p>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin faucibus tempus lorem sollicitudin sagittis. Vestibulum eu placerat tortor. Sed eu magna quis sapien ultricies euismod. Quisque ligula erat, tempus porttitor sem ac, congue malesuada nunc. Vestibulum lobortis turpis quis nisl commodo, vel scelerisque nisl fermentum. Cras scelerisque lectus eget aliquet auctor. Curabitur vestibulum orci ante, in bibendum dolor euismod quis.</p>
-            </div>
-          </div>
-          <div class="row single-blog">
-            <div class="col-xl-4 col-lg-12 single-blog__img">
-              <img class="card-img w-100" src="assets/img/portfolio-img3.png" alt="">
-            </div>
-            <div class="col-xl-8 col-lg-12 single-blog__text">
-              <h2>Lorem ipsum dolor sit amet</h2>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin faucibus tempus lorem sollicitudin sagittis. Vestibulum eu placerat tortor. Sed eu magna quis sapien ultricies euismod. Quisque ligula erat, tempus porttitor sem ac, congue malesuada nunc. Vestibulum lobortis turpis quis nisl commodo, vel scelerisque nisl fermentum. Cras scelerisque lectus eget aliquet auctor. Curabitur vestibulum orci ante, in bibendum dolor euismod quis. Nullam nulla nisi, malesuada vitae accumsan ac, blandit eu dui. Pellentesque ut ligula ex. Donec lacinia eros et arcu rhoncus, sit amet vestibulum justo efficitur. Nulla facilisi. Integer a sem aliquet, dapibus ipsum eu, vehicula dui. Fusce id leo tellus. Ut eu accumsan arcu. Aliquam at vestibulum felis.</p>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin faucibus tempus lorem sollicitudin sagittis. Vestibulum eu placerat tortor. Sed eu magna quis sapien ultricies euismod. Quisque ligula erat, tempus porttitor sem ac, congue malesuada nunc. Vestibulum lobortis turpis quis nisl commodo, vel scelerisque nisl fermentum. Cras scelerisque lectus eget aliquet auctor. Curabitur vestibulum orci ante, in bibendum dolor euismod quis.</p>
-            </div>
-          </div>
+            <div id="mobile-menu-wrap"></div>
         </div>
-      </div>
-    </div>
-  </section>
-  <!-- Blog content section end -->
+    </header>
+    <!-- Header End -->
 
-
-  <footer class="container-fluid p-0 pr-0">
-    <div class="row mr-0 ml-0">
-      <div class="col-md-6 pr-0 pl-0 map">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13035.46901327725!2d-80.85396551628644!3d35.234674411422155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8856a03af474f38f%3A0xf8301daadf5f7670!2sFourth+Ward%2C+Charlotte%2C+NC%2C+USA!5e0!3m2!1sen!2sin!4v1551001218548"  style="border:0" allowfullscreen></iframe>
-      </div>
-      <div class="col-md-6 content-us">
-        <div class="contact-form">
-          <h3 class="text-uppercase">Contact with me</h3>
-          <input type="text" class="form-control" placeholder="Your Name">
-          <input type="text" class="form-control" placeholder="Your Email">
-          <textarea class="form-control" placeholder="Your Message"></textarea>
-          <button type="submit">Send</button>
+    <!-- Breadcrumb Begin -->
+    <div class="breadcrumb-option spad set-bg" data-setbg="img/breadcrumb-bg.jpg">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <h2>Our Blog</h2>
+                        <div class="breadcrumb__links">
+                            <a href="#">Home</a>
+                            <span>Blog</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="copy pt-4 pb-4 bg-dark">
-      <p><a href="https://freehtml5.co/" target="_blank"> &copy; 2019 Girly</a>  &nbsp;  |  &nbsp; Design by <a href="https://freehtml5.co/" target="_blank">freehtml5.co</a> &nbsp; | &nbsp;  All rights reserved</p>
-    </div>
-  </footer>
+    <!-- Breadcrumb End -->
 
-  <!-- jQuery first, then Popper.js, then Bootstrap JS --> 
-  <script src="assets/js/jquery-3.3.1.slim.min.js"></script> 
-  <script src="assets/js/popper.min.js" ></script> 
-  <script src="assets/js/bootstrap.min.js"></script> 
-  <script src="assets/js/owl.carousel.min.js"></script> 
-  <script src="assets/js/main.js"></script>
+    <!-- Blog Section Begin -->
+    <section class="blog spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="blog__item">
+                        <h4>What Makes Users Want to Share a Video on Social Media?</h4>
+                        <ul>
+                            <li>Jan 03, 2020</li>
+                            <li>05 Comment</li>
+                        </ul>
+                        <p>We recently launched a new website for a Vital client and wanted to share some of the cool
+                            features we were able...</p>
+                        <a href="#">Read more <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="blog__item">
+                        <h4>Bumper Ads: How to Tell a Story in 6 Seconds</h4>
+                        <ul>
+                            <li>Jan 03, 2020</li>
+                            <li>05 Comment</li>
+                        </ul>
+                        <p>We recently launched a new website for a Vital client and wanted to share some of the cool
+                            features we were able...</p>
+                        <a href="#">Read more <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="blog__item">
+                        <h4>Recruitment Marketing for the Digital Age: A Definitive Guide</h4>
+                        <ul>
+                            <li>Jan 03, 2020</li>
+                            <li>05 Comment</li>
+                        </ul>
+                        <p>We recently launched a new website for a Vital client and wanted to share some of the cool
+                            features we were able...</p>
+                        <a href="#">Read more <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="blog__item">
+                        <h4>Say Bonjour! Ola! & Guten Tag! to Our New Team Members</h4>
+                        <ul>
+                            <li>Jan 03, 2020</li>
+                            <li>05 Comment</li>
+                        </ul>
+                        <p>We recently launched a new website for a Vital client and wanted to share some of the cool
+                            features we were able...</p>
+                        <a href="#">Read more <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="blog__item">
+                        <h4>Recruitment Marketing for the Digital Age: A Definitive Guide</h4>
+                        <ul>
+                            <li>Jan 03, 2020</li>
+                            <li>05 Comment</li>
+                        </ul>
+                        <p>We recently launched a new website for a Vital client and wanted to share some of the cool
+                            features we were able...</p>
+                        <a href="#">Read more <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="blog__item">
+                        <h4>Pay-Per-Click Marketing: A ‘Nuts & Bolts’ Guide</h4>
+                        <ul>
+                            <li>Jan 03, 2020</li>
+                            <li>05 Comment</li>
+                        </ul>
+                        <p>We recently launched a new website for a Vital client and wanted to share some of the cool
+                            features we were able...</p>
+                        <a href="#">Read more <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="blog__item">
+                        <h4>Vital Launches New University Website Design for...</h4>
+                        <ul>
+                            <li>Jan 03, 2020</li>
+                            <li>05 Comment</li>
+                        </ul>
+                        <p>We recently launched a new website for a Vital client and wanted to share some of the cool
+                            features we were able...</p>
+                        <a href="#">Read more <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="blog__item">
+                        <h4>How and When to Write a Press Release: Best Practices...</h4>
+                        <ul>
+                            <li>Jan 03, 2020</li>
+                            <li>05 Comment</li>
+                        </ul>
+                        <p>We recently launched a new website for a Vital client and wanted to share some of the cool
+                            features we were able...</p>
+                        <a href="#">Read more <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="blog__item">
+                        <h4>What Makes Users Want to Share a Video on Social Media?</h4>
+                        <ul>
+                            <li>Jan 03, 2020</li>
+                            <li>05 Comment</li>
+                        </ul>
+                        <p>We recently launched a new website for a Vital client and wanted to share some of the cool
+                            features we were able...</p>
+                        <a href="#">Read more <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="pagination__option blog__pagi">
+                        <a href="#" class="arrow__pagination left__arrow"><span class="arrow_left"></span> Prev</a>
+                        <a href="#" class="number__pagination">1</a>
+                        <a href="#" class="number__pagination">2</a>
+                        <a href="#" class="arrow__pagination right__arrow">Next <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Blog Section End -->
 
+    <!-- Footer Section Begin -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__top">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="footer__top__logo">
+                            <a href="#"><img src="img/logo.png" alt=""></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="footer__top__social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-dribbble"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__option">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="footer__option__item">
+                            <h5>About us</h5>
+                            <p>Formed in 2006 by Matt Hobbs and Cael Jones, Videoprah is an award-winning, full-service
+                                production company specializing.</p>
+                            <a href="#" class="read__more">Read more <span class="arrow_right"></span></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-3">
+                        <div class="footer__option__item">
+                            <h5>Who we are</h5>
+                            <ul>
+                                <li><a href="#">Team</a></li>
+                                <li><a href="#">Carrers</a></li>
+                                <li><a href="#">Contact us</a></li>
+                                <li><a href="#">Locations</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-3">
+                        <div class="footer__option__item">
+                            <h5>Our work</h5>
+                            <ul>
+                                <li><a href="#">Feature</a></li>
+                                <li><a href="#">Latest</a></li>
+                                <li><a href="#">Browse Archive</a></li>
+                                <li><a href="#">Video for web</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12">
+                        <div class="footer__option__item">
+                            <h5>Newsletter</h5>
+                            <p>Videoprah is an award-winning, full-service production company specializing.</p>
+                            <form action="#">
+                                <input type="text" placeholder="Email">
+                                <button type="submit"><i class="fa fa-send"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__copyright">
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        <p class="footer__copyright__text">Copyright &copy;
+                            <script>
+                                document.write(new Date().getFullYear());
+                            </script>
+                            All rights reserved | This template is made with <i class="fa fa-heart-o"
+                                aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                        </p>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Js Plugins -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/mixitup.min.js"></script>
+    <script src="js/masonry.pkgd.min.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/main.js"></script>
 </body>
+
 </html>

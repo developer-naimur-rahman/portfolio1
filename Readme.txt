@@ -1,24 +1,8 @@
+Thank you for using our template!
 
-TITLE: 
-Girly - 100% Fully Responsive One Page HTML5 Bootstrap 4 Template
+For more awesome templates please visit https://colorlib.com/wp/templates/
 
-AUTHOR:
-DESIGNED & DEVELOPED by Naimur Rahman Emon
+Copyright information for the template can't be altered/removed unless you purchase a license.
+More information about the license is available here: https://colorlib.com/wp/licence/
 
-
-
-
-CREDITS:
-
-Bootstrap
-http://getbootstrap.com/
-
-jQuery
-http://jquery.com/
-
-Parallax
-http://pixelcog.github.io/parallax.js/
-
-Demo Images:
-http://unsplash.com
-
+Removing copyright information without the license will result in suspension of your hosting and/or domain name(s).
