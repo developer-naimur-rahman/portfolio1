@@ -2321,7 +2321,7 @@ h4, h5 {
 /* Responsive adjustments for the popup layout */
 @media (max-width: 768px) {
   .popup-content {
-    width: 90%; /* Better fit on smaller screens */
+    width: 100%; /* Better fit on smaller screens */
     height: auto; /* Adaptive height for mobile */
     flex-direction: column; /* Stacks sections vertically */
     padding-top: 40px;
