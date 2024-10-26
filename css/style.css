@@ -2330,7 +2330,7 @@ h4, h5 {
 
   .popup-left, .popup-right {
     width: 100%;
-    padding: 15px; /* Adjust padding for smaller screens */
+    padding: 1px; /* Adjust padding for smaller screens */
   }
 
   .close-popup {
