@@ -2256,7 +2256,7 @@ h4, h5 {
 }
 
 .welcome {
-  overflow:auto;
+  overflow:visible;
   background: #100028; /* Dark background color */
   display: flex;
   flex-direction: column;
@@ -2290,6 +2290,15 @@ h4, h5 {
   border: none; /* No border */
 }
 
+
+
+
+.portfolio {
+  background: #100028; /* Light background color */
+  padding: 40px 20px; /* Padding for the section */
+  text-align: center; /* Center text */
+}
+
 .portfolio-button {
   padding: 12px 24px; /* Button padding */
   font-size: 1.2em; /* Font size */
@@ -2303,6 +2312,7 @@ h4, h5 {
   display: inline-block; /* Inline-block for centering */
   margin-top: 20px; /* Space above the button */
 }
+
 .portfolio-button:hover {
   background-color: #0056b3; /* Darker blue on hover */
 }
