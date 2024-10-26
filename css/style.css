@@ -2316,3 +2316,67 @@ h4, h5 {
 .portfolio-button:hover {
   background-color: #0056b3; /* Darker blue on hover */
 }
+
+
+/* Responsive adjustments for the popup layout */
+@media (max-width: 768px) {
+  .popup-content {
+    width: 90%; /* Better fit on smaller screens */
+    height: auto; /* Adaptive height for mobile */
+    flex-direction: column; /* Stacks sections vertically */
+  }
+
+  .popup-left, .popup-right {
+    width: 100%;
+    padding: 15px; /* Adjust padding for smaller screens */
+  }
+
+  .close-popup {
+    top: 10px;
+    right: 10px;
+    left: auto; /* Align close button to the top-right on mobile */
+    font-size: 20px; /* Slightly smaller on mobile */
+  }
+}
+
+/* Responsive adjustments for the welcome video */
+@media (max-width: 768px) {
+  .welcome-video {
+    max-width: 100%; /* Full viewport width on mobile */
+    padding-top: 56.25%; /* Maintains 16:9 aspect ratio */
+  }
+}
+
+/* Responsive adjustments for the portfolio section */
+@media (max-width: 768px) {
+  .portfolio {
+    padding: 20px 10px; /* Reduced padding on mobile */
+  }
+
+  .portfolio-button {
+    padding: 10px 20px; /* Smaller padding */
+    font-size: 1em; /* Adjust font size for mobile */
+  }
+}
+
+/* Additional adjustments for extra-small screens */
+@media (max-width: 480px) {
+  .project-description {
+    padding: 8px 10px; /* More compact padding */
+    font-size: 0.9em; /* Slightly smaller font size */
+  }
+
+  h4, h5 {
+    font-size: 1em; /* Smaller titles */
+  }
+
+  .portfolio-button {
+    font-size: 0.9em;
+    padding: 8px 16px;
+  }
+}
+
+/* Refined styling for smoother hover effects */
+.project-description, .portfolio-button {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Added transition for color */
+}
