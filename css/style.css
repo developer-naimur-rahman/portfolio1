@@ -2322,10 +2322,11 @@ h4, h5 {
 @media (max-width: 768px) {
   .popup-content {
     width: 100%; /* Better fit on smaller screens */
-    height: auto; /* Adaptive height for mobile */
+    height: 100vh; /* Adaptive height for mobile */
     flex-direction: column; /* Stacks sections vertically */
     padding-top: 40px;
-    margin-top;: 40px
+    margin-top;: 40px;
+    overflow-y: auto;
   }
 
   .popup-left, .popup-right {
@@ -2345,7 +2346,9 @@ h4, h5 {
 /* Responsive adjustments for the welcome video */
 @media (max-width: 768px) {
   .welcome-video {
-    max-width: 100%; /* Full viewport width on mobile */
+    width: 100%;
+    height: auto; /* Adaptive height */
+    max-width: 100%;
     padding-top: 56.25%; /* Maintains 16:9 aspect ratio */
   }
 }
