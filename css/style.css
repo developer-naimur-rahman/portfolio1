@@ -2174,3 +2174,66 @@ ol {
 	content:"𝕏";
 	font-size:1.2em;
 }
+
+
+
+.project-description {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: white; /* Button background color */
+  border: 1px solid transparent; /* Initial border */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transition */
+}
+
+.project-description:hover {
+  background-color: red; /* Hover background color */
+  color: white; /* Text color on hover */
+  border-color: red; /* Border color on hover */
+}
+
+.popup {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+}
+
+.popup-content {
+  background-color: white;
+  width: 80%;
+  height: 80%;
+  display: flex;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.popup-left {
+  padding: 20px;
+  flex: 1;
+}
+
+.popup-right {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.close-popup {
+  position: absolute;
+  top: 10px; /* Adjust as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px; /* Adjust size as needed */
+  cursor: pointer;
+  color: #000; /* Change color if needed */
+}

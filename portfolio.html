@@ -108,21 +108,87 @@
                 </div>
             </div>
             <div class="row portfolio__gallery">
-                <div class="col-lg-4 col-md-6 col-sm-6 mix ads">
-                    <div class="portfolio__item">
-                        <div class="portfolio__item__video set-bg" data-setbg="img/portfolio/portfolio-1.jpg">
-                            <a href="https://www.youtube.com/watch?v=TBQO4uVm1eI" class="play-btn video-popup"><i
-                                    class="fa fa-play"></i></a>
-                        </div>
-                        <div class="portfolio__item__text">
-                            <h4>Fit Elegance</h4>
-                            <ul>
-                                <li>Video Ads</li>
-                                <li>After Effect</li>
-                            </ul>
-                        </div>
+                
+                
+               <!-- FIT ELEGANCE START  -->
+                
+               <div class="col-lg-4 col-md-6 col-sm-6 mix ads">
+                <div class="portfolio__item">
+                    <div class="portfolio__item__video set-bg" data-setbg="img/portfolio/portfolio-1.jpg">
+                        <a href="https://www.youtube.com/watch?v=TBQO4uVm1eI" class="play-btn video-popup"><i class="fa fa-play"></i></a>
+                    </div>
+                    <div class="portfolio__item__text">
+                        <h4>Fit Elegance</h4>
+                        <ul>
+                            <li>Video Ads</li>
+                            <li>After Effects</li>
+                        </ul>
+                        <!-- Button to show project description -->
+                        <p class="project-description" style="cursor: pointer; color: blue; text-decoration: underline;" onclick="showPopup('Fit Elegance', 'A promotional video showcasing elegant fitness apparel, highlighting features and style.', 'Video Editing, Motion Graphics, After Effects', 'Final video, promotional clips, and social media teasers.', 'https://www.youtube.com/embed/TBQO4uVm1eI')">Project Description</p>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Full-screen Popup -->
+            <div class="popup" id="projectPopup" style="display: none;">
+                <div class="popup-content">
+                    <span class="close-popup" onclick="closePopup()" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 24px; cursor: pointer;">&times;</span>
+                    <div class="popup-left">
+                        <h4 id="popupTitle"></h4>
+                        <h4>My Role: Video Editor</h4>
+                        <p><strong>Project Description:</strong> <span id="popupDescription"></span></p>
+                        <p><strong>Skills:</strong> <span id="popupSkills"></span></p>
+                        <p><strong>Deliverables:</strong> <span id="popupDeliverables"></span></p>
+                    </div>
+                    <div class="popup-right">
+                        <iframe id="popupVideo" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+            
+  <!-- FIT ELEGANCE END  -->
+
+   <!-- Dr. younus Three Zero World START  -->
+                
+   <div class="col-lg-4 col-md-6 col-sm-6 mix documentary">
+    <div class="portfolio__item">
+        <div class="portfolio__item__video set-bg" data-setbg="img/portfolio/portfolio-2.jpg">
+            <a href="https://www.youtube.com/watch?v=WzxSly4QeaA" class="play-btn video-popup"><i class="fa fa-play"></i></a>
+        </div>
+        <div class="portfolio__item__text">
+            <h4>Dr. Yunus Three Zero World</h4>
+            <ul>
+                <li>Documentary</li>
+            </ul>
+            <!-- Button to show project description -->
+            <p class="project-description" style="cursor: pointer; color: blue; text-decoration: underline;" onclick="showPopup()">Project Description</p>
+        </div>
+    </div>
+</div>
+
+<!-- Full-screen Popup -->
+<div class="popup" id="projectPopup" style="display: none;">
+    <div class="popup-content">
+        <span class="close-popup" onclick="closePopup()">&times;</span>
+        <div class="popup-left">
+            <h4>My Role: Video Editor</h4>
+            <p><strong>Project Description:</strong> A documentary about Dr. Yunus and his impact through the Three Zero World initiative.</p>
+            <p><strong>Skills:</strong> Video Editing, Storytelling, Documentary Filmmaking</p>
+            <p><strong>Deliverables:</strong> Final documentary, promotional clips, and social media teasers.</p>
+        </div>
+        <div class="popup-right">
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/WzxSly4QeaA" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+
+<!-- Dr. younus Three Zero World  -->
+
+
+
+
+
                 <div class="col-lg-4 col-md-6 col-sm-6 mix documentary">
                     <div class="portfolio__item">
                         <div class="portfolio__item__video set-bg" data-setbg="img/portfolio/portfolio-2.jpg">
@@ -333,6 +399,23 @@
     <!-- Footer Section End -->
 
     <!-- Js Plugins -->
+  <script>
+    function showPopup(title, description, skills, deliverables, videoUrl) {
+        document.getElementById('popupTitle').innerText = title;
+        document.getElementById('popupDescription').innerText = description;
+        document.getElementById('popupSkills').innerText = skills;
+        document.getElementById('popupDeliverables').innerText = deliverables;
+        document.getElementById('popupVideo').src = videoUrl;
+        document.getElementById('projectPopup').style.display = 'flex'; // Change to flex to enable centering
+    }
+    
+    function closePopup() {
+        document.getElementById('projectPopup').style.display = 'none';
+        document.getElementById('popupVideo').src = ''; // Stop the video when closed
+    }
+    
+    
+</script>
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.magnific-popup.min.js"></script>
