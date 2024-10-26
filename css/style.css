@@ -2202,6 +2202,7 @@ ol {
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
   background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+  display: flex; /* Center contents */
   align-items: center; /* Center vertically */
   justify-content: center; /* Center horizontally */
 }
@@ -2210,7 +2211,7 @@ ol {
   background-color: white;
   width: 80%;
   height: 80%;
-  display: flex;
+  display: flex; /* Flex for side-by-side layout */
   border-radius: 10px;
   overflow: hidden;
   transition: transform 0.3s ease;
@@ -2218,12 +2219,13 @@ ol {
 }
 
 .popup-left {
-  padding: 20px;
-  flex: 1;
+  flex: 1; /* Takes half of the space */
+  padding: 20px; /* Add padding for spacing */
+  overflow-y: auto; /* Enable scrolling if content overflows */
 }
 
 .popup-right {
-  flex: 1;
+  flex: 1; /* Takes half of the space */
   position: relative;
   overflow: hidden;
 }
@@ -2236,4 +2238,9 @@ ol {
   font-size: 24px; /* Adjust size as needed */
   cursor: pointer;
   color: #000; /* Change color if needed */
+}
+
+h4, h5 {
+  text-align: center; /* Center the title and role */
+  margin: 0;         /* Remove default margins */
 }
