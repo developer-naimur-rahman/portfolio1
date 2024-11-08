@@ -1,18 +1,16 @@
 backend:
   name: git-gateway
-  branch: main # অথবা আপনার মূল ব্রাঞ্চের নাম
+  branch: main # or your deployment branch
 
-media_folder: "static/images/uploads" # ব্লগ ইমেজ আপলোডের জন্য ফোল্ডার
-public_folder: "/images/uploads"
+media_folder: "static/images/uploads" # Folder where uploaded images are stored
+public_folder: "/images/uploads"      # Public URL for the images
 
 collections:
-  - name: "blog"
-    label: "Blog"
-    folder: "content/blog"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish Date", name: "date", widget: "datetime" }
-      - { label: "Featured Image", name: "thumbnail", widget: "image" }
-      - { label: "Body", name: "body", widget: "markdown" }
+  - name: "blog"          # Used in routes, e.g., /admin/collections/blog
+    label: "Blog"         # Admin UI Label
+    folder: "_posts"      # Folder where your blog posts are stored
+    create: true          # Allow new blog posts
+    slug: "{{slug}}"      # URL structure
+    fields:               # Fields for each blog post
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Body", name: "body", widget: "markdown"}
