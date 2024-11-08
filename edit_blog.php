@@ -74,7 +74,7 @@ if ($logged_in_user && ($logged_in_user === $post['writer'] || $logged_in_user =
     <!-- Header Section -->
     <header class="header">
         <div class="header__logo">
-            <a href="./index.php">
+            <a href="./blog.php">
                 <img src="img/logo.png" alt="Logo of Naimur Rahman Emon">
             </a>
         </div>
@@ -84,7 +84,7 @@ if ($logged_in_user && ($logged_in_user === $post['writer'] || $logged_in_user =
                 <li><a href="./about.html">About</a></li>
                 <li><a href="./portfolio.html">Portfolio</a></li>
                 <li><a href="./services.html">Services</a></li>
-                <li><a href="./index.php" class="active">Blog</a></li>
+                <li><a href="./blog.php" class="active">Blog</a></li>
                 <li><a href="./contact.html">Contact</a></li>
             </ul>
         </nav>
