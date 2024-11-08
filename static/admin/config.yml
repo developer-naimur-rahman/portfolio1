@@ -1,0 +1,18 @@
+backend:
+  name: git-gateway
+  branch: main # অথবা আপনার মূল ব্রাঞ্চের নাম
+
+media_folder: "static/images/uploads" # ব্লগ ইমেজ আপলোডের জন্য ফোল্ডার
+public_folder: "/images/uploads"
+
+collections:
+  - name: "blog"
+    label: "Blog"
+    folder: "content/blog"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Featured Image", name: "thumbnail", widget: "image" }
+      - { label: "Body", name: "body", widget: "markdown" }
