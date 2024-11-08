@@ -142,6 +142,7 @@
     </script>
 </head>
 <body>
+    
     <header>
         <h1>Upload New Blog Post</h1>
     </header>

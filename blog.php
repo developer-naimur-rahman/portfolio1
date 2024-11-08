@@ -53,6 +53,7 @@ $total_pages = ceil($total_posts / $posts_per_page);
 
 <body>
 
+
     <!-- পেজ হেডার -->
     <header class="header">
         <div class="header__logo">
@@ -72,6 +73,10 @@ $total_pages = ceil($total_posts / $posts_per_page);
         </nav>
     </header>
 
+     <!-- Add the link to upload_blog.php -->
+ <div style="margin: 10px;">
+        <a href="upload_blog.php" style="padding: 10px; background-color: #007bff; color: white; text-decoration: none;">Upload New Blog</a>
+    </div>
     <!-- ব্লগ কনটেন্ট -->
     <h1>Blog Posts</h1>
 
