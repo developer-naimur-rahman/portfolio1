@@ -12,7 +12,8 @@
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
@@ -25,7 +26,7 @@
 </head>
 
 <body>
-    <!-- Page Preloader -->
+    <!-- Page Preloder -->
     <div id="preloder">
         <div class="loader"></div>
     </div>
@@ -36,14 +37,14 @@
             <div class="row">
                 <div class="col-lg-2">
                     <div class="header__logo">
-                        <a href="./index.php"><img src="img/logo.png" alt=""></a>
+                        <a href="./index.html"><img src="img/logo.png" alt=""></a>
                     </div>
                 </div>
                 <div class="col-lg-10">
                     <div class="header__nav__option">
                         <nav class="header__nav__menu mobile-menu">
                             <ul>
-                                <li><a href="./index.php">Home</a></li>
+                                <li><a href="./index.html">Home</a></li>
                                 <li><a href="./about.html">About</a></li>
                                 <li><a href="./portfolio.html">Portfolio</a></li>
                                 <li class="active"><a href="./services.html">Services</a></li>
@@ -51,8 +52,8 @@
                                     <ul class="dropdown">
                                         <li><a href="./about.html">About</a></li>
                                         <li><a href="./portfolio.html">Portfolio</a></li>
-                                        <li><a href="./blog.php">Blog</a></li>
-                                        <li><a href="./blog-details.php">Blog Details</a></li>
+                                        <li><a href="./blog.html">Blog</a></li>
+                                        <li><a href="./blog-details.html">Blog Details</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="./contact.html">Contact</a></li>
@@ -91,55 +92,79 @@
     </div>
     <!-- Breadcrumb End -->
 
-    <!-- Blog Submission Form -->
-    <form action="upload_blog.php" method="POST" enctype="multipart/form-data">
-        <label for="title">Title:</label>
-        <input type="text" name="title" required><br>
-        <label for="content">Content:</label>
-        <textarea name="content" required></textarea><br>
-        <label for="image">Image:</label>
-        <input type="file" name="image"><br>
-        <button type="submit" name="submit">Upload Blog</button>
-    </form>
 
-    <!-- Blog Section Begin -->
-    <section class="blog spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-title center-title">
-                        <span>Video Editing Insights</span>
-                        <h2>Latest From Our Blog</h2>
-                    </div>
+
+
+
+
+
+ <!-- Blog Section Begin -->
+<section class="blog spad">
+    <div class="container">
+        <!-- Section Title -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title center-title">
+                    <span>Video Editing Insights</span>
+                    <h2>Latest From Our Blog</h2>
                 </div>
             </div>
-            <div class="row">
-                <?php
-                // Example blog posts from database
-                $posts = [
-                    ["title" => "Top 5 Video Editing Techniques", "date" => "Nov 08, 2024", "comments" => "10"],
-                    ["title" => "Motion Graphics Insights", "date" => "Oct 25, 2024", "comments" => "8"],
-                    ["title" => "Creating Stunning Promo Videos", "date" => "Oct 10, 2024", "comments" => "15"]
-                ];
-
-                foreach ($posts as $post) {
-                    echo '<div class="col-lg-4 col-md-6 col-sm-6">';
-                    echo '<div class="blog__item">';
-                    echo '<h4>' . $post["title"] . '</h4>';
-                    echo '<ul>';
-                    echo '<li>' . $post["date"] . '</li>';
-                    echo '<li>' . $post["comments"] . ' Comments</li>';
-                    echo '</ul>';
-                    echo '<p>Short summary of the blog...</p>';
-                    echo '<a href="#">Read more <span class="arrow_right"></span></a>';
-                    echo '</div>';
-                    echo '</div>';
-                }
-                ?>
+        </div>
+        <!-- Blog Posts -->
+        <div class="row">
+            <!-- Blog Item 1 -->
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="blog__item">
+                    <h4>Top 5 Video Editing Techniques for Beginners</h4>
+                    <ul>
+                        <li>Nov 08, 2024</li>
+                        <li>10 Comments</li>
+                    </ul>
+                    <p>Discover the essential editing techniques to elevate your videos and captivate your audience...</p>
+                    <a href="#">Read more <span class="arrow_right"></span></a>
+                </div>
+            </div>
+            <!-- Blog Item 2 -->
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="blog__item">
+                    <h4>Motion Graphics: Adding Life to Your Videos</h4>
+                    <ul>
+                        <li>Oct 25, 2024</li>
+                        <li>08 Comments</li>
+                    </ul>
+                    <p>Learn how motion graphics can transform your video projects into engaging visual experiences...</p>
+                    <a href="#">Read more <span class="arrow_right"></span></a>
+                </div>
+            </div>
+            <!-- Blog Item 3 -->
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="blog__item">
+                    <h4>How to Create Stunning Promo Videos in 5 Steps</h4>
+                    <ul>
+                        <li>Oct 10, 2024</li>
+                        <li>15 Comments</li>
+                    </ul>
+                    <p>Follow these five easy steps to craft promotional videos that highlight your brand’s message...</p>
+                    <a href="#">Read more <span class="arrow_right"></span></a>
+                </div>
+            </div>
+            <!-- Blog Item 4 -->
+          
+        <!-- Pagination -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="pagination__option blog__pagi">
+                    <a href="#" class="arrow__pagination left__arrow"><span class="arrow_left"></span> Prev</a>
+                    <a href="#" class="number__pagination active">1</a>
+                    <a href="#" class="number__pagination">2</a>
+                    <a href="#" class="arrow__pagination right__arrow">Next <span class="arrow_right"></span></a>
+                </div>
             </div>
         </div>
-    </section>
-    <!-- Blog Section End -->
+    </div>
+</section>
+<!-- Blog Section End -->
+
 
     <!-- Footer Section Begin -->
     <footer class="footer">
@@ -148,16 +173,75 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-6">
                         <div class="footer__top__logo">
-                            <a href="index.php"><img src="img/logo.png" alt=""></a>
+                            <a href="index.html"><img src="img/logo.png" alt=""></a>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6">
                         <div class="footer__top__social">
-                            <a href="#"><i class="fa fa-facebook"></i></a>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-linkedin"></i></a>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="https://www.facebook.com/motionofnaimur"><i class="fa fa-facebook"></i></a>
+                                <a href="https://x.com/motionofnaimur"><i class="fa fa-twitter"></i></a>
+                                <a href="https://www.linkedin.com/in/motionofnaimur"><i class="fa fa-linkedin"></i></a>
+                                <a href="https://www.instagram.com/motionofnaimur"><i class="fa fa-instagram"></i></a>
+                                <a href="https://www.youtube.com/@motionofnaimur"><i class="fa fa-youtube-play"></i></a>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__option">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="footer__option__item">
+                            <h5>About us</h5>
+                            <p>Our collaborative approach ensures we deliver high-quality, polished projects that perfectly align with our clients' vision, making sure each video leaves a lasting impact. Whether it's editing, animation, or script development, we are committed to producing exceptional results. </p>
+                            <a href="about.html" class="read__more">Read more <span class="arrow_right"></span></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-3">
+                        <div class="footer__option__item">
+                            <h5>Who we are</h5>
+                            <ul>
+                                <li><a href="about.html">Team</a></li>
+                                <li><a href="portfolio.html">Carrers</a></li>
+                                <li><a href="contact.html">Contact us</a></li>
+                                <li><a href="contact.html">Locations</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-3">
+                        <div class="footer__option__item">
+                            <h5>Our work</h5>
+                            <ul>
+                                <li><a href="#">Feature</a></li>
+                                <li><a href="#">Latest</a></li>
+                                <li><a href="#">Browse Archive</a></li>
+                                <li><a href="#">Video for web</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12">
+                        <div class="footer__option__item">
+                            <h5>Newsletter</h5>
+                            <p>Videoprah is an award-winning, full-service production company specializing.</p>
+                            <form action="https://formspree.io/f/mbljrqry" method="POST">
+                                <input type="email" name="email" placeholder="Email">
+                                <button type="submit"><i class="fa fa-send"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__copyright">
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        <p class="footer__copyright__text">Copyright &copy;
+                            <script>
+                                document.write(new Date().getFullYear());
+                            </script>
+                            All rights reserved | This template is made with <i class="fa fa-heart-o"
+                                aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">NAIMUR RAHMAN EMON</a>
+                        </p>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </div>
                 </div>
             </div>
@@ -165,6 +249,15 @@
     </footer>
     <!-- Footer Section End -->
 
+    <!-- Js Plugins -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/mixitup.min.js"></script>
+    <script src="js/masonry.pkgd.min.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/main.js"></script>
 </body>
 
 </html>

@@ -1,170 +1,125 @@
+<?php
+// ডাটাবেস সংযোগ সেটিংস
+$servername = "localhost";
+$username = "root";  // XAMPP এ MySQL এর ডিফল্ট ইউজারনেম
+$password = "";      // XAMPP এ MySQL এর ডিফল্ট পাসওয়ার্ড (ডিফল্টভাবে খালি)
+$dbname = "blog_system";  // আপনার ডাটাবেসের নাম
+
+// সংযোগ তৈরি করা
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// সংযোগ পরীক্ষা করা
+if ($conn->connect_error) {
+    die("সংযোগ ব্যর্থ: " . $conn->connect_error);
+}
+
+// ব্যবহারকারীর কাছ থেকে অনুসন্ধানের কুয়েরি (যদি থাকে) নেওয়া
+$search_query = isset($_GET['search']) ? $_GET['search'] : '';
+
+// প্রতিটি পেজে পোস্টের সংখ্যা নির্ধারণ করা
+$posts_per_page = 5;
+
+// বর্তমান পেজ পেতে (ডিফল্ট পেজ 1)
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $posts_per_page;
+
+// ব্লগ পোস্টের তথ্য অনুসন্ধান করার SQL কুয়েরি, অনুসন্ধান ফিল্টার (যদি থাকে) সহ
+$sql = "SELECT * FROM blog_posts WHERE title LIKE ? OR content LIKE ? LIMIT ?, ?";
+$stmt = $conn->prepare($sql);
+$search_param = "%$search_query%";
+$stmt->bind_param("ssii", $search_param, $search_param, $offset, $posts_per_page);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// পেজিনেশন এর জন্য মোট পোস্টের সংখ্যা পাওয়া
+$total_posts_sql = "SELECT COUNT(*) FROM blog_posts WHERE title LIKE ? OR content LIKE ?";
+$total_posts_stmt = $conn->prepare($total_posts_sql);
+$total_posts_stmt->bind_param("ss", $search_param, $search_param);
+$total_posts_stmt->execute();
+$total_posts_stmt->bind_result($total_posts);
+$total_posts_stmt->fetch();
+$total_pages = ceil($total_posts / $posts_per_page);
+?>
+
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Welcome to the blog of Naimur Rahman Emon, where creativity meets expertise in video editing and motion graphics. Explore a collection of articles, tutorials, and tips that enhance your video production skills and inspire your creative journey. Join Naimur as he shares insights on the latest trends and techniques in the world of visual storytelling.">
-    <meta name="keywords" content="Naimur Rahman Emon, Video Editing Blog, Motion Graphics Blog, Video Production Tips, Creative Storytelling, Adobe After Effects, Premiere Pro, Video Marketing Insights, Kinetic Typography, Visual Content Creation, Video Editing Techniques, Industry Trends, Tutorials on Video Editing">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Naimur Rahman Emon | Blog</title>
-    <link rel="icon" type="image/png" href="img/motion of naimur logo.png">
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Css Styles -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <title>Blog Posts</title>
+    <link rel="stylesheet" href="css/style-blog.css">
 </head>
 
 <body>
-    <!-- Page Preloader -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
 
-    <!-- Header Section Begin -->
+    <!-- পেজ হেডার -->
     <header class="header">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-2">
-                    <div class="header__logo">
-                        <a href="./index.php"><img src="img/logo.png" alt=""></a>
-                    </div>
-                </div>
-                <div class="col-lg-10">
-                    <div class="header__nav__option">
-                        <nav class="header__nav__menu mobile-menu">
-                            <ul>
-                                <li><a href="./index.php">Home</a></li>
-                                <li><a href="./about.html">About</a></li>
-                                <li><a href="./portfolio.html">Portfolio</a></li>
-                                <li class="active"><a href="./services.html">Services</a></li>
-                                <li><a href="#">Pages</a>
-                                    <ul class="dropdown">
-                                        <li><a href="./about.html">About</a></li>
-                                        <li><a href="./portfolio.html">Portfolio</a></li>
-                                        <li><a href="./blog.php">Blog</a></li>
-                                        <li><a href="./blog-details.php">Blog Details</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="./contact.html">Contact</a></li>
-                            </ul>
-                        </nav>
-                        <div class="header__nav__social">
-                            <a href="https://www.facebook.com/motionofnaimur"><i class="fa fa-facebook"></i></a>
-                            <a href="https://x.com/motionofnaimur"><i class="fa fa-twitter"></i></a>
-                            <a href="https://www.linkedin.com/in/motionofnaimur"><i class="fa fa-linkedin"></i></a>
-                            <a href="https://www.instagram.com/motionofnaimur"><i class="fa fa-instagram"></i></a>
-                            <a href="https://www.youtube.com/@motionofnaimur"><i class="fa fa-youtube-play"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="mobile-menu-wrap"></div>
+        <div class="header__logo">
+            <a href="/index.php">
+                <img src="img/logo.png" alt="Logo of Naimur Rahman Emon">
+            </a>
         </div>
+        <nav class="header__nav__menu">
+            <ul>
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./about.html">About</a></li>
+                <li><a href="./portfolio.html">Portfolio</a></li>
+                <li><a href="./services.html">Services</a></li>
+                <li><a href="./index.php" class="active">Blog</a></li>
+                <li><a href="./contact.html">Contact</a></li>
+            </ul>
+        </nav>
     </header>
-    <!-- Header End -->
 
-    <!-- Breadcrumb Begin -->
-    <div class="breadcrumb-option spad set-bg" data-setbg="img/breadcrumb-bg.jpg">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <div class="breadcrumb__text">
-                        <h2>Our Blog</h2>
-                        <div class="breadcrumb__links">
-                            <a href="#">Home</a>
-                            <span>Blog</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Breadcrumb End -->
+    <!-- ব্লগ কনটেন্ট -->
+    <h1>Blog Posts</h1>
 
-    <!-- Blog Submission Form -->
-    <form action="upload_blog.php" method="POST" enctype="multipart/form-data">
-        <label for="title">Title:</label>
-        <input type="text" name="title" required><br>
-        <label for="content">Content:</label>
-        <textarea name="content" required></textarea><br>
-        <label for="image">Image:</label>
-        <input type="file" name="image"><br>
-        <button type="submit" name="submit">Upload Blog</button>
+    <!-- অনুসন্ধান ফর্ম -->
+    <form action="" method="get">
+        <input type="text" name="search" placeholder="Search posts..." value="<?php echo htmlspecialchars($search_query); ?>" style="width: 300px; padding: 10px;">
+        <button type="submit" style="padding: 10px; background-color: #007bff; color: white; border: none;">Search</button>
     </form>
 
-    <!-- Blog Section Begin -->
-    <section class="blog spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-title center-title">
-                        <span>Video Editing Insights</span>
-                        <h2>Latest From Our Blog</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <?php
-                // Example blog posts from database
-                $posts = [
-                    ["title" => "Top 5 Video Editing Techniques", "date" => "Nov 08, 2024", "comments" => "10"],
-                    ["title" => "Motion Graphics Insights", "date" => "Oct 25, 2024", "comments" => "8"],
-                    ["title" => "Creating Stunning Promo Videos", "date" => "Oct 10, 2024", "comments" => "15"]
-                ];
+    <?php
+    // পোস্ট থাকলে সেগুলি প্রদর্শন করা
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            echo "<div class='post'>";
+            echo "<div class='post-content'>";
+            echo "<h2><a href='single_blog.php?id=" . $row["id"] . "'>" . htmlspecialchars($row["title"]) . "</a></h2>";  // শিরোনাম লিঙ্ক
+            echo "<p><strong>Writer:</strong> " . htmlspecialchars($row["writer"]) . "</p>";  // লেখক
+            echo "<p><strong>Category:</strong> " . htmlspecialchars($row["category"]) . "</p>";  // ক্যাটাগরি
+            echo "<p>" . nl2br(htmlspecialchars($row["content"])) . "</p>";  // পোস্টের বিষয়বস্তু
+            echo "</div>";  // পোস্ট কনটেন্ট শেষ
+            if ($row["photo"]) {
+                echo "<div class='post-image'><img src='" . htmlspecialchars($row["photo"]) . "' alt='Post Image'></div>";  // পোস্টের ছবি
+            }
+            echo "</div>";  // পোস্ট শেষ
+        }
+    } else {
+        echo "<p>No posts found.</p>";  // কোনো পোস্ট না থাকলে মেসেজ
+    }
 
-                foreach ($posts as $post) {
-                    echo '<div class="col-lg-4 col-md-6 col-sm-6">';
-                    echo '<div class="blog__item">';
-                    echo '<h4>' . $post["title"] . '</h4>';
-                    echo '<ul>';
-                    echo '<li>' . $post["date"] . '</li>';
-                    echo '<li>' . $post["comments"] . ' Comments</li>';
-                    echo '</ul>';
-                    echo '<p>Short summary of the blog...</p>';
-                    echo '<a href="#">Read more <span class="arrow_right"></span></a>';
-                    echo '</div>';
-                    echo '</div>';
-                }
-                ?>
-            </div>
-        </div>
-    </section>
-    <!-- Blog Section End -->
-
-    <!-- Footer Section Begin -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer__top">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6">
-                        <div class="footer__top__logo">
-                            <a href="index.php"><img src="img/logo.png" alt=""></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="footer__top__social">
-                            <a href="#"><i class="fa fa-facebook"></i></a>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-linkedin"></i></a>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-    <!-- Footer Section End -->
+    // পেজিনেশন লিঙ্ক
+    echo "<div class='pagination'>";
+    if ($page > 1) {
+        echo "<a href='?page=" . ($page - 1) . "&search=" . urlencode($search_query) . "'>Previous</a>";
+    }
+    for ($i = 1; $i <= $total_pages; $i++) {
+        echo "<a href='?page=$i&search=" . urlencode($search_query) . "'>$i</a>";
+    }
+    if ($page < $total_pages) {
+        echo "<a href='?page=" . ($page + 1) . "&search=" . urlencode($search_query) . "'>Next</a>";
+    }
+    echo "</div>";
+    ?>
 
 </body>
 
 </html>
+
+<?php
+// ডাটাবেস সংযোগ বন্ধ করা
+$conn->close();
+?>

@@ -1,109 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Single Blog Post</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 80%;
-            margin: 20px auto;
-            background: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            border-radius: 8px;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            color: #333;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-        }
-
-        p {
-            line-height: 1.6;
-            font-size: 1.1em;
-            color: #555;
-            margin: 10px 0;
-        }
-
-        small {
-            display: block;
-            font-size: 0.9em;
-            color: #888;
-            margin-top: 20px;
-        }
-
-        .error {
-            color: red;
-            font-weight: bold;
-        }
-
-        a {
-            text-decoration: none;
-            color: #007BFF;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-<?php 
-// Database connection
+<?php
+// ডাটাবেস সংযোগ সেটিংস
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "blog_system";
 
-// Create connection
+// সংযোগ তৈরি করা
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
+// সংযোগ পরীক্ষা করা
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("সংযোগ ব্যর্থ: " . $conn->connect_error);
 }
 
-// Get ID parameter from URL
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+// ব্লগ পোস্ট আইডি গ্রহন করা
+$post_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// If ID is invalid, show an error
-if ($id == 0) {
-    echo "<p class='error'>Invalid post ID.</p>";
-    exit;
-}
-
-// SQL query for a specific blog post
-$stmt = $conn->prepare("SELECT * FROM blog_posts WHERE id = ?");
-$stmt->bind_param("i", $id);
+// পোস্টের বিস্তারিত তথ্য পেতে SQL কুয়েরি
+$sql = "SELECT * FROM blog_posts WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $post_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// If post found, display it
+// পোস্ট পাওয়া গেলে
 if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    echo "<h1>" . htmlspecialchars($row['title']) . "</h1>";
-    echo "<p>" . nl2br(htmlspecialchars($row['content'])) . "</p>";
-    echo "<small>Written by " . htmlspecialchars($row['writer']) . "</small>";
+    $post = $result->fetch_assoc();
 } else {
-    echo "<p class='error'>Post not found.</p>";
+    echo "<p>এই পোস্টটি পাওয়া যায়নি।</p>";
+    exit;
 }
 
-// Close connection
-$stmt->close();
-$conn->close();
+// Assuming the writer is logged in (for editing permission)
+session_start();
+$logged_in_user = $_SESSION['user'] ?? null;
 ?>
-</div>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($post['title']); ?></title>
+    <link rel="stylesheet" href="css/style-blog.css"> <!-- External CSS Link -->
+</head>
+<body>
+    <!-- Header Section with Navigation -->
+    <header class="header">
+        <div class="header__logo">
+            <a href="./index.php">
+                <img src="img/logo.png" alt="Logo of Naimur Rahman Emon">
+            </a>
+        </div>
+        <nav class="header__nav__menu">
+            <ul>
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./about.html">About</a></li>
+                <li><a href="./portfolio.html">Portfolio</a></li>
+                <li><a href="./services.html">Services</a></li>
+                <li><a href="./index.php" class="active">Blog</a></li>
+                <li><a href="./contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Single Post Content Section -->
+    <div class="single-post-container">
+        <h1><?php echo htmlspecialchars($post['title']); ?></h1>
+        <p><strong>Writer:</strong> <?php echo htmlspecialchars($post['writer']); ?></p>
+        <p><strong>Category:</strong> <?php echo htmlspecialchars($post['category']); ?></p>
+        <div class="post-image">
+            <?php if ($post['photo']) { ?>
+                <img src="<?php echo htmlspecialchars($post['photo']); ?>" alt="Post Image">
+            <?php } ?>
+        </div>
+        <div class="post-content">
+            <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
+        </div>
+        
+        <!-- Edit Button (Only for the writer or admin) -->
+        <?php if ($logged_in_user && ($logged_in_user === $post['writer'] || $logged_in_user === 'admin')): ?>
+            <a href="edit_blog.php?id=<?php echo $post['id']; ?>" class="edit-button">Edit Post</a>
+        <?php endif; ?>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <p>&copy; <?php echo date("Y"); ?> Naimur Rahman Emon. All Rights Reserved.</p>
+    </footer>
+
 </body>
 </html>
+
+<?php
+// ডাটাবেস সংযোগ বন্ধ করা
+$conn->close();
+?>

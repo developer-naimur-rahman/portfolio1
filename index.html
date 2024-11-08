@@ -85,7 +85,7 @@
                                             <li><a
                                                     href="./portfolio.html">Portfolio</a></li>
                                             <li><a
-                                                    href="./blog.html">Blog</a></li>
+                                                    href="./index.php">Blog</a></li>
                                             <li><a
                                                     href="./blog-details.html">Blog
                                                     Details</a></li>
@@ -507,7 +507,6 @@
         <!--  Latest Blog Section Begin -->
 
 
-
 <!-- <section class="latest spad">
     <div class="container">
         <div class="row">
@@ -528,7 +527,7 @@
                             <li>12 Comments</li>
                         </ul>
                         <p>Learn about the latest video editing techniques that make content engaging, from color grading to perfecting transitions. Enhance your storytelling.</p>
-                        <a href="blog.html">Read more <span class="arrow_right"></span></a>
+                        <a href="index.php">Read more <span class="arrow_right"></span></a>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -539,7 +538,7 @@
                             <li>8 Comments</li>
                         </ul>
                         <p>Discover how motion graphics can make your brand more memorable and visually compelling across all media platforms.</p>
-                        <a href="blog.html">Read more <span class="arrow_right"></span></a>
+                        <a href="index.php">Read more <span class="arrow_right"></span></a>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -550,7 +549,7 @@
                             <li>15 Comments</li>
                         </ul>
                         <p>Explore the process of creating a documentary film that resonates with your audience and tells an impactful story through visuals.</p>
-                        <a href="blog.html">Read more <span class="arrow_right"></span></a>
+                        <a href="index.php">Read more <span class="arrow_right"></span></a>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -561,7 +560,7 @@
                             <li>10 Comments</li>
                         </ul>
                         <p>Find out how the right intro and outro animations can boost the professional quality of your video content and strengthen your brand identity.</p>
-                        <a href="blog.html">Read more <span class="arrow_right"></span></a>
+                        <a href="index.php">Read more <span class="arrow_right"></span></a>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -572,7 +571,7 @@
                             <li>7 Comments</li>
                         </ul>
                         <p>Understand the importance of scriptwriting in video production, and how it can drive the message home with clarity and impact.</p>
-                        <a href="blog.html">Read more <span class="arrow_right"></span></a>
+                        <a href="index.php">Read more <span class="arrow_right"></span></a>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -583,7 +582,7 @@
                             <li>5 Comments</li>
                         </ul>
                         <p>Learn how high-quality video content can improve your social media presence and engagement by telling your brand's story effectively.</p>
-                        <a href="blog.html">Read more <span class="arrow_right"></span></a>
+                        <a href="index.php">Read more <span class="arrow_right"></span></a>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -594,39 +593,16 @@
                             <li>9 Comments</li>
                         </ul>
                         <p>Find out how effective video hosting and distribution can help you reach a broader audience and increase viewer engagement.</p>
-                        <a href="blog.html">Read more <span class="arrow_right"></span></a>
+                        <a href="index.php">Read more <span class="arrow_right"></span></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section> -->
-
-
-
 <!-- Latest Blog Section End -->
  
         <!-- Latest Blog Section End -->
-
-        <section class="latest spad">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="section-title center-title">
-                            <span>Our Blog</span>
-                            <h2>Latest Insights</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" id="blog-container">
-                    <!-- Blogs will be dynamically loaded here -->
-                </div>
-            </div>
-        </section>
-        
-      
-        
-
 
         <!-- Call To Action Section Begin -->
         <section class="callto spad set-bg" data-setbg="img/callto-bg.jpg">
@@ -774,33 +750,6 @@
         <script src="js/jquery.slicknav.js"></script>
         <script src="js/owl.carousel.min.js"></script>
         <script src="js/main.js"></script>
-
-        <script>
-            fetch('fetch_blogs.php')
-                .then(response => response.json())
-                .then(blogs => {
-                    const blogContainer = document.getElementById('blog-container');
-                    blogContainer.innerHTML = ''; // Clear any existing content
-        
-                    blogs.forEach(blog => {
-                        const blogHTML = `
-                            <div class="col-lg-4">
-                                <div class="blog__item latest__item">
-                                    <h4>${blog.title}</h4>
-                                    <ul>
-                                        <li>${blog.formatted_date}</li>
-                                        <li>${blog.comments} Comments</li>
-                                    </ul>
-                                    <p>${blog.description}</p>
-                                    <a href="${blog.link}">Read more <span class="arrow_right"></span></a>
-                                </div>
-                            </div>
-                        `;
-                        blogContainer.innerHTML += blogHTML;
-                    });
-                })
-                .catch(error => console.error('Error fetching blog data:', error));
-        </script>
 
     </body>
 
