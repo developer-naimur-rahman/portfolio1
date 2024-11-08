@@ -4,14 +4,14 @@
       "date": "Oct 30, 2024",
       "comments": "12",
       "description": "Learn about the latest video editing techniques...",
-      "link": "blog.html"
+      "link": "index.php"
     },
     {
       "title": "How Motion Graphics Can Elevate Your Brand Identity",
       "date": "Oct 28, 2024",
       "comments": "8",
       "description": "Discover how motion graphics can make your brand more memorable...",
-      "link": "blog.html"
+      "link": "index.php"
     }
     // Add more blog objects as needed
   ]
