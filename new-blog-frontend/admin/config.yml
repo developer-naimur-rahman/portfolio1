@@ -1,18 +1,16 @@
 backend:
-  name: git
-  repo: your-username/your-repo  # Replace with your Git repository
-  branch: main  # Or your primary branch
+  name: git-gateway        # Uses Git Gateway to interact with GitHub
+  branch: main             # Default branch of your Git repository (use 'main' or 'master')
 
-media_folder: "static/images/uploads"  # Where uploaded files are stored
-public_folder: "/images/uploads"
+media_folder: "static/img"    # Folder for uploading images and media files
+public_folder: "/img"         # Publicly accessible images folder
 
 collections:
-  - name: "pages"
-    label: "Pages"
-    files:
-      - label: "Home"
-        name: "home"
-        file: "index.html"
-        fields:
-          - { label: "Title", name: "title", widget: "string" }
-          - { label: "Body", name: "body", widget: "markdown" }
+  - name: "blog"             # Name of the content type (e.g., blog posts)
+    label: "Blog"            # How this content type is labeled in the admin panel
+    folder: "content/blog"    # The folder where blog posts are stored (in your repository)
+    create: true             # Allow creating new posts
+    fields:
+      - { label: "Title", name: "title", widget: "string" }      # Title field for the blog post
+      - { label: "Date", name: "date", widget: "datetime" }      # Date field for the post
+      - { label: "Body", name: "body", widget: "markdown" }      # Content of the post (markdown)
