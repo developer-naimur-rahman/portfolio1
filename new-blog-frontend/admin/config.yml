@@ -1,0 +1,18 @@
+backend:
+  name: git
+  repo: your-username/your-repo  # Replace with your Git repository
+  branch: main  # Or your primary branch
+
+media_folder: "static/images/uploads"  # Where uploaded files are stored
+public_folder: "/images/uploads"
+
+collections:
+  - name: "pages"
+    label: "Pages"
+    files:
+      - label: "Home"
+        name: "home"
+        file: "index.html"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
