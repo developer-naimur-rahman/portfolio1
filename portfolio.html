@@ -161,6 +161,49 @@
 
                 <div class="row portfolio__gallery">
 
+                    <!-- DAIKIN VIDEO START -->
+<div class="col-lg-4 col-md-6 col-sm-6 mix ads">
+    <div class="portfolio__item">
+        <div class="portfolio__item__video">
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/_ilxVxlp2Eg?si=clJExamQEBWLr9ii" 
+                    frameborder="0" allowfullscreen title="Daikin | Motion of Naimur | Naimur Rahman Emon"></iframe>
+        </div>
+        
+        <div class="portfolio__item__text">
+            <h4>Daikin Since 2006</h4>
+            <ul>
+                <li>Brand Promotion</li>
+                <li>Product Highlight, Motion Graphics</li>
+            </ul>
+            <!-- Button to show project description -->
+            <p class="project-description" style="cursor: pointer; color: blue; text-decoration: underline;" 
+               onclick="showPopup('Daikin Product Promo', 'This project is a promotional video for Daikin, showcasing the product\'s features and benefits through dynamic motion graphics and engaging visuals.', 'Product Highlight, Motion Graphics, Brand Promotion', 'Complete promotional video for Daikin with a focus on energy-efficient solutions.', 'https://www.youtube.com/embed/_ilxVxlp2Eg')">
+                Project Description
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Full-screen Popup -->
+<div class="popup" id="projectPopup" style="display: none;">
+    <div class="popup-content">
+        <span class="close-popup" onclick="closePopup()" 
+              style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 24px; cursor: pointer;">&times;</span>
+        <div class="popup-left">
+            <h4 id="popupTitle" style="text-align: center;"></h4>
+            <h5 style="text-align: center;">My Role: Product Highlight, Motion Graphics</h5>
+            <p><strong>Project Description:</strong> <span id="popupDescription"></span></p>
+            <p><strong>Skills:</strong> <span id="popupSkills"></span></p>
+            <p><strong>Deliverables:</strong> <span id="popupDeliverables"></span></p>
+        </div>
+        <div class="popup-right">
+            <iframe id="popupVideo" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+<!-- DAIKIN VIDEO END -->
+
+
                     <!-- LAKE PLACID NEW YORK TRAVEL VLOG START -->
                     <div class="col-lg-4 col-md-6 col-sm-6 mix vlog">
                         <div class="portfolio__item">
