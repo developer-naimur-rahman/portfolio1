@@ -1195,6 +1195,104 @@ ol {
   padding-bottom: 50px;
 }
 
+
+.specialty {
+  background: #100028;
+  padding-bottom: 60px;
+  padding-top: 110px;
+}
+
+.specialty__title p {
+  margin-bottom: 45px;
+}
+
+.specialty__item {
+  margin-bottom: 45px;
+}
+
+.specialty__item__icon:after {
+  display: none; /* Hides the border effect since we're using a photo */
+}
+.specialty__item:hover .specialty__item__icon:after {
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+}
+
+.specialty__item__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image covers the square area */
+  display: block;
+}
+
+.specialty__item h4 {
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 26px;
+  margin-bottom: 18px;
+}
+
+.specialty__item p {
+  margin-bottom: 0;
+}
+
+.specialty__item__icon {
+  position: relative;
+  height: 100%;
+  width: 300px;
+  text-align: center;
+  overflow: hidden;
+} 
+
+.specialty__item__icon:after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #00bfe7;
+  content: "";
+  -webkit-transition: all, 0.5s;
+  -o-transition: all, 0.5s;
+  transition: all, 0.5s;
+}
+
+/*---------------------
+  Specialty Page
+-----------------------*/
+.specialty-page {
+  background: #100028;
+  padding-bottom: 50px;
+}
+
+
+
+.hidden-content {
+  display: none; /* Initially hide the additional categories */
+}
+
+.see-more-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.see-more-btn:hover {
+  background: #0056b3;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+
+
+
 /*---------------------
   Logo
 -----------------------*/
