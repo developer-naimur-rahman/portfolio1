@@ -1222,6 +1222,40 @@
         <!-- Footer Section End -->
 
         <!-- Js Plugins -->
+ <!-- Js Plugins -->
+ <script>
+    function showPopup(title, description, skills, deliverables, videoUrl) {
+      // Set popup content
+        document.getElementById('popupTitle').innerText = title;
+        document.getElementById('popupDescription').innerText = description;
+        document.getElementById('popupSkills').innerText = skills;
+        document.getElementById('popupDeliverables').innerText = deliverables;
+        document.getElementById('popupVideo').src = videoUrl;
+        document.getElementById('projectPopup').style.display = 'flex'; // Change to flex to enable centering
+      // Display popup and lock body scroll
+      const popup = document.getElementById("projectPopup");
+      popup.style.display = "flex";
+      popup.style.height = `${window.innerHeight}px`;
+      document.body.style.overflow = "hidden";
+  
+      // Add a new history state to track the popup opening
+      history.pushState({ popupOpen: true }, ""); // Push state without changing the URL
+  }
+    
+
+
+    // Event listener to close the popup and go back in history
+    function closePopup() {
+        const popup = document.getElementById("projectPopup");
+        popup.style.display = "none";
+        document.getElementById('projectPopup').style.display = 'none';
+        document.getElementById('popupVideo').src = ''; // Stop the video when closed
+        document.body.style.overflow = "auto"; // Restore body scroll
+    }
+    
+    
+</script>
+
         <script src="js/jquery-3.3.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/jquery.magnific-popup.min.js"></script>
