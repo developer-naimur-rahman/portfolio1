@@ -354,44 +354,56 @@
 </div>
 <!-- SALAH VIDEO END -->
 
-   <!-- Rayan Gravenberch Video Start -->
-   <div class="col-lg-4 col-md-6 col-sm-6 mix football">
+<!-- Rayan Gravenberch | Liverpool Start -->
+<div class="col-lg-4 col-md-6 col-sm-6 mix sports">
     <div class="portfolio__item">
         <div class="portfolio__item__video">
-            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/qPtDThVra3U?si=xEP6d5E5WhAeH6jD" 
-                    frameborder="0" allowfullscreen title="Rayan Gravenberch | Liverpool | Naimur Rahman Emon"></iframe>
+            <iframe width="100%" height="100%"
+                src="https://www.youtube.com/embed/qPtDThVra3U?si=xEP6d5E5WhAeH6jD"
+                frameborder="0" allowfullscreen title="Rayan Gravenberch | Liverpool | Naimur Rahman Emon"></iframe>
         </div>
+
         <div class="portfolio__item__text">
             <h4>Rayan Gravenberch | Liverpool</h4>
             <ul>
-                <li>YouTube Content</li>
-                <li>Sports Highlight Editing</li>
+                <li>Sports Video</li>
+                <li>Highlight Editing, Tactical Analysis</li>
             </ul>
-            <p class="project-description" style="cursor: pointer; color: blue; text-decoration: underline;" 
-               onclick="showPopup('gravenberchPopup')">
-                View Project Description
+            <!-- Button to show project description -->
+            <p class="project-description"
+                style="cursor: pointer; color: blue; text-decoration: underline;"
+                onclick="showPopup('Rayan Gravenberch | Liverpool', 'This project showcases Rayan Gravenberch’s journey and impact at Liverpool. The video integrates match highlights, advanced editing, and motion graphics to tell his story.', 'Highlight Editing, Tactical Analysis, Motion Graphics', 'YouTube-ready sports video with engaging storytelling and visuals.', 'https://www.youtube.com/embed/qPtDThVra3U?si=xEP6d5E5WhAeH6jD')">
+                Project Description
             </p>
         </div>
     </div>
 </div>
 
-<!-- Popup for Rayan Gravenberch Video -->
-<div class="popup" id="gravenberchPopup" style="display: none;">
+<!-- Full-screen Popup -->
+<div class="popup" id="projectPopup" style="display: none;">
     <div class="popup-content">
-        <span class="close-popup" onclick="closePopup('gravenberchPopup')">&times;</span>
+        <span class="close-popup" onclick="closePopup()"
+            style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 24px; cursor: pointer;">&times;</span>
         <div class="popup-left">
-            <h4>Rayan Gravenberch | Liverpool Highlights</h4>
-            <h5>My Role: Sports Video Editing</h5>
-            <p><strong>Project Description:</strong> This project showcases dynamic editing of football highlights, emphasizing the skills and gameplay of Rayan Gravenberch during his time at Liverpool.</p>
-            <p><strong>Skills:</strong> Sports Highlight Editing, Motion Graphics, Storytelling</p>
-            <p><strong>Deliverables:</strong> A complete highlight reel with smooth transitions, effects, and commentary synchronization to enhance viewer engagement.</p>
+            <h4 id="popupTitle"
+                style="text-align: center;"></h4>
+            <h5 style="text-align: center;">My Role: Highlight Editing, Tactical Analysis</h5>
+            <p><strong>Project Description:</strong> <span
+                    id="popupDescription"></span></p>
+            <p><strong>Skills:</strong> <span
+                    id="popupSkills"></span></p>
+            <p><strong>Deliverables:</strong> <span
+                    id="popupDeliverables"></span></p>
         </div>
         <div class="popup-right">
-            <iframe src="https://www.youtube.com/embed/qPtDThVra3U" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+            <iframe id="popupVideo" width="100%"
+                height="100%" frameborder="0"
+                allowfullscreen></iframe>
         </div>
     </div>
 </div>
-<!-- Rayan Gravenberch Video End -->
+<!-- Rayan Gravenberch | Liverpool End -->
+
 
 
                     <!-- DAIKIN VIDEO START -->
