@@ -1173,6 +1173,10 @@ ol {
   width: 70px;
   line-height: 70px;
   text-align: center;
+  display: flex;  /* Use flexbox for centering */
+  justify-content: center;  /* Horizontal centering */
+  align-items: center;  /* Vertical centering */
+  margin: 0 auto;
 }
 .services__item__icon:after {
   position: absolute;
