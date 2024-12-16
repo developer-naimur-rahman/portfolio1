@@ -2316,7 +2316,7 @@ ol {
 }
 
 .popup-content {
-  background-color: white;
+  background-color: rgb(1, 19, 58);
   width: 80%;
   height: 80%;
   display: flex; /* Flex for side-by-side layout */
