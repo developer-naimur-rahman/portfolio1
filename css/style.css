@@ -2346,7 +2346,7 @@ ol {
   transform: translateX(-50%);
   font-size: 24px; /* Adjust size as needed */
   cursor: pointer;
-  color: #000; /* Change color if needed */
+  color: #ffffff; /* Change color if needed */
 }
 
 h4, h5 {
