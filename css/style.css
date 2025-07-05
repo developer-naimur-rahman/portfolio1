@@ -711,8 +711,9 @@ ol {
 }
 
 /*---------------------
-  Team
+  Team Section CSS
 -----------------------*/
+
 .team {
   padding-bottom: 90px;
 }
@@ -721,24 +722,55 @@ ol {
   margin-bottom: 90px;
 }
 
-.team__item {
-  height: 390px;
-  position: relative;
-  overflow: hidden;
+/* Row: Flex container */
+.team .row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;              /* ব্লকগুলোর মাঝে ফাঁকা রাখতে */
+  align-items: flex-start; /* উচ্চতা ভিন্ন হলে নিচে নেমে যাওয়া রোধ */
 }
+
+/* Column: দুইটি পাশাপাশি ছোট স্ক্রিনে */
+.team .col-lg-3 {
+  flex: 0 0 calc(50% - 20px);
+  max-width: calc(50% - 20px);
+  box-sizing: border-box;
+  display: flex;           /* ভেতরের কন্টেন্টের জন্য */
+  flex-direction: column;
+}
+
+/* বড় স্ক্রিনে চারটি পাশাপাশি */
+@media (min-width: 992px) {
+  .team .col-lg-3 {
+    flex: 0 0 calc(25% - 20px);
+    max-width: calc(25% - 20px);
+  }
+}
+
+/* মোবাইলে এক লাইনে একটাঃ */
+@media (max-width: 576px) {
+  .team .col-lg-3 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* টিম আইটেমের বক্স */
+.team__item {
+  width: 100%;
+  height: 390px;          /* ইচ্ছামতো পরিবর্তন করতে পারো */
+  overflow: hidden;       /* রাউন্ডেড কর্নার বাইরের অংশ লুকানো */
+  border-radius: 15px;    /* কর্নার রাউন্ডেড */
+  position: relative;
+}
+
+/* হোভার করলে টেক্সট নিচে আসবে */
 .team__item:hover .team__item__text {
   bottom: 0;
 }
-.team__item.team__item--second {
-  margin-top: -60px;
-}
-.team__item.team__item--third {
-  margin-top: -120px;
-}
-.team__item.team__item--four {
-  margin-top: -180px;
-}
 
+/* টিম মেম্বার নাম, পজিশন, সোশ্যাল লিঙ্কের টেক্সট ব্লক */
 .team__item__text {
   text-align: center;
   position: absolute;
@@ -747,10 +779,10 @@ ol {
   width: 100%;
   padding: 50px 0 30px;
   z-index: 1;
-  -webkit-transition: all, 0.5s;
-  -o-transition: all, 0.5s;
-  transition: all, 0.5s;
+  transition: all 0.5s ease;
 }
+
+/* হোভার ব্যাকগ্রাউন্ড ইমেজ */
 .team__item__text:before {
   position: absolute;
   left: 0;
@@ -761,6 +793,8 @@ ol {
   content: "";
   z-index: -1;
 }
+
+/* টিম মেম্বার নাম */
 .team__item__text h4 {
   font-size: 22px;
   color: #ffffff;
@@ -768,26 +802,43 @@ ol {
   text-transform: uppercase;
   margin-bottom: 10px;
 }
+
+/* পজিশন বা বর্ণনা */
 .team__item__text p {
   color: #ffffff;
-  font-weight: 300px;
+  font-weight: 300;
   margin-bottom: 12px;
 }
+
+/* সোশ্যাল আইকন লিঙ্ক */
 .team__item__text .team__item__social a {
   color: #ffffff;
   display: inline-block;
   font-size: 15px;
   margin-right: 18px;
 }
+
 .team__item__text .team__item__social a:last-child {
   margin-right: 0;
 }
 
+/* বাটনের স্টাইল */
 .team__btn {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  position: relative;
+  margin-top: 30px;
+  text-align: center;
 }
+
+/* টিম মেম্বারের ছবি */
+.team__item img {
+  width: 100%;            /* কন্টেইনার অনুসারে */
+  height: 100%;
+  object-fit: cover;      /* ছবির ফিটিং */
+  border-radius: 15px;
+  display: block;
+}
+
+
 
 /*---------------------
   Latest
