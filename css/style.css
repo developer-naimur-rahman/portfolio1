@@ -2630,6 +2630,14 @@ button[type="submit"]:hover {
   box-shadow: 0 6px 20px rgba(0, 142, 204, 0.8);
 }
 
+
+
+
+
+
+
+
+
 /* Responsive: মোবাইল এ কিছু স্পেস কমানো */
 @media (max-width: 480px) {
   .project-brief-form {
