@@ -159,6 +159,158 @@
     </section>
     <!-- Call To Action Section End -->
 
+
+
+
+<form action="https://formspree.io/f/myzpgpgl" method="POST" class="project-brief-form">
+
+  <h2>Motion Of Naimur - Video Project Brief</h2>
+
+  <!-- ১. Client Information -->
+  <fieldset>
+    <legend>১. Client Information</legend>
+
+    <label for="name">Full Name <span>*</span></label>
+    <input type="text" id="name" name="name" required placeholder="Your full name">
+
+    <label for="company">Company / Brand Name</label>
+    <input type="text" id="company" name="company" placeholder="Optional">
+
+    <label for="email">Email Address <span>*</span></label>
+    <input type="email" id="email" name="email" required placeholder="your@email.com">
+
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" name="phone" placeholder="Optional">
+  </fieldset>
+
+  <!-- ২. Project Basic Information -->
+  <fieldset>
+    <legend>২. Project Basic Information</legend>
+
+    <label for="project_title">Project Title / Name <span>*</span></label>
+    <input type="text" id="project_title" name="project_title" required placeholder="Project title">
+
+    <label for="video_type">Type of Video <span>*</span></label>
+    <select id="video_type" name="video_type" required onchange="toggleOtherInput('video_type')">
+      <option value="" disabled selected>Select a category</option>
+      <option value="Promo Video">Promo Video</option>
+      <option value="YouTube Video">YouTube Video</option>
+      <option value="YouTube Automation">YouTube Automation</option>
+      <option value="Podcast Edit">Podcast Edit</option>
+      <option value="Basic 3D Animation">Basic 3D Animation</option>
+      <option value="Documentary">Documentary</option>
+      <option value="Travel Video">Travel Video</option>
+      <option value="Commercial">Commercial</option>
+      <option value="Explainer">Explainer</option>
+      <option value="Training Video">Training Video</option>
+      <option value="Other">Other (please specify)</option>
+    </select>
+    <input type="text" id="video_type_other" name="video_type_other" placeholder="Please specify" style="display:none; margin-top:10px;">
+
+    <label for="target_audience">Target Audience</label>
+    <input type="text" id="target_audience" name="target_audience" placeholder="Optional">
+
+    <label for="video_duration">Preferred Video Duration</label>
+    <input type="text" id="video_duration" name="video_duration" placeholder="Optional (e.g. 3 minutes)">
+
+    <label>Platform / Where will it be published?</label>
+    <div class="platform-checkboxes">
+      <label><input type="checkbox" name="platform[]" value="YouTube" onchange="toggleOtherCheckbox('platform', this)"> YouTube</label>
+      <label><input type="checkbox" name="platform[]" value="Instagram" onchange="toggleOtherCheckbox('platform', this)"> Instagram</label>
+      <label><input type="checkbox" name="platform[]" value="Facebook" onchange="toggleOtherCheckbox('platform', this)"> Facebook</label>
+      <label><input type="checkbox" name="platform[]" value="Website" onchange="toggleOtherCheckbox('platform', this)"> Website</label>
+      <label><input type="checkbox" name="platform[]" value="TV" onchange="toggleOtherCheckbox('platform', this)"> TV</label>
+      <label><input type="checkbox" id="platform_other_checkbox" name="platform[]" value="Other" onchange="toggleOtherCheckbox('platform', this)"> Other</label>
+    </div>
+    <input type="text" id="platform_other_input" name="platform_other" placeholder="Please specify" style="display:none; margin-top:10px;">
+
+  </fieldset>
+
+  <!-- ৩. Creative Instructions -->
+  <fieldset>
+    <legend>৩. Creative Instructions</legend>
+
+    <label>Do you have a script? <span>*</span></label>
+    <label><input type="radio" name="have_script" value="Yes" required> Yes</label>
+    <label><input type="radio" name="have_script" value="No"> No</label>
+
+    <label>Do you need voiceover? <span>*</span></label>
+    <label><input type="radio" name="need_voiceover" value="Yes" required> Yes</label>
+    <label><input type="radio" name="need_voiceover" value="No"> No</label>
+
+    <label for="voiceover_language">Voiceover Language</label>
+    <select id="voiceover_language" name="voiceover_language" onchange="toggleOtherInput('voiceover_language')">
+      <option value="" disabled selected>Select language</option>
+      <option value="Bangla">Bangla</option>
+      <option value="English">English</option>
+      <option value="Spanish">Spanish</option>
+      <option value="Hindi">Hindi</option>
+      <option value="Other">Other (please specify)</option>
+    </select>
+    <input type="text" id="voiceover_language_other" name="voiceover_language_other" placeholder="Please specify" style="display:none; margin-top:10px;">
+  </fieldset>
+
+  <button type="submit">Submit Brief</button>
+
+</form>
+
+<script>
+  // সিলেক্ট অপশনের জন্য Other টেক্সট ফিল্ড দেখানো/লুকানো
+  function toggleOtherInput(selectId) {
+    const selectElem = document.getElementById(selectId);
+    const otherInput = document.getElementById(selectId + '_other');
+    if (selectElem.value === 'Other') {
+      otherInput.style.display = 'block';
+      otherInput.required = true;
+    } else {
+      otherInput.style.display = 'none';
+      otherInput.value = '';
+      otherInput.required = false;
+    }
+  }
+
+  // চেকবক্স Other অপশনের জন্য টেক্সট ফিল্ড দেখানো/লুকানো
+  function toggleOtherCheckbox(groupName, checkbox) {
+    const otherInput = document.getElementById(groupName + '_other_input');
+    if (checkbox.value === 'Other') {
+      if (checkbox.checked) {
+        otherInput.style.display = 'block';
+        otherInput.required = true;
+      } else {
+        otherInput.style.display = 'none';
+        otherInput.value = '';
+        otherInput.required = false;
+      }
+    }
+  }
+</script>
+
+
+
+
+<!-- Responsive tweaks -->
+<style>
+  @media (max-width: 600px) {
+    form {
+      padding: 20px 15px;
+    }
+    h2 {
+      font-size: 22px;
+    }
+    fieldset legend {
+      font-size: 16px;
+    }
+    input, select, textarea {
+      font-size: 14px !important;
+    }
+    button {
+      font-size: 16px !important;
+      padding: 12px !important;
+    }
+  }
+</style>
+
+
     <!-- Footer Section Begin -->
     <footer class="footer">
         <div class="container">

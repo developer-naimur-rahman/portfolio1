@@ -2491,6 +2491,159 @@ h4, h5 {
 }
 
 
+
+
+/* পুরো পেজের ব্যাকগ্রাউন্ড গাঢ় নীল */
+body {
+  background: linear-gradient(135deg, #0d1b3d, #1a2a6c);
+  
+}
+
+/* ফর্মের কনটেইনার */
+.project-brief-form {
+  max-width: 700px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #2a5298, #1e3c72);
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+/* ফর্মের হেডার */
+.project-brief-form h2 {
+  text-align: center;
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 1.2px;
+  margin-bottom: 40px;
+  color: #e0eaff;
+}
+
+/* ফিল্ডসেট এবং লেজেন্ড */
+fieldset {
+  border: none;
+  margin-bottom: 35px;
+  padding: 0;
+}
+
+legend {
+  font-weight: 700;
+  font-size: 20px;
+  border-bottom: 2px solid #e0eaff;
+  padding-bottom: 8px;
+  margin-bottom: 25px;
+  color: #d0dbf9;
+}
+
+/* লেবেল স্টাইল */
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #cfd9f7;
+}
+
+/* Required * এর কালার */
+label span {
+  color: #ff6b6b;
+}
+
+/* ইনপুট, সিলেক্ট, টেক্সটএরিয়া বেসিক স্টাইল */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="url"],
+select,
+textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-family: inherit;
+  color: #222;
+  background-color: #e9f0ff;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+/* ফোকাস এলে ইনপুটের আউটলাইন */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+input[type="url"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  background-color: #d0dfff;
+  box-shadow: 0 0 8px #00b0ff;
+}
+
+/* রেডিও ও চেকবক্স লেবেল */
+.platform-checkboxes label,
+fieldset label input[type="radio"],
+fieldset label input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.platform-checkboxes label {
+  display: inline-block;
+  margin-right: 20px;
+  font-weight: 500;
+  color: #cfd9f7;
+}
+
+/* চেকবক্স এবং রেডিও ইনপুট স্টাইল */
+input[type="checkbox"],
+input[type="radio"] {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* Other input field এর মার্জিন */
+input[type="text"][id$="_other"] {
+  margin-top: 10px;
+  background-color: #d0dfff;
+}
+
+/* সাবমিট বাটন */
+button[type="submit"] {
+  width: 100%;
+  padding: 15px 0;
+  background-color: #00b0ff;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 176, 255, 0.6);
+}
+
+button[type="submit"]:hover {
+  background-color: #008ecc;
+  box-shadow: 0 6px 20px rgba(0, 142, 204, 0.8);
+}
+
+/* Responsive: মোবাইল এ কিছু স্পেস কমানো */
+@media (max-width: 480px) {
+  .project-brief-form {
+    padding: 25px 20px;
+  }
+
+  .platform-checkboxes label {
+    display: block;
+    margin-bottom: 12px;
+  }
+}
+
+
+
 /* Responsive adjustments for the popup layout */
 @media (max-width: 768px) {
   .popup-content {
