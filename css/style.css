@@ -2731,7 +2731,7 @@ button[type="submit"]:hover {
 /* Adjust logo size for mobile screens */
 @media (max-width: 768px) {
     .header__logo img {
-        max-width: 120px; /* বা 120px, আপনার পছন্দমতো */
+        max-width: 110px; /* বা 120px, আপনার পছন্দমতো */
         height: auto;
     }
 }
