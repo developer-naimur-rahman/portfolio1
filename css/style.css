@@ -1315,9 +1315,13 @@ ol {
 .specialty__item__icon {
   position: relative;
   height: 100%;
-  width: 300px;
+  width: 100%;
   text-align: center;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
 } 
 
 .specialty__item__icon:after {
@@ -2632,12 +2636,6 @@ button[type="submit"]:hover {
 
 
 
-
-
-
-
-
-
 /* Responsive: মোবাইল এ কিছু স্পেস কমানো */
 @media (max-width: 480px) {
   .project-brief-form {
@@ -2732,6 +2730,14 @@ button[type="submit"]:hover {
 @media (max-width: 768px) {
     .header__logo img {
         max-width: 110px; /* বা 120px, আপনার পছন্দমতো */
+        height: auto;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .specialty__item__icon img {
+        max-width: 90%;
         height: auto;
     }
 }
