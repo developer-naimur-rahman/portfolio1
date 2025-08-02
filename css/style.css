@@ -2722,7 +2722,7 @@ button[type="submit"]:hover {
 }
 /* Default logo size */
 .header__logo img {
-    max-width: 100%;
+    max-width: 80%;
     height: auto;
 }
 
