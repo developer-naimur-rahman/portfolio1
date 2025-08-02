@@ -58,7 +58,7 @@ $total_pages = ceil($total_posts / $posts_per_page);
     <header class="header">
         <div class="header__logo">
             <a href="/blog.php">
-                <img src="img/logo.png" alt="Logo of Naimur Rahman Emon">
+                <img src="img/motion of naimur -Website Header logo 250-100.png" alt="Logo of Naimur Rahman Emon">
             </a>
         </div>
         <nav class="header__nav__menu">

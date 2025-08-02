@@ -49,7 +49,7 @@ $logged_in_user = $_SESSION['user'] ?? null;
     <header class="header">
         <div class="header__logo">
             <a href="./blog.php">
-                <img src="img/logo.png" alt="Logo of Naimur Rahman Emon">
+                <img src="img/motion of naimur -Website Header logo 250-100.png" alt="Logo of Naimur Rahman Emon">
             </a>
         </div>
         <nav class="header__nav__menu">
