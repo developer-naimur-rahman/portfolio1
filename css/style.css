@@ -2722,3 +2722,16 @@ button[type="submit"]:hover {
 .project-description, .portfolio-button {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Added transition for color */
 }
+/* Default logo size */
+.header__logo img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Adjust logo size for mobile screens */
+@media (max-width: 768px) {
+    .header__logo img {
+        max-width: 120px; /* বা 120px, আপনার পছন্দমতো */
+        height: auto;
+    }
+}
