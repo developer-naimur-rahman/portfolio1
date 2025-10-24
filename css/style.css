@@ -1452,14 +1452,13 @@ body, .services, .specialty {
   width: 200%;
   height: 200%;
   background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 60%);
-  transform: rotate(25deg);
   pointer-events: none;
   opacity: 0.3;
-  transition: all 0.4s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 .specialty__item:hover::before {
   opacity: 0.5;
-  transform: rotate(25deg) translateX(10px);
+  transform: translateX(10px); /* rotation effect removed */
 }
 
 /* Specialty Icon */
@@ -1495,7 +1494,7 @@ body, .services, .specialty {
   transition: all 0.5s ease;
 }
 .specialty__item:hover .specialty__item__icon:after {
-  transform: rotate(45deg);
+  /* rotation removed */
   box-shadow: 0 0 15px #00bfe7;
 }
 
