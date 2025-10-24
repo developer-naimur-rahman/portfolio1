@@ -1540,7 +1540,7 @@ body, .services, .specialty {
 -----------------------*/
 .portfolio {
   background: #0b001f; /* ডার্ক ইন্ডিগো ব্যাকগ্রাউন্ড */
-  padding: 80px 20px;
+  padding: 60px 15px; /* 🔹 overall padding কমানো */
   font-family: 'Poppins', sans-serif;
 }
 
@@ -1574,13 +1574,13 @@ body, .services, .specialty {
 
 /* Portfolio Item */
 .portfolio__item {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   position: relative;
-  border-radius: 30px;
+  border-radius: 25px;
   overflow: hidden;
-  padding: 20px;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-  background: linear-gradient(135deg, #1a1a40, #2e2e6f, #4b4b99, #1a1a40);
+  padding: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: linear-gradient(135deg, #1a1a40, #1d004f, #020219, #1a1a40);
   background-size: 400% 400%;
   animation: gradientAnimation 8s ease infinite;
   backdrop-filter: blur(10px);
@@ -1613,18 +1613,25 @@ body, .services, .specialty {
   box-shadow: 0 20px 40px rgba(75, 75, 153, 0.35), 0 0 25px rgba(75, 75, 153, 0.3);
 }
 
-/* Video Box */
+/* Video Box - 16:9 Responsive Ratio */
 .portfolio__item__video {
-  height: 240px;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9; /* 🔹 fixed aspect ratio */
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 28px;
-  border-radius: 25px;
+  margin-bottom: 18px; /* 🔹 কম gap */
+  border-radius: 20px;
   overflow: hidden;
-  padding: 10px;
-  background: rgba(46,46,111,0.2); /* ডার্ক ইন্ডিগো ব্যাকগ্রাউন্ড */
+  background: rgba(46,46,111,0.2);
   backdrop-filter: blur(8px);
+}
+.portfolio__item__video iframe,
+.portfolio__item__video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .portfolio__item__video .play-btn {
   display: inline-block;
@@ -1637,6 +1644,8 @@ body, .services, .specialty {
   border: 2px solid rgba(75, 75, 153, 0.7);
   border-radius: 50%;
   transition: all 0.3s ease;
+  position: absolute;
+  z-index: 2;
 }
 .portfolio__item__video .play-btn:hover {
   background: rgba(75, 75, 153, 0.2);
@@ -1646,17 +1655,18 @@ body, .services, .specialty {
 /* Portfolio Text */
 .portfolio__item__text {
   text-align: center;
+  padding: 0;
 }
 .portfolio__item__text h4 {
   color: #ffffff;
   display: inline-block;
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
   position: relative;
   transition: all 0.3s ease;
-  border-radius: 20px;
-  padding: 5px 15px;
+  border-radius: 12px;
+  padding: 4px 10px;
   background: rgba(75, 75, 153, 0.05);
 }
 
@@ -1664,13 +1674,13 @@ body, .services, .specialty {
 .portfolio__item__text ul li {
   list-style: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 300;
-  margin: 8px 10px;
+  margin: 4px 6px;
   position: relative;
   color: #ffffff;
-  padding: 8px 16px;
-  border-radius: 25px;
+  padding: 5px 10px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
   cursor: pointer;
@@ -1693,11 +1703,11 @@ body, .services, .specialty {
 
 /* Span text */
 .portfolio__item__text span {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 300;
   color: #adadad;
   display: block;
-  margin-top: 5px;
+  margin-top: 3px;
 }
 
 /* Pagination */
