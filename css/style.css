@@ -1925,19 +1925,19 @@ body, .services, .specialty {
   margin-bottom: 35px;
 }
 .contact__form form input {
-  height: 50px;
-  width: 100%;
-  border: 1px solid rgba(225, 225, 225, 0.5);
-  background: transparent;
-  font-size: 16px;
-  color: #adadad;
-  padding-left: 20px;
-  font-weight: 300;
-  margin-right: 20px;
-  margin-bottom: 20px;
-  -webkit-transition: all, 0.3s;
-  -o-transition: all, 0.3s;
-  transition: all, 0.3s;
+    height: 28px;
+    width: 100%;
+    border: 1px solid rgba(225, 225, 225, 0.5);
+    background: transparent;
+    font-size: 16px;
+    color: #adadad;
+    padding-left: 8px;
+    font-weight: 300;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    -webkit-transition: all, 0.3s;
+    -o-transition: all, 0.3s;
+    transition: all, 0.3s;
 }
 .contact__form form input:placeholder {
   color: #adadad;
