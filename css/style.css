@@ -1426,7 +1426,9 @@ body, .services, .specialty {
   color: #adadad;
 }
 
-/* Specialty Card */
+/*---------------------
+  Specialty Card
+-----------------------*/
 .specialty__item {
   margin-bottom: 45px;
   text-align: center;
@@ -1444,6 +1446,7 @@ body, .services, .specialty {
   transition: all 0.5s ease;
   overflow: hidden;
 }
+
 .specialty__item::before {
   content: "";
   position: absolute;
@@ -1457,12 +1460,15 @@ body, .services, .specialty {
   opacity: 0.3;
   transition: all 0.4s ease;
 }
+
 .specialty__item:hover::before {
   opacity: 0.5;
   transform: rotate(25deg) translateX(10px);
 }
 
-/* Specialty Icon */
+/*---------------------
+  Specialty Icon
+-----------------------*/
 .specialty__item__icon {
   position: relative;
   width: 100%;
@@ -1477,12 +1483,14 @@ body, .services, .specialty {
   -webkit-backdrop-filter: blur(15px) saturate(180%);
   transition: all 0.4s ease;
 }
+
 .specialty__item__icon img {
   width: 80%;
   height: 80%;
   object-fit: cover;
   border-radius: 20px;
 }
+
 .specialty__item__icon:after {
   position: absolute;
   top: 0;
@@ -1494,20 +1502,22 @@ body, .services, .specialty {
   content: "";
   transition: all 0.5s ease;
 }
+
 .specialty__item:hover .specialty__item__icon:after {
-  transform: rotate(45deg);
+  /* শুধু glow effect, rotation বাদ দেওয়া হয়েছে */
   box-shadow: 0 0 15px #00bfe7;
 }
 
-/* Hover lift */
+/*---------------------
+  Hover Magnify
+-----------------------*/
 .specialty__item:hover {
-  transform: translateY(-10px) scale(1.03);
+  transform: scale(1.05); /* শুধু enlarge হবে */
   box-shadow:
     0 20px 40px rgba(0,191,231,0.35),
     0 0 50px rgba(0,191,231,0.4),
     inset 0 0 40px rgba(255,255,255,0.1);
 }
-
 
 /*---------------------
   See More Button
@@ -1524,6 +1534,7 @@ body, .services, .specialty {
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
 }
+
 .see-more-btn:hover {
   background: rgba(0,191,231,0.25);
   color: #ffffff;
