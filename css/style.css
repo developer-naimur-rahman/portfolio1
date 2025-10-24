@@ -1426,9 +1426,7 @@ body, .services, .specialty {
   color: #adadad;
 }
 
-/*---------------------
-  Specialty Card
------------------------*/
+/* Specialty Card */
 .specialty__item {
   margin-bottom: 45px;
   text-align: center;
@@ -1446,7 +1444,6 @@ body, .services, .specialty {
   transition: all 0.5s ease;
   overflow: hidden;
 }
-
 .specialty__item::before {
   content: "";
   position: absolute;
@@ -1460,15 +1457,12 @@ body, .services, .specialty {
   opacity: 0.3;
   transition: all 0.4s ease;
 }
-
 .specialty__item:hover::before {
   opacity: 0.5;
   transform: rotate(25deg) translateX(10px);
 }
 
-/*---------------------
-  Specialty Icon
------------------------*/
+/* Specialty Icon */
 .specialty__item__icon {
   position: relative;
   width: 100%;
@@ -1483,14 +1477,12 @@ body, .services, .specialty {
   -webkit-backdrop-filter: blur(15px) saturate(180%);
   transition: all 0.4s ease;
 }
-
 .specialty__item__icon img {
   width: 80%;
   height: 80%;
   object-fit: cover;
   border-radius: 20px;
 }
-
 .specialty__item__icon:after {
   position: absolute;
   top: 0;
@@ -1502,22 +1494,20 @@ body, .services, .specialty {
   content: "";
   transition: all 0.5s ease;
 }
-
 .specialty__item:hover .specialty__item__icon:after {
-  /* শুধু glow effect, rotation বাদ দেওয়া হয়েছে */
+  transform: rotate(45deg);
   box-shadow: 0 0 15px #00bfe7;
 }
 
-/*---------------------
-  Hover Magnify
------------------------*/
+/* Hover lift */
 .specialty__item:hover {
-  transform: scale(1.05); /* শুধু enlarge হবে */
+  transform: translateY(-10px) scale(1.03);
   box-shadow:
     0 20px 40px rgba(0,191,231,0.35),
     0 0 50px rgba(0,191,231,0.4),
     inset 0 0 40px rgba(255,255,255,0.1);
 }
+
 
 /*---------------------
   See More Button
@@ -1534,7 +1524,6 @@ body, .services, .specialty {
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
 }
-
 .see-more-btn:hover {
   background: rgba(0,191,231,0.25);
   color: #ffffff;
@@ -2507,253 +2496,114 @@ h4, h5 {
 
 
 
-
-/* পুরো পেজের ব্যাকগ্রাউন্ড গাঢ় নীল */
-body {
-  background: linear-gradient(135deg, #0d1b3d, #1a2a6c);
-  
-}
-
-/* ফর্মের কনটেইনার */
-.project-brief-form {
-  max-width: 700px;
-  margin: 0 auto;
-  background: linear-gradient(135deg, #2a5298, #1e3c72);
-  padding: 30px 40px;
+/*---------------------
+  Hire Editors Form
+-----------------------*/
+.contact__form {
+  background: rgba(255, 255, 255, 0.08); /* Glass effect */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 15px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-  box-sizing: border-box;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 35px 30px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
 }
 
-/* ফর্মের হেডার */
-.project-brief-form h2 {
+/* Form Header */
+.contact__form h3 {
   text-align: center;
-  font-weight: 700;
   font-size: 28px;
-  letter-spacing: 1.2px;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   color: #e0eaff;
-}
-
-/* ফিল্ডসেট এবং লেজেন্ড */
-fieldset {
-  border: none;
-  margin-bottom: 35px;
-  padding: 0;
-}
-
-legend {
   font-weight: 700;
-  font-size: 20px;
-  border-bottom: 2px solid #e0eaff;
-  padding-bottom: 8px;
-  margin-bottom: 25px;
-  color: #d0dbf9;
 }
 
-/* লেবেল স্টাইল */
-label {
+/* Labels */
+.contact__form label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   font-weight: 600;
   color: #cfd9f7;
 }
-
-/* Required * এর কালার */
-label span {
+.contact__form label span {
   color: #ff6b6b;
 }
 
-/* ইনপুট, সিলেক্ট, টেক্সটএরিয়া বেসিক স্টাইল */
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="date"],
-input[type="url"],
-select,
-textarea {
+/* Inputs, Select, Textarea */
+.contact__form input[type="text"],
+.contact__form input[type="email"],
+.contact__form input[type="tel"],
+.contact__form input[type="url"],
+.contact__form select,
+.contact__form textarea {
   width: 100%;
   padding: 12px 15px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   border-radius: 10px;
   border: none;
-  font-size: 16px;
-  box-sizing: border-box;
-  font-family: inherit;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(6px);
   color: #222;
-  background-color: #e9f0ff;
-  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+  font-size: 16px;
+  font-family: inherit;
+  transition: all 0.3s ease;
 }
-
-/* ফোকাস এলে ইনপুটের আউটলাইন */
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="tel"]:focus,
-input[type="date"]:focus,
-input[type="url"]:focus,
-select:focus,
-textarea:focus {
+.contact__form input:focus,
+.contact__form select:focus,
+.contact__form textarea:focus {
   outline: none;
-  background-color: #d0dfff;
+  background: rgba(255,255,255,0.25);
   box-shadow: 0 0 8px #00b0ff;
 }
 
-/* রেডিও ও চেকবক্স লেবেল */
-.platform-checkboxes label,
-fieldset label input[type="radio"],
-fieldset label input[type="checkbox"] {
-  cursor: pointer;
-}
-
-.platform-checkboxes label {
-  display: inline-block;
-  margin-right: 20px;
-  font-weight: 500;
-  color: #cfd9f7;
-}
-
-/* চেকবক্স এবং রেডিও ইনপুট স্টাইল */
-input[type="checkbox"],
-input[type="radio"] {
+/* Checkbox & Radio */
+.contact__form input[type="checkbox"],
+.contact__form input[type="radio"] {
   margin-right: 6px;
   vertical-align: middle;
 }
-
-/* Other input field এর মার্জিন */
-input[type="text"][id$="_other"] {
-  margin-top: 10px;
-  background-color: #d0dfff;
+.contact__form div label {
+  display: inline-block;
+  margin-right: 20px;
+  cursor: pointer;
+  color: #cfd9f7;
 }
 
-/* সাবমিট বাটন */
-button[type="submit"] {
+/* Submit Button */
+.contact__form button[type="submit"] {
   width: 100%;
   padding: 15px 0;
-  background-color: #00b0ff;
-  color: #fff;
+  border-radius: 12px;
+  border: 1px solid #00b0ff;
+  background: rgba(0,191,231,0.15);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
   font-size: 18px;
   font-weight: 700;
-  border: none;
-  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 176, 255, 0.6);
+  box-shadow: 0 4px 12px rgba(0,176,255,0.6);
+  transition: all 0.3s ease;
+}
+.contact__form button[type="submit"]:hover {
+  background: rgba(0,191,231,0.25);
+  box-shadow: 0 6px 20px rgba(0,142,204,0.8);
+  transform: translateY(-3px);
 }
 
-button[type="submit"]:hover {
-  background-color: #008ecc;
-  box-shadow: 0 6px 20px rgba(0, 142, 204, 0.8);
-}
-
-
-
-/* Responsive: মোবাইল এ কিছু স্পেস কমানো */
-@media (max-width: 480px) {
-  .project-brief-form {
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .contact__form {
     padding: 25px 20px;
   }
-
-  .platform-checkboxes label {
+  .contact__form h3 {
+    font-size: 24px;
+  }
+  .contact__form div label {
     display: block;
     margin-bottom: 12px;
   }
 }
-
-
-
-/* Responsive adjustments for the popup layout */
-@media (max-width: 768px) {
-  .popup-content {
-    width: 100%; /* Better fit on smaller screens */
-    height: 60vh; /* Adaptive height for mobile */
-    flex-direction: column; /* Stacks sections vertically */
-    padding-top: 40px;
-    margin-top;: 40px;
-    overflow-y: auto;
-    flex-direction: column;
-    position: relative;
-  }
-
-  .popup-left, .popup-right {
-    width: 100%;
-    padding: 1px; /* Adjust padding for smaller screens */
-  }
-
-  .close-popup {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    cursor: pointer;
-  }
-}
-
-/* Responsive adjustments for the welcome video */
-@media (max-width: 768px) {
-  .welcome-video {
-    width: 100%;
-    height: auto; /* Adaptive height */
-    max-width: 100%;
-    padding-top: 56.25%; /* Maintains 16:9 aspect ratio */
-  }
-}
-
-/* Responsive adjustments for the portfolio section */
-@media (max-width: 768px) {
-  .portfolio {
-    padding: 20px 10px; /* Reduced padding on mobile */
-  }
-
-  .portfolio-button {
-    padding: 10px 20px; /* Smaller padding */
-    font-size: 1em; /* Adjust font size for mobile */
-  }
-}
-
-/* Additional adjustments for extra-small screens */
-@media (max-width: 480px) {
-  .project-description {
-    padding: 8px 10px; /* More compact padding */
-    font-size: 0.9em; /* Slightly smaller font size */
-  }
-
-  h4, h5 {
-    font-size: 1em; /* Smaller titles */
-  }
-
-  .portfolio-button {
-    font-size: 0.9em;
-    padding: 8px 16px;
-  }
-}
-
-/* Refined styling for smoother hover effects */
-.project-description, .portfolio-button {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Added transition for color */
-}
-/* Default logo size */
-.header__logo img {
-    max-width: 80%;
-    height: auto;
-}
-
-/* Adjust logo size for mobile screens */
-@media (max-width: 768px) {
-    .header__logo img {
-        max-width: 110px; /* বা 120px, আপনার পছন্দমতো */
-        height: auto;
-    }
-}
-
-
-@media (max-width: 768px) {
-    .specialty__item__icon img {
-        max-width: 90%;
-        height: auto;
-    }
-}
-
-
 
 
 
