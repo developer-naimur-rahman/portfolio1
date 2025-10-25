@@ -49,7 +49,7 @@ h6 {
   letter-spacing: 1px;
 }
 
-h1 { font-size: 70px; background: linear-gradient(90deg, #00ffe7, #00bfe7); -webkit-background-clip: text; color: transparent; }
+h1 { font-size: 70px; background: linear-gradient(90deg, #00ffe7, #00bfe7); -webkit-background-clip: text; -moz-background-clip: text; background-clip: text; color: transparent; }
 h2 { font-size: 36px; position: relative; }
 h3 { font-size: 30px; }
 h4 { font-size: 24px; }
