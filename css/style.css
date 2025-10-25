@@ -1413,6 +1413,17 @@ body, .services, .specialty {
   margin-bottom: 0;
 }
 
+
+.services__item__icon i {
+  font-size: 50px; /* adjust to match img size */
+  color: #00bfe7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 80%;
+}
+
 /*---------------------
   Specialty Section
 -----------------------*/
