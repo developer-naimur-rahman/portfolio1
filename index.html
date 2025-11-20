@@ -376,7 +376,7 @@
         </section>
         <!-- Specialty Section End -->
 
-      <!-- Portfolio Section Begin -->
+  <!-- Portfolio Section Begin -->
 <section class="portfolio spad">
     <h2>My Portfolio</h2>
     <p>Check out some of the projects I’ve worked on and my creative work.</p>
@@ -401,7 +401,6 @@
             <div class="col-lg-4 col-md-6 col-sm-6 mix highlight-event" data-src="https://www.youtube.com/embed/4p5FooZMlpU">
                 <div class="portfolio__item">
                     <div class="portfolio__item__video">
-                        <!-- Lazy load iframe -->
                         <iframe width="100%" height="100%" data-src="https://www.youtube.com/embed/4p5FooZMlpU" frameborder="0" allowfullscreen></iframe>
                     </div>
                     <div class="portfolio__item__text">
@@ -505,7 +504,7 @@
                 </div>
             </div>
 
-            <!-- YouTube Video (Loaded by default) -->
+            <!-- YouTube Video (Default Loaded) -->
             <div class="col-lg-4 col-md-6 col-sm-6 mix youtube-video">
                 <div class="portfolio__item">
                     <div class="portfolio__item__video">
@@ -536,7 +535,7 @@
                 </div>
             </div>
 
-            <!-- VSL / Ad Creative -->
+            <!-- Ad Creative / VSL -->
             <div class="col-lg-4 col-md-6 col-sm-6 mix ad-creative-vsl" data-src="https://www.youtube.com/embed/S6HpwPG0h08">
                 <div class="portfolio__item">
                     <div class="portfolio__item__video">
@@ -587,6 +586,9 @@
     </div>
 </section>
 <!-- Portfolio Section End -->
+
+
+
 
 
 
@@ -1312,15 +1314,12 @@
       // Customize the widget here
     });
   </script>
-
-  <script>
-// Wait for DOM
+<script>
 document.addEventListener('DOMContentLoaded', function () {
 
     const filters = document.querySelectorAll('.portfolio__filter li');
     const items = document.querySelectorAll('.portfolio__gallery .mix');
 
-    // Function to load iframe src
     function loadIframe(item) {
         const iframe = item.querySelector('iframe');
         if (iframe && iframe.dataset.src && !iframe.src) {
@@ -1328,40 +1327,34 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Initially, only load YouTube videos
+    // Show only YouTube videos initially
     items.forEach(item => {
         if (item.classList.contains('youtube-video')) {
+            item.classList.add('show');
             loadIframe(item);
-        } else {
-            // Hide other items initially
-            item.style.display = 'none';
         }
     });
 
-    // Filter click event
     filters.forEach(filter => {
         filter.addEventListener('click', function () {
             const filterClass = this.dataset.filter.replace('.', '');
-            
-            // Update active class
             filters.forEach(f => f.classList.remove('active'));
             this.classList.add('active');
 
             items.forEach(item => {
                 if (filterClass === 'youtube-video') {
-                    // Show only YouTube videos
                     if (item.classList.contains('youtube-video')) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                } else {
-                    // Show selected filter, lazy load iframe
-                    if (item.classList.contains(filterClass)) {
-                        item.style.display = 'block';
+                        item.classList.add('show');
                         loadIframe(item);
                     } else {
-                        item.style.display = 'none';
+                        item.classList.remove('show');
+                    }
+                } else {
+                    if (item.classList.contains(filterClass)) {
+                        item.classList.add('show');
+                        loadIframe(item);
+                    } else {
+                        item.classList.remove('show');
                     }
                 }
             });

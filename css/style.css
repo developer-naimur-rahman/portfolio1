@@ -1810,6 +1810,27 @@ body, .services, .specialty {
   margin-top: 3px;
 }
 
+
+
+/* Fade-in animation for items */
+.portfolio__gallery .mix {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+    display: none;
+}
+
+.portfolio__gallery .mix.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+
+
+
+
 /* Pagination */
 .pagination__option .number__pagination {
   font-size: 18px;
