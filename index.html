@@ -587,52 +587,6 @@
 </section>
 <!-- Portfolio Section End -->
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const filters = document.querySelectorAll('.portfolio__filter li');
-    const items = document.querySelectorAll('.portfolio__gallery .mix');
-
-    function loadIframe(item) {
-        const iframe = item.querySelector('iframe');
-        if (iframe && iframe.dataset.src && !iframe.src) {
-            iframe.src = iframe.dataset.src;
-        }
-    }
-
-    // Show only YouTube videos initially
-    items.forEach(item => {
-        if (item.classList.contains('youtube-video')) {
-            loadIframe(item);
-            item.style.display = 'block';
-        } else {
-            item.style.display = 'none';
-        }
-    });
-
-    filters.forEach(filter => {
-        filter.addEventListener('click', function () {
-            const filterClass = this.dataset.filter.replace('.', '');
-            filters.forEach(f => f.classList.remove('active'));
-            this.classList.add('active');
-
-            items.forEach(item => {
-                if (filterClass === 'youtube-video') {
-                    item.style.display = item.classList.contains('youtube-video') ? 'block' : 'none';
-                } else {
-                    if (item.classList.contains(filterClass)) {
-                        item.style.display = 'block';
-                        loadIframe(item);
-                    } else {
-                        item.style.display = 'none';
-                    }
-                }
-            });
-        });
-    });
-
-});
-</script>
 
 
 
@@ -1366,13 +1320,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
     const filters = document.querySelectorAll('.portfolio__filter li');
     const items = document.querySelectorAll('.portfolio__gallery .mix');
 
+    // Lazy load iframe only when item is shown
     function loadIframe(item) {
         const iframe = item.querySelector('iframe');
         if (iframe && iframe.dataset.src && !iframe.src) {
@@ -1380,31 +1334,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Initially show only YouTube videos
-    items.forEach(item => {
-        if (item.classList.contains('youtube-video')) {
-            item.classList.add('show');
-            loadIframe(item);
-        }
-    });
+    // Show/hide items based on filter
+    function showItems(filterClass) {
+        items.forEach(item => {
+            const className = filterClass.replace('.', ''); // remove dot for classList check
+            if (filterClass === '*' || item.classList.contains(className)) {
+                item.style.display = 'block'; // JS handles show
+                loadIframe(item); // lazy load iframe
+            } else {
+                item.style.display = 'none'; // JS handles hide
+            }
+        });
+    }
 
+    // Initially show YouTube videos
+    showItems('youtube-video');
+
+    // Filter click event
     filters.forEach(filter => {
         filter.addEventListener('click', function () {
-            const filterClass = this.dataset.filter.replace('.', '');
             filters.forEach(f => f.classList.remove('active'));
             this.classList.add('active');
 
-            items.forEach(item => {
-                if (filterClass === '*' || filterClass === '') {
-                    item.classList.add('show');
-                    loadIframe(item);
-                } else if (item.classList.contains(filterClass)) {
-                    item.classList.add('show');
-                    loadIframe(item);
-                } else {
-                    item.classList.remove('show');
-                }
-            });
+            const filterClass = this.dataset.filter;
+            showItems(filterClass);
         });
     });
 
