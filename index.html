@@ -376,7 +376,7 @@
         </section>
         <!-- Specialty Section End -->
 
-  <!-- Portfolio Section Begin -->
+<!-- Portfolio Section Begin -->
 <section class="portfolio spad">
     <h2>My Portfolio</h2>
     <p>Check out some of the projects I’ve worked on and my creative work.</p>
@@ -504,7 +504,7 @@
                 </div>
             </div>
 
-            <!-- YouTube Video (Default Loaded) -->
+            <!-- YouTube Video (Loaded by default) -->
             <div class="col-lg-4 col-md-6 col-sm-6 mix youtube-video">
                 <div class="portfolio__item">
                     <div class="portfolio__item__video">
@@ -535,7 +535,7 @@
                 </div>
             </div>
 
-            <!-- Ad Creative / VSL -->
+            <!-- VSL / Ad Creative -->
             <div class="col-lg-4 col-md-6 col-sm-6 mix ad-creative-vsl" data-src="https://www.youtube.com/embed/S6HpwPG0h08">
                 <div class="portfolio__item">
                     <div class="portfolio__item__video">
@@ -586,6 +586,55 @@
     </div>
 </section>
 <!-- Portfolio Section End -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const filters = document.querySelectorAll('.portfolio__filter li');
+    const items = document.querySelectorAll('.portfolio__gallery .mix');
+
+    function loadIframe(item) {
+        const iframe = item.querySelector('iframe');
+        if (iframe && iframe.dataset.src && !iframe.src) {
+            iframe.src = iframe.dataset.src;
+        }
+    }
+
+    // Show only YouTube videos initially
+    items.forEach(item => {
+        if (item.classList.contains('youtube-video')) {
+            loadIframe(item);
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+
+    filters.forEach(filter => {
+        filter.addEventListener('click', function () {
+            const filterClass = this.dataset.filter.replace('.', '');
+            filters.forEach(f => f.classList.remove('active'));
+            this.classList.add('active');
+
+            items.forEach(item => {
+                if (filterClass === 'youtube-video') {
+                    item.style.display = item.classList.contains('youtube-video') ? 'block' : 'none';
+                } else {
+                    if (item.classList.contains(filterClass)) {
+                        item.style.display = 'block';
+                        loadIframe(item);
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }
+            });
+        });
+    });
+
+});
+</script>
+
+
 
 
 
@@ -1314,6 +1363,10 @@
       // Customize the widget here
     });
   </script>
+
+
+
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -1327,7 +1380,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Show only YouTube videos initially
+    // Initially show only YouTube videos
     items.forEach(item => {
         if (item.classList.contains('youtube-video')) {
             item.classList.add('show');
@@ -1342,20 +1395,14 @@ document.addEventListener('DOMContentLoaded', function () {
             this.classList.add('active');
 
             items.forEach(item => {
-                if (filterClass === 'youtube-video') {
-                    if (item.classList.contains('youtube-video')) {
-                        item.classList.add('show');
-                        loadIframe(item);
-                    } else {
-                        item.classList.remove('show');
-                    }
+                if (filterClass === '*' || filterClass === '') {
+                    item.classList.add('show');
+                    loadIframe(item);
+                } else if (item.classList.contains(filterClass)) {
+                    item.classList.add('show');
+                    loadIframe(item);
                 } else {
-                    if (item.classList.contains(filterClass)) {
-                        item.classList.add('show');
-                        loadIframe(item);
-                    } else {
-                        item.classList.remove('show');
-                    }
+                    item.classList.remove('show');
                 }
             });
         });
