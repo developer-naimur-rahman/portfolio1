@@ -419,6 +419,150 @@ hr {
   display: none;
 }
 
+
+
+
+
+
+/* --- Global Variables & Setup --- */
+:root {
+    --color-primary: #5a54f9; /* Blue/Purple button color */
+    --color-text-light: #ffffff;
+    --color-text-subdued: #a0a0a0; /* Gray for "Get More Leads" */
+    --color-background-dark: #0f0f18; /* Dark Navy/Black background */
+    --font-family-main: sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* Crucial for the dark background color and white text */
+    background-color: var(--color-background-dark);
+    color: var(--color-text-light);
+    font-family: var(--font-family-main);
+    line-height: 1.6;
+}
+
+/* --- Hero Section Styling --- */
+.hero-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensures the section fills the viewport vertically */
+    text-align: center;
+    padding: 50px 20px;
+    /* Gradient to mimic the subtle glow in the image */
+    background: radial-gradient(circle at 100% 100%, #15102a 0%, var(--color-background-dark) 50%);
+}
+
+.hero-content {
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.hero-headline {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.hero-headline .subdued {
+    color: var(--color-text-subdued);
+    font-weight: 400;
+}
+
+.hero-subtext {
+    font-size: 1.1rem;
+    color: var(--color-text-subdued);
+    margin: 0 auto 30px;
+    max-width: 600px;
+}
+
+/* --- Social Proof (Avatars and Text) --- */
+.social-proof {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.profile-avatars {
+    display: flex;
+    margin-right: 15px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: -10px; /* Overlap the avatars */
+    border: 3px solid var(--color-background-dark);
+    object-fit: cover;
+}
+
+.proof-text {
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.proof-text p:first-child {
+    font-weight: bold;
+    color: var(--color-text-light);
+    margin-bottom: 2px;
+}
+
+.proof-text p:last-child {
+    color: var(--color-text-subdued);
+}
+
+/* --- Call-to-Action Button --- */
+.btn {
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.btn-cta {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    font-size: 1rem;
+    padding: 15px 30px;
+}
+
+.btn-cta:hover {
+    filter: brightness(1.1);
+}
+
+.arrow {
+    margin-left: 8px;
+    font-size: 1.2rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*---------------------
   Hero
 -----------------------*/
@@ -1198,7 +1342,7 @@ hr {
 /* Global font & background */
 body, .services, .specialty {
   font-family: 'Poppins', sans-serif;
-  background: #100028;
+  background: #0C0C0C;
   color: #ffffff;
 }
 
