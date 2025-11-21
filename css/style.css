@@ -10,29 +10,37 @@
 /*----------------------------------------*/
 /* Template default CSS
 /*----------------------------------------*/
+/*---------------------
+  Base & Body
+-----------------------*/
 html,
 body {
   height: 100%;
   font-family: "Josefin Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
-  background-color: #0C0C0C; /* Updated website background */
+  background-color: #0C0C0C;
   color: #ffffff;
   scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   margin: 0;
   font-weight: 400;
   font-family: "Play", sans-serif;
   letter-spacing: 1px;
 }
 
-h1 { font-size: 70px; background: linear-gradient(90deg, #00ffe7, #00bfe7); -webkit-background-clip: text; -moz-background-clip: text; background-clip: text; color: transparent; }
+h1 {
+  font-size: 70px;
+  background: linear-gradient(90deg, #00BFFF, #00bfe7);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 h2 { font-size: 36px; position: relative; }
 h3 { font-size: 30px; }
 h4 { font-size: 24px; }
@@ -45,7 +53,7 @@ p {
   color: #adadad;
   font-weight: 400;
   line-height: 26px;
-  margin: 0 0 15px 0;
+  margin-bottom: 15px;
 }
 
 img {
@@ -76,25 +84,20 @@ a:focus {
   text-shadow: 0 0 5px #00bfe7, 0 0 10px #00ffe7;
 }
 
-ul,
-ol {
+ul, ol {
   padding: 0;
   margin: 5;
   list-style: none;
 }
 
 /*---------------------
-  Helper CSS
+  Section Titles
 -----------------------*/
 .section-title {
   margin-bottom: 50px;
 }
 .section-title.center-title {
   text-align: center;
-}
-.section-title.center-title h2:after {
-  right: 0;
-  margin: 0 auto;
 }
 .section-title span {
   color: #ffffff;
@@ -124,6 +127,9 @@ ol {
   border-radius: 2px;
 }
 
+/*---------------------
+  Helpers
+-----------------------*/
 .set-bg {
   background-repeat: no-repeat;
   background-size: cover;
@@ -139,112 +145,122 @@ ol {
   padding-bottom: 100px;
 }
 
-.text-white h1,
-.text-white h2,
-.text-white h3,
-.text-white h4,
-.text-white h5,
-.text-white h6,
-.text-white p,
-.text-white span,
-.text-white li,
-.text-white a {
+.text-white * {
   color: #fff;
   transition: all 0.3s ease;
 }
 
 /*---------------------
-  Futuristic Enhancements
+  Buttons - Glass + Neon on Hover
 -----------------------*/
-button {
-  background: linear-gradient(90deg, #00ffe7, #00bfe7);
-  color: #000;
-  padding: 12px 25px;
-  border: none;
-  border-radius: 6px;
+button,
+.primary-btn,
+.site-btn {
+  position: relative;
+  display: inline-block;
+  font-family: "Play", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #fff;
+  padding: 14px 32px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.2);
   cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  overflow: hidden;
+  transition: all 0.4s ease;
 }
-button:hover {
-  background: linear-gradient(90deg, #00bfe7, #00ffe7);
-  box-shadow: 0 0 20px #00bfe7, 0 0 40px #00ffe7;
+
+button::before,
+.primary-btn::before,
+.site-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(120deg, rgba(0,191,231,0.3) 0%, rgba(0,255,231,0.3) 50%, rgba(0,191,231,0.3) 100%);
+  transform: skewX(-20deg);
+  transition: all 0.6s ease;
+}
+
+button:hover::before,
+.primary-btn:hover::before,
+.site-btn:hover::before {
+  left: 0;
+}
+
+button:hover,
+.primary-btn:hover,
+.site-btn:hover {
+  color: #00ffe7;
+  background: rgba(255,255,255,0.05);
 }
 
 /*---------------------
-  Card Styling
+  Cards / Team Items - Neon Outline + Sweep Animation
 -----------------------*/
 .card,
 .team__item {
-  background-color: #191933; /* Updated card background */
-  border: 1px solid #00bfe7;
+  position: relative;
+  background: rgba(25,25,51,0.8);
   border-radius: 12px;
   padding: 20px;
-  transition: all 0.4s ease;
-}
-.card:hover,
-.team__item:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 0 20px #00bfe7, 0 0 40px #00ffe7;
-}
-
-hr {
-  border: none;
-  height: 2px;
-  background: linear-gradient(90deg, #00ffe7, #00bfe7);
-  margin: 30px 0;
-}
-
-/* Primary Button */
-.primary-btn {
-  display: inline-block;
-  font-size: 15px;
-  font-family: "Play", sans-serif;
-  font-weight: 700;
-  padding: 14px 32px 12px;
-  color: #ffffff;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  position: relative;
-  z-index: 1;
-  border: 2px solid #00bfe7;
-  border-radius: 8px;
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
   overflow: hidden;
-  background: rgba(0, 191, 231, 0.15); /* subtle glass effect */
-  backdrop-filter: blur(8px);
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
 }
 
-.primary-btn:hover {
-  color: #00ffe7;
-  box-shadow: 0 0 15px #00bfe7, 0 0 30px #00ffe7;
-  transform: scale(1.05);
-}
-
-.site-btn {
-  font-size: 15px;
-  color: #ffffff;
-  font-family: "Play", sans-serif;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  padding: 14px 34px 12px;
-  border: 2px solid #00bfe7;
-  border-radius: 8px;
+.card::before,
+.team__item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  background: rgba(0, 191, 231, 0.15);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 0 5px #00bfe7;
-  transition: all 0.3s ease;
+  height: 100%;
+  border-radius: 12px;
+  border: 2px solid rgba(0,191,231,0.2);
+  pointer-events: none;
+  transition: all 0.5s ease;
 }
 
-.site-btn:hover {
-  color: #00ffe7;
-  box-shadow: 0 0 20px #00bfe7, 0 0 40px #00ffe7;
-  transform: scale(1.05);
+.card::after,
+.team__item::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(120deg, rgba(0,191,231,0.4) 0%, rgba(0,255,231,0.4) 50%, rgba(0,191,231,0.4) 100%);
+  transform: rotate(45deg);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.6s ease;
 }
 
-/* Preloader */
+.card:hover::after,
+.team__item:hover::after {
+  top: 0;
+  left: 0;
+  opacity: 1;
+  animation: neonSweepCard 1.5s linear forwards;
+}
+
+@keyframes neonSweepCard {
+  0% { transform: rotate(45deg) translate(-100%, -100%); }
+  50% { transform: rotate(45deg) translate(50%, 50%); }
+  100% { transform: rotate(45deg) translate(0, 0); }
+}
+
+/*---------------------
+  Preloader
+-----------------------*/
 #preloder {
   position: fixed;
   width: 100%;
@@ -261,11 +277,15 @@ hr {
   position: absolute;
   top: 50%;
   left: 50%;
-  margin-top: -13px;
-  margin-left: -13px;
-  border-radius: 60px;
+  margin-top: -20px;
+  margin-left: -20px;
+  border-radius: 50%;
   animation: loader 0.8s linear infinite;
-  -webkit-animation: loader 0.8s linear infinite;
+}
+
+@keyframes loader {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes loader {
@@ -424,7 +444,7 @@ hr {
 
 
 
-/* --- Global Variables & Setup --- */
+/* --- Global Variables & Setup (No Change) --- */
 :root {
     --color-primary: #5a54f9; /* Blue/Purple button color */
     --color-text-light: #ffffff;
@@ -440,23 +460,21 @@ hr {
 }
 
 body {
-    /* Crucial for the dark background color and white text */
     background-color: var(--color-background-dark);
     color: var(--color-text-light);
     font-family: var(--font-family-main);
     line-height: 1.6;
 }
 
-/* --- Hero Section Styling --- */
+/* --- Hero Section Styling (Min-Height reduced slightly for better flow on small screens) --- */
 .hero-section {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Ensures the section fills the viewport vertically */
+    min-height: 90vh; 
     text-align: center;
     padding: 50px 20px;
-    /* Gradient to mimic the subtle glow in the image */
-    background: radial-gradient(circle at 100% 100%, #15102a 0%, var(--color-background-dark) 50%);
+    background: radial-gradient(circle at 100% 100%, #100f12 0%, #121212 50%);
 }
 
 .hero-content {
@@ -500,7 +518,7 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    margin-right: -10px; /* Overlap the avatars */
+    margin-right: -10px;
     border: 3px solid var(--color-background-dark);
     object-fit: cover;
 }
@@ -533,7 +551,7 @@ body {
 }
 
 .btn-cta {
-    background-color: var(--color-primary);
+    background-color: #0088ff;
     color: var(--color-text-light);
     font-size: 1rem;
     padding: 15px 30px;
@@ -548,132 +566,88 @@ body {
     font-size: 1.2rem;
 }
 
+/* ---------------------------------------------------- */
+/* RESPONSIVENESS (Media Queries)             */
+/* ---------------------------------------------------- */
 
+/* Styles for Tablets and smaller screens (Max Width 768px) */
+@media (max-width: 768px) {
+    .hero-headline {
+        /* Reduce headline size for tablets */
+        font-size: 2.8rem;
+    }
 
+    .hero-subtext {
+        /* Reduce subtext size slightly */
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-/*---------------------
-  Hero
------------------------*/
-.hero__slider.owl-carousel .owl-item.active .hero__text span {
-  top: 0;
-  opacity: 1;
-}
-.hero__slider.owl-carousel .owl-item.active .hero__text h2 {
-  top: 0;
-  opacity: 1;
-}
-.hero__slider.owl-carousel .owl-item.active .hero__text .primary-btn {
-  top: 0;
-  opacity: 1;
-}
-.hero__slider.owl-carousel .owl-dots {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 45px;
-  width: 100%;
-  max-width: 1140px;
-  margin: 0 auto;
-}
-.hero__slider.owl-carousel .owl-dots button {
-  color: #adadad;
-  font-size: 18px;
-  font-family: "Play", sans-serif;
-  margin-right: 16px;
-  position: relative;
-  display: inline-block;
-}
-.hero__slider.owl-carousel .owl-dots button.active {
-  color: #ffffff;
-}
-.hero__slider.owl-carousel .owl-dots button.active:after {
-  background: #ffffff;
-  height: 2px;
-}
-.hero__slider.owl-carousel .owl-dots button:after {
-  position: absolute;
-  left: 0;
-  bottom: -6px;
-  width: 100%;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.3);
-  content: "";
-}
-.hero__slider.owl-carousel .owl-dots button:last-child {
-  margin-right: 0;
+    .social-proof {
+        /* Reduce bottom margin */
+        margin-bottom: 30px;
+    }
 }
 
-.hero__item {
-  height: 684px;
-  padding-top: 255px;
-  position: relative;
-  overflow: hidden;
+/* Styles for Mobile Phones (Max Width 480px) */
+@media (max-width: 480px) {
+    .hero-section {
+        /* Increase vertical padding on small screens */
+        padding: 130px 15px 60px 15px;
+        min-height: 80vh; 
+    }
+
+    .hero-headline {
+        /* Significant reduction for mobile screens */
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+
+    .hero-subtext {
+        /* Further reduction on mobile */
+        font-size: 0.95rem;
+    }
+    
+    .social-proof {
+        /* Change to block to prevent text wrapping issues */
+        display: block;
+    }
+    
+    .profile-avatars {
+        /* Center avatars when they are the only element on the line */
+        justify-content: center;
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+
+    .proof-text {
+        /* Center proof text on mobile */
+        text-align: center;
+        font-size: 0.85rem;
+    }
+
+    .btn-cta {
+        /* Adjust CTA padding for better fit on narrow screens */
+        padding: 12px 25px;
+        font-size: 0.9rem;
+    }
 }
 
-.hero__item::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(7, 7, 15, 0.5);
-  z-index: 1;
-}
 
-.hero__item .container {
-  position: relative;
-  z-index: 2;
-}
 
-.hero__text span {
-  color: #ffffff;
-  display: block;
-  font-size: 15px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 18px;
-  position: relative;
-  top: 100px;
-  opacity: 0;
-  -webkit-transition: all, 0.3s;
-  -o-transition: all, 0.3s;
-  transition: all, 0.3s;
-}
-.hero__text h2 {
-  color: #ffffff;
-  font-size: 60px;
-  font-weight: 700;
-  line-height: 70px;
-  text-transform: uppercase;
-  margin-bottom: 38px;
-  position: relative;
-  top: 100px;
-  opacity: 0;
-  -webkit-transition: all, 0.5s;
-  -o-transition: all, 0.5s;
-  transition: all, 0.5s;
-}
-.hero__text .primary-btn {
-  position: relative;
-  top: 100px;
-  opacity: 0;
-  -webkit-transition: all, 0.7s;
-  -o-transition: all, 0.7s;
-  transition: all, 0.7s;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+/*  */
 
 
 /*---------------------
@@ -818,7 +792,7 @@ body {
   position: relative;
   z-index: 1;
   transition: all 0.5s ease;
-  transform: rotate(45deg);
+  transform: rotate(0deg);
 }
 
 /* Card shine overlay */
@@ -865,8 +839,9 @@ body {
   margin-bottom: 0;
 }
 
-
-
+/*---------------------
+  Team Section
+-----------------------*/
 .team {
     padding: 60px 0;
     background-color: #0f0f0f;
@@ -894,11 +869,9 @@ body {
     border-radius: 20px;
     overflow: hidden;
     position: relative;
-
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-
     border: 1px solid rgba(255,255,255,0.15);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -906,7 +879,6 @@ body {
         inset 0 0 20px rgba(255,255,255,0.05),
         0 10px 40px rgba(0,0,0,0.4),
         0 0 30px rgba(80,120,255,0.25);
-
     transition: all 0.5s ease;
 }
 
@@ -936,12 +908,12 @@ body {
     100% { transform: translate(-50%, -50%) rotate(45deg); opacity: 0.2; }
 }
 
-/* Text overlay */
 .team__item__text {
     position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 15px 10px;
+    bottom: -4px;
+    right: -16px;
+    width: 111%;
+    padding: 8px 0px;
     text-align: center;
     color: #fff;
     background: rgba(20,20,40,0.55);
@@ -989,11 +961,20 @@ body {
     box-shadow: 0 0 15px rgba(100,150,255,0.6);
 }
 
-/* Responsive */
+/* Responsive: Counter + Team */
 @media (max-width: 992px) {
     .team__item {
         flex: 0 0 calc(50% - 10px);
         max-width: calc(50% - 10px);
+    }
+}
+
+@media (max-width: 768px) {
+    .counter__item {
+        transform: rotate(0deg) !important;
+    }
+    .counter__item__text {
+        transform: rotate(0deg) !important;
     }
 }
 
@@ -1002,8 +983,13 @@ body {
         flex: 0 0 100%;
         max-width: 100%;
     }
+    .counter__item {
+        transform: rotate(0deg) !important;
+    }
+    .counter__item__text {
+        transform: rotate(0deg) !important;
+    }
 }
-
 
 
 
@@ -1790,6 +1776,9 @@ body, .services, .specialty {
 /*---------------------
   Logo Section - Futuristic Glass with Color Shift
 -----------------------*/
+/*---------------------
+  Logo Section - Futuristic Glass with Color Shift
+-----------------------*/
 .logo {
   background: #0D0D0D; /* ডার্ক ফিউচারিস্টিক ব্যাকগ্রাউন্ড */
   padding: 100px 20px;
@@ -1798,23 +1787,17 @@ body, .services, .specialty {
 }
 
 .custom-logo-img {
-    /* লোগোর সাইজ এখানে সেট করুন */
     width: 220px !important;  
     height: 110px !important; 
-    
-    /* সাইজ ফিক্স করার জন্য গুরুত্বপূর্ণ কোড */
     max-width: none !important;
     min-width: auto !important;
-    
     object-fit: contain !important;
     display: block !important;
-    margin: 0 auto; /* মাঝখানে রাখার জন্য */
-    
-    /* স্টাইল */
-    filter: brightness(0.8) grayscale(100%); /* ডিফল্ট অবস্থায় একটু ডার্ক ও সাদা-কালো */
+    margin: 0 auto;
+    filter: brightness(0.8) grayscale(100%);
     transition: all 0.5s ease;
     position: relative;
-    z-index: 10; /* গ্লাসের উপরে থাকবে */
+    z-index: 10;
 }
 
 .logo__carousel.owl-carousel .owl-item {
@@ -1827,7 +1810,6 @@ body, .services, .specialty {
   z-index: 1;
 }
 
-/* লোগোর সাইজ */
 .logo__carousel.owl-carousel .owl-item img {
   width: 200px;
   height: 100px;
@@ -1843,7 +1825,6 @@ body, .services, .specialty {
   filter: brightness(1.15);
 }
 
-/* লোগোর পিছনে holo glass কার্ড */
 .logo__carousel.owl-carousel .owl-item::before {
   content: "";
   position: absolute;
@@ -1867,14 +1848,12 @@ body, .services, .specialty {
   z-index: 1;
 }
 
-/* holo gradient animation */
 @keyframes holoGradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-/* হোভার ইফেক্ট */
 .logo__carousel.owl-carousel .owl-item:hover::before {
   transform: translate(-50%, -50%) scale(1.08);
   box-shadow:
@@ -1882,6 +1861,59 @@ body, .services, .specialty {
     0 15px 35px rgba(0,0,0,0.45),
     0 0 50px rgba(100,180,255,0.6);
 }
+
+/*---------------------
+  Media Queries for Logo Section Responsiveness
+-----------------------*/
+
+/* Large Tablets / Small Laptops */
+@media (max-width: 1200px) {
+  .custom-logo-img {
+    width: 180px !important;
+    height: auto !important;
+  }
+  .logo__carousel.owl-carousel .owl-item::before {
+    width: 180px;
+    height: 100px;
+  }
+}
+
+/* Medium Devices (Tablets) */
+@media (max-width: 992px) {
+  .custom-logo-img {
+    width: 150px !important;
+    height: 75px !important;
+  }
+  .logo__carousel.owl-carousel .owl-item::before {
+    width: 150px;
+    height: 80px;
+  }
+}
+
+/* Small Devices (Large Phones) */
+@media (max-width: 768px) {
+  .custom-logo-img {
+    width: 120px !important;
+    height: 60px !important;
+  }
+  .logo__carousel.owl-carousel .owl-item::before {
+    width: 120px;
+    height: 65px;
+  }
+}
+
+/* Extra Small Devices (Phones) */
+@media (max-width: 576px) {
+  .custom-logo-img {
+    width: 100px !important;
+    height: 50px !important;
+  }
+  .logo__carousel.owl-carousel .owl-item::before {
+    width: 100px;
+    height: 55px;
+  }
+}
+
 
 /*---------------------
   Portfolio Section - Futuristic Holo Glass
