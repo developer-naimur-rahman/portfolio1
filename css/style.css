@@ -1653,6 +1653,26 @@ body, .services, .specialty {
   overflow: hidden;
 }
 
+.custom-logo-img {
+    /* লোগোর সাইজ এখানে সেট করুন */
+    width: 220px !important;  
+    height: 110px !important; 
+    
+    /* সাইজ ফিক্স করার জন্য গুরুত্বপূর্ণ কোড */
+    max-width: none !important;
+    min-width: auto !important;
+    
+    object-fit: contain !important;
+    display: block !important;
+    margin: 0 auto; /* মাঝখানে রাখার জন্য */
+    
+    /* স্টাইল */
+    filter: brightness(0.8) grayscale(100%); /* ডিফল্ট অবস্থায় একটু ডার্ক ও সাদা-কালো */
+    transition: all 0.5s ease;
+    position: relative;
+    z-index: 10; /* গ্লাসের উপরে থাকবে */
+}
+
 .logo__carousel.owl-carousel .owl-item {
   display: flex;
   justify-content: center;
@@ -1688,7 +1708,7 @@ body, .services, .specialty {
   transform: translate(-50%, -50%);
   width: 220px;
   height: 120px;
-  background: linear-gradient(120deg, rgba(100,150,255,0.2), rgba(0, 51, 255, 0.2), rgba(107, 107, 255, 0.2), rgba(39, 107, 255, 0.2));
+  background: linear-gradient(120deg, rgb(41, 105, 255), rgb(255, 255, 255), rgb(107, 164, 255), rgba(39, 107, 255, 0.2));
   background-size: 400% 400%;
   border-radius: 20px;
   backdrop-filter: blur(20px) saturate(200%);
