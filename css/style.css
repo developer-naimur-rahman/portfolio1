@@ -66,7 +66,7 @@ p {
 }
 
 img {
-  max-width: 100%;
+  max-width: 70%;
   transition: transform 0.5s ease;
 }
 img:hover {
@@ -1308,6 +1308,203 @@ body, .services, .specialty {
   background: #100028;
   color: #ffffff;
 }
+
+/* ==============================
+   Core Services Section (We Do)
+   ============================== */
+.core-services-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 20px;
+    background: radial-gradient(circle at top left, #0a0020, #0b001f); /* Dark purple theme */
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Header Text */
+.header-text {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.pre-header {
+    font-size: 14px;
+    color: #adadad;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.main-header {
+    font-size: 30px;
+    font-weight: 500;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.highlight-header {
+    font-size: 50px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Slider Container */
+.slider-container {
+    position: relative;
+    overflow: hidden;
+    padding: 20px 0;
+}
+
+/* Gradient Overlay at Left and Right Edges */
+.slider-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+    background-image: linear-gradient(
+        to right,
+        #0a0020 0%,      /* left edge */
+        rgba(10,0,32,0) 15%, /* fade in */
+        rgba(10,0,32,0) 85%, /* fade out */
+        #0a0020 100%     /* right edge */
+    );
+}
+
+/* Slider Rows */
+.slider-row {
+    display: flex;
+    width: max-content;
+    padding: 10px 0;
+    margin-bottom: 30px;
+    will-change: transform;
+}
+
+/* Service Card - Glass / Holo Style */
+.service-card {
+    background: linear-gradient(135deg, #1a1a40, #1d004f, #020219, #1a1a40);
+    background-size: 400% 400%;
+    animation: holoGradient 8s ease infinite;
+    border-radius: 20px;
+    padding: 30px;
+    width: 300px;
+    min-width: 300px;
+    margin: 0 15px;
+    text-align: center;
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow:
+        inset 0 0 20px rgba(255,255,255,0.05),
+        0 10px 40px rgba(0,0,0,0.4),
+        0 0 30px rgba(80,120,255,0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow:
+        0 20px 40px rgba(75,75,153,0.35),
+        0 0 40px rgba(75,75,153,0.4),
+        inset 0 0 40px rgba(255,255,255,0.1);
+}
+
+/* Glow Icon */
+.glow-icon {
+    width: 50px;
+    height: 50px;
+    background-color: #4b4b99;
+    border-radius: 50%;
+    margin: 0 auto 20px auto;
+    box-shadow:
+        0 0 5px #4b4b99,
+        0 0 10px #4b4b99,
+        0 0 20px rgba(75,75,153,0.8),
+        0 0 40px rgba(75,75,153,0.5);
+}
+
+/* Card Text */
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.card-description {
+    font-size: 14px;
+    color: #adadad;
+    line-height: 1.5;
+}
+
+/* Slider Animations */
+@keyframes slide-to-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes slide-to-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.row-1 {
+  animation: slide-to-left 20s linear infinite;
+}
+
+.row-2 {
+  animation: slide-to-right 20s linear infinite;
+}
+
+/* Holo Gradient Animation */
+@keyframes holoGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .slider-row {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .service-card {
+        margin: 10px;
+    }
+}
+
+
+.glow-icon.futuristic {
+    width: 80px;            /* বড় আকারের বৃত্ত */
+    height: 80px;
+    margin: 0 auto 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4b4bff, #8a2be2);
+    box-shadow: 0 0 20px #4b4bff, 0 0 40px #8a2be2, 0 0 60px rgba(75, 75, 255, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glow-icon.futuristic i {
+    font-size: 36px;        /* বড় আইকন */
+    color: #fff;
+}
+
+.service-card:hover .glow-icon.futuristic {
+    transform: scale(1.3);
+    box-shadow: 0 0 35px #4b4bff, 0 0 70px #8a2be2, 0 0 100px rgba(75, 75, 255, 0.7);
+}
+
+
 
 /*---------------------
   Services Section
