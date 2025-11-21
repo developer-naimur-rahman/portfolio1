@@ -1210,7 +1210,7 @@ body, .services, .specialty {
     max-width: 1200px;
     margin: 0 auto;
     padding: 50px 20px;
-    background: radial-gradient(circle at top left,#121111, #090909); /* Dark purple theme */
+    background: #080522; /* Dark purple theme */
     color: #fff;
     font-family: 'Poppins', sans-serif;
     position: relative;
@@ -1260,13 +1260,7 @@ body, .services, .specialty {
     height: 100%;
     z-index: 10;
     pointer-events: none;
-    background-image: linear-gradient(
-        to right,
-        #0a0020 0%,      /* left edge */
-        rgba(10,0,32,0) 15%, /* fade in */
-        rgba(10,0,32,0) 85%, /* fade out */
-        #0a0020 100%     /* right edge */
-    );
+    background-image: #080522;
 }
 
 /* Slider Rows */
@@ -1653,7 +1647,7 @@ body, .services, .specialty {
   Logo Section - Futuristic Glass with Color Shift
 -----------------------*/
 .logo {
-  background: radial-gradient(circle at top left, #121111, #0e1015); /* ডার্ক ফিউচারিস্টিক ব্যাকগ্রাউন্ড */
+  background: #0D0D0D; /* ডার্ক ফিউচারিস্টিক ব্যাকগ্রাউন্ড */
   padding: 100px 20px;
   position: relative;
   overflow: hidden;
