@@ -1648,7 +1648,7 @@ body, .services, .specialty {
 /* Filter Buttons - Glass Style */
 .portfolio__filter li {
   list-style: none;
-  font-size: 16px;
+  font-size: 11px;
   color: #adadad;
   margin-right: 10px;
   display: inline-block;
@@ -1808,6 +1808,30 @@ body, .services, .specialty {
   color: #adadad;
   display: block;
   margin-top: 3px;
+}
+
+
+/* 📱 Mobile Only Responsive Category Filter */
+@media (max-width: 576px) {
+
+    .portfolio__filter {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 5px;
+    }
+
+    .portfolio__filter ul {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+    }
+
+    .portfolio__filter li {
+        font-size: 14px;      /* ছোট ফন্ট */
+        padding: 6px 14px;    /* ছোট প্যাডিং */
+        white-space: nowrap;  /* এক লাইনে থাকবে */
+    }
 }
 
 
