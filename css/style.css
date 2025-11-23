@@ -1991,7 +1991,7 @@ body, .services, .specialty {
   display: inline-block;
   cursor: pointer;
   padding: 8px 25px;
-  border-radius: 50px;
+  border-radius: 10px;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(15px) saturate(200%);
@@ -2007,6 +2007,34 @@ body, .services, .specialty {
   box-shadow: 0 5px 25px rgba(100,150,255,0.3);
 }
 
+
+/* Parent - make list a wrapping flex container with gaps */
+.portfolio__filter ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;       /* row-gap (vertical) 12px, column-gap (horizontal) 14px */
+  justify-content: center; /* অথবা flex-start, তোমার ডিজাইন অনুযায়ী */
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* Items - remove conflicting margins and keep padding */
+.portfolio__filter ul li {
+  display: inline-flex; /* or flex */
+  align-items: center;
+  padding: 8px 16px;
+  margin: 0;            /* পুরানো margin-right থাকলে এটাকে override করবে */
+  cursor: pointer;
+  border-radius: 10px;
+  /* background, border ইত্যাদি আগের মতো রাখো */
+}
+
+
+
+
+
 /* Animated Gradient for Portfolio Cards */
 @keyframes holoGradient {
   0% { background-position: 0% 50%; }
@@ -2017,6 +2045,7 @@ body, .services, .specialty {
 /* Portfolio Card */
 .portfolio__item {
   margin-bottom: 30px;
+  margin-top: 18px;
   position: relative;
   border-radius: 25px;
   overflow: hidden;
