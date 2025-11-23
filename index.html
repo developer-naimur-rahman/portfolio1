@@ -92,7 +92,7 @@
                                     <li><a
                                             href="./pricing2.html">Pricing</a></li>
                                     <li><a
-                                            href="./portfolio.html">Portfolio</a></li>
+                                            href="./portfolio.html">Work</a></li>
 
                                     <li><a
                                             href="./services.html">Services</a></li>
@@ -100,8 +100,7 @@
                                         <ul class="dropdown">
                                             <li><a
                                                     href="./about.html">About</a></li>
-                                            <li><a
-                                                    href="./portfolio.html">Portfolio</a></li>
+                                           
                                             <li><a
                                                     href="https://motionofnaimur.wordpress.com/blog/">Blog</a></li>
                                             <li><a
@@ -444,7 +443,7 @@
 
 <!-- Portfolio Section Begin -->
 <section class="portfolio spad">
-    <h2>Portfolio</h2>
+    <h2>Work</h2>
     <p>Check out some of the projects I’ve worked on and my creative work.</p>
 
     <div class="container">
@@ -1148,7 +1147,96 @@
 
         <!-- Latest Blog Section End -->
 
-        <!-- Call To Action Section Begin -->
+     
+
+<section class="faq-section">
+    <h2 class="faq-title">Any queries you have</h2>
+    <p class="faq-subtitle">Questions you may ask</p>
+
+    <div class="faq-container">
+
+        <!-- FAQ Item 1 -->
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What is Motion of Naimur agency about?</span>
+                <div class="faq-arrow">▼</div>
+            </div>
+            <div class="faq-answer">
+                We are a premium creative agency specializing in video editing, motion graphics,
+                commercial content, documentary editing, and brand identity visuals. Our goal is to
+                create high-quality content that stands out and delivers results.
+            </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What kind of content plan do you create?</span>
+                <div class="faq-arrow">▼</div>
+            </div>
+            <div class="faq-answer">
+                We design content strategies based on your brand goals. This includes YouTube videos,
+                short-form content, reels, highlight edits, product promos, and storytelling-based videos.
+            </div>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What services do you provide?</span>
+                <div class="faq-arrow">▼</div>
+            </div>
+            <div class="faq-answer">
+                We offer video editing, motion graphics, logo animation, ad creative editing,
+                documentary editing, event recap videos, and complete social media content packages.
+            </div>
+        </div>
+
+        <!-- FAQ Item 4 -->
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What if I don’t get the results I expect?</span>
+                <div class="faq-arrow">▼</div>
+            </div>
+            <div class="faq-answer">
+                We work based on clarity, planning, and quality execution. Before starting any project,
+                we finalize the structure, references, and expected outcome so results remain consistent
+                with expectations.
+            </div>
+        </div>
+
+        <!-- FAQ Item 5 -->
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Why shouldn’t I hire a random freelancer?</span>
+                <div class="faq-arrow">▼</div>
+            </div>
+            <div class="faq-answer">
+                With “Motion of Naimur”, you get a team-level professional workflow, project reliability,
+                timely delivery, and agency-grade polish—which random freelancers often fail to maintain.
+            </div>
+        </div>
+
+        <!-- FAQ Item 6 -->
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>How does your workflow look?</span>
+                <div class="faq-arrow">▼</div>
+            </div>
+            <div class="faq-answer">
+                Our workflow includes planning → script/idea → content gathering →
+                editing → motion graphics → client review → final delivery.  
+                Everything stays organized and professional.
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+
+
+   <!-- Call To Action Section Begin -->
         <section class="callto spad set-bg" data-setbg="img/callto-bg.jpg">
             <div class="container">
                 <div class="row">
@@ -1406,7 +1494,22 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+
 </script>
+
+
+
+
+<script>
+document.querySelectorAll(".faq-question").forEach(q => {
+    q.addEventListener("click", () => {
+        const parent = q.parentNode;
+        parent.classList.toggle("active");
+    });
+});
+</script>
+
+
 
     </body>
 

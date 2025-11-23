@@ -3281,6 +3281,102 @@ h4, h5 {
 
 
 
+/* --------------------- FAQ Section ----------------------- */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #060011;
+}
+
+.faq-section {
+    padding: 60px 20px;
+    background: radial-gradient(circle at top left, #090018, #060011);
+    text-align: center;
+}
+
+.faq-title {
+    font-size: 32px;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.faq-subtitle {
+    color: #b5b5b5;
+    font-size: 16px;
+    margin-bottom: 35px;
+}
+
+/* FAQ Container - Grid Layout */
+.faq-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    max-width: 900px;
+    margin: auto;
+}
+
+/* FAQ Item */
+.faq-item {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(18px) saturate(180%);
+    padding: 18px 22px;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Active state */
+.faq-item.active {
+    border: 1px solid rgba(120,150,255,0.4);
+    box-shadow: 0 15px 35px rgba(120, 150, 255, 0.25);
+}
+
+/* Question */
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #e4e4e4;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.faq-arrow {
+    font-size: 18px;
+    transition: transform 0.3s;
+}
+
+.faq-item.active .faq-arrow {
+    transform: rotate(180deg);
+}
+
+/* Answer */
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    color: #c9c9c9;
+    font-size: 15px;
+    margin-top: 0;
+    transition: max-height 0.35s ease, margin-top 0.35s ease;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 500px; /* large enough for text */
+    margin-top: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .faq-title { font-size: 28px; }
+    .faq-subtitle { font-size: 15px; }
+}
+
+@media (max-width: 576px) {
+    .faq-title { font-size: 24px; }
+    .faq-subtitle { font-size: 14px; }
+}
 
 
 
