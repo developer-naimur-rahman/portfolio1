@@ -1987,8 +1987,8 @@ body, .services, .specialty {
   list-style: none;
   font-size: 11px;
   color: #adadad;
-  margin-right: 10px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   cursor: pointer;
   padding: 8px 25px;
   border-radius: 10px;
@@ -1998,7 +1998,10 @@ body, .services, .specialty {
   -webkit-backdrop-filter: blur(15px) saturate(200%);
   border: 1px solid rgba(255,255,255,0.1);
   box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+  white-space: nowrap;
+  margin: 0;
 }
+
 .portfolio__filter li:hover,
 .portfolio__filter li.active {
   border: 1px solid rgba(100,150,255,0.5);
@@ -2007,35 +2010,27 @@ body, .services, .specialty {
   box-shadow: 0 5px 25px rgba(100,150,255,0.3);
 }
 
-
-/* Parent - make list a wrapping flex container with gaps */
+/* Parent UL (Scroll Fix) */
 .portfolio__filter ul {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px 14px;       /* row-gap (vertical) 12px, column-gap (horizontal) 14px */
-  justify-content: center; /* অথবা flex-start, তোমার ডিজাইন অনুযায়ী */
-  align-items: center;
+  flex-wrap: nowrap;           /* FORCE always horizontal */
+  gap: 10px;
   padding: 0;
   margin: 0;
   list-style: none;
+
+  overflow-x: auto;            /* FIX LEFT ITEMS NOT SHOWING */
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Items - remove conflicting margins and keep padding */
-.portfolio__filter ul li {
-  display: inline-flex; /* or flex */
-  align-items: center;
-  padding: 8px 16px;
-  margin: 0;            /* পুরানো margin-right থাকলে এটাকে override করবে */
-  cursor: pointer;
-  border-radius: 10px;
-  /* background, border ইত্যাদি আগের মতো রাখো */
+/* Hide scrollbar (optional) */
+.portfolio__filter ul::-webkit-scrollbar {
+  height: 0;
 }
 
-
-
-
-
-/* Animated Gradient for Portfolio Cards */
+/* Cards Gradient Animation */
 @keyframes holoGradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -2091,7 +2086,7 @@ body, .services, .specialty {
     inset 0 0 40px rgba(255,255,255,0.1);
 }
 
-/* Video Box */
+/* Video */
 .portfolio__item__video {
   position: relative;
   width: 100%;
@@ -2130,7 +2125,7 @@ body, .services, .specialty {
   transform: scale(1.1);
 }
 
-/* Portfolio Text */
+/* Text Area */
 .portfolio__item__text {
   text-align: center;
   padding: 0;
@@ -2175,37 +2170,6 @@ body, .services, .specialty {
   display: block;
   margin-top: 3px;
 }
-
-
-/* 📱 Mobile Only Responsive Category Filter */
-@media (max-width: 576px) {
-
-    .portfolio__filter {
-        width: 100%;
-        overflow-x: auto;
-        white-space: nowrap;
-        padding-bottom: 5px;
-    }
-
-    .portfolio__filter ul {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 10px;
-    }
-
-    .portfolio__filter li {
-        font-size: 14px;      /* ছোট ফন্ট */
-        padding: 6px 14px;    /* ছোট প্যাডিং */
-        white-space: nowrap;  /* এক লাইনে থাকবে */
-    }
-}
-
-
-
-
-
-
-
 
 /* Pagination */
 .pagination__option .number__pagination {
