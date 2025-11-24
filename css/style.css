@@ -995,124 +995,129 @@ body {
 
  
 /*---------------------
-  Footer - Futuristic Glass Style
+  Footer - Futuristic Glass Style (FIXED)
 -----------------------*/
 .footer {
-  background: rgba(17, 20, 21, 0.8);
+  background: rgba(17,20,21,0.85);
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255,255,255,0.1);
   color: #ffffff;
   font-family: 'Poppins', sans-serif;
+  width: 100%;
 }
 
 /* Top Footer */
 .footer__top {
-  padding: 30px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 35px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;          /* FIX */
+  gap: 20px;                /* FIX */
 }
 
 .footer__top__logo a {
   display: inline-block;
   font-weight: 700;
-  font-size: 24px;
+  font-size: 26px;
   color: #ffffff;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: 0.3s;
 }
 .footer__top__logo a:hover {
   color: #00bfe7;
 }
 
-.footer__top__social a {
-  display: inline-block;
-  font-size: 15px;
-  color: #ffffff;
-  height: 40px;
-  width: 40px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 50%;
-  line-height: 44px;
-  text-align: center;
-  margin-right: 6px;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px) saturate(180%);
+.footer__top__social {
+  display: flex;
+  gap: 10px;                /* FIX */
 }
-.footer__top__social a:last-child {
-  margin-right: 0;
+.footer__top__social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  color: #ffffff;
+  height: 45px;
+  width: 45px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+  transition: 0.3s;
+  backdrop-filter: blur(10px);
 }
 .footer__top__social a:hover {
-  background: rgba(0,191,231,0.2);
+  background: rgba(0,191,231,0.25);
   color: #00bfe7;
-  box-shadow: 0 0 15px rgba(0,191,231,0.5);
+  box-shadow: 0 0 10px rgba(0,191,231,0.5);
   transform: scale(1.1);
 }
 
 /* Footer Options */
 .footer__option {
-  padding: 75px 0 35px;
+  padding: 70px 20px 40px;
   display: flex;
   flex-wrap: wrap;
-  gap: 40px;
+  gap: 30px;                /* FIX */
+  justify-content: space-between;
 }
 
 .footer__option__item {
-  flex: 1 1 250px;
-  position: relative;
-  background: rgba(255,255,255,0.03);
-  border-radius: 20px;
-  padding: 25px;
-  backdrop-filter: blur(15px) saturate(180%);
-  -webkit-backdrop-filter: blur(15px) saturate(180%);
-  transition: all 0.4s ease;
+  flex: 1 1 280px;          /* FIX */
+  min-height: 220px;        /* FIX */
+  background: rgba(255,255,255,0.05);
+  border-radius: 18px;
+  padding: 28px;
+  backdrop-filter: blur(15px);
+  transition: 0.4s;
 }
 .footer__option__item:hover {
-  box-shadow: 0 10px 25px rgba(0,191,231,0.3),
-              inset 0 0 20px rgba(255,255,255,0.05);
+  box-shadow: 0 10px 25px rgba(0,191,231,0.25),
+              inset 0 0 15px rgba(255,255,255,0.05);
 }
 
-/* Footer Titles & Links */
+/* Titles */
 .footer__option__item h5 {
   color: #ffffff;
   font-weight: 700;
-  margin-bottom: 25px;
+  margin-bottom: 22px;
 }
+
 .footer__option__item p {
   color: #adadad;
-  font-weight: 300;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
+}
+
+/* Links */
+.footer__option__item ul {
+  padding-left: 0;
+}
+.footer__option__item ul li {
+  list-style: none;
 }
 .footer__option__item ul li a {
   position: relative;
   display: inline-block;
   color: #adadad;
   font-size: 16px;
-  font-weight: 300;
-  line-height: 32px;
-  transition: all 0.3s ease;
-  padding-bottom: 4px; /* হালকা স্পেস লিঙ্ক এবং হোভার লাইনের জন্য */
+  line-height: 28px;
+  transition: 0.3s;
+  padding-bottom: 5px;
 }
 .footer__option__item ul li a::after {
   content: "";
   position: absolute;
+  width: 0%;
+  height: 2px;
   left: 0;
   bottom: 0;
-  width: 0%;
-  height: 3px; /* হালকা গ্লাস বার */
-  background: rgba(0, 191, 231, 0.5);
+  background: rgba(0,191,231,0.7);
+  transition: 0.3s;
   border-radius: 2px;
-  backdrop-filter: blur(6px) saturate(200%);
-  -webkit-backdrop-filter: blur(6px) saturate(200%);
-  transition: all 0.3s ease;
 }
-
 .footer__option__item ul li a:hover::after {
   width: 100%;
-  background: rgba(0, 191, 231, 0.7);
-  box-shadow: 0 0 8px rgba(0, 191, 231, 0.6);
 }
 .footer__option__item ul li a:hover {
   color: #00bfe7;
@@ -1123,65 +1128,55 @@ body {
   position: relative;
 }
 .footer__option__item form input {
-  height: 50px;
+  height: 48px;
   width: 100%;
   padding-left: 20px;
   border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.05);
-  color: #adadad;
-  font-size: 16px;
+  background: rgba(255,255,255,0.07);
+  color: #ffffff;
   border-radius: 12px;
-  backdrop-filter: blur(10px) saturate(180%);
-  transition: all 0.3s ease;
-}
-.footer__option__item form input::placeholder {
-  color: #adadad;
+  transition: 0.3s;
 }
 .footer__option__item form input:focus {
   border-color: #00bfe7;
-  box-shadow: 0 0 15px rgba(0,191,231,0.5);
+  box-shadow: 0 0 12px rgba(0,191,231,0.5);
   outline: none;
 }
 .footer__option__item form button {
-  font-size: 20px;
-  color: #ffffff;
-  border: none;
-  height: 50px;
+  height: 48px;
   width: 50px;
   background: #00bfe7;
   border-radius: 12px;
-  line-height: 50px;
-  text-align: center;
+  border: none;
+  color: #ffffff;
   position: absolute;
   right: 0;
   top: 0;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: 0.3s;
 }
 .footer__option__item form button:hover {
-  box-shadow: 0 0 15px rgba(0,191,231,0.6);
   transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(0,191,231,0.5);
 }
 
-/* Footer Copyright */
+/* Copyright */
 .footer__copyright {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 30px 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 25px 10px;
   text-align: center;
 }
 .footer__copyright__text {
-  font-weight: 300;
   color: #adadad;
-  margin-bottom: 0;
+  margin: 0;
+  font-weight: 300;
 }
-.footer__copyright__text i,
 .footer__copyright__text a {
   color: #00bfe7;
-  transition: all 0.3s ease;
 }
-.footer__copyright__text a:hover {
-  text-decoration: underline;
-}
+
+
+
 
 /*---------------------
   Breadcrumb
