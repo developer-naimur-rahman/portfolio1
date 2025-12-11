@@ -182,3 +182,51 @@
     });
 
 })(jQuery);
+
+// ==============================
+// INTRO VIDEO PLAYER SCRIPT
+// ==============================
+
+const video = document.getElementById("introVideo");
+const playBtn = document.getElementById("playBtn");
+const progress = document.getElementById("progress");
+const time = document.getElementById("time");
+const volume = document.getElementById("volume");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+// Play / Pause
+playBtn.addEventListener("click", () => {
+  if (video.paused) {
+    video.play();
+    playBtn.textContent = "⏸";
+  } else {
+    video.pause();
+    playBtn.textContent = "▶";
+  }
+});
+
+// Update Progress Bar
+video.addEventListener("timeupdate", () => {
+  const value = (video.currentTime / video.duration) * 100;
+  progress.value = value;
+
+  let mins = Math.floor(video.currentTime / 60);
+  let secs = Math.floor(video.currentTime % 60);
+  if (secs < 10) secs = "0" + secs;
+  time.textContent = `${mins}:${secs}`;
+});
+
+// Seek Video
+progress.addEventListener("input", () => {
+  video.currentTime = (progress.value * video.duration) / 100;
+});
+
+// Volume Control
+volume.addEventListener("input", () => {
+  video.volume = volume.value;
+});
+
+// Fullscreen Mode
+fullscreenBtn.addEventListener("click", () => {
+  if (video.requestFullscreen) video.requestFullscreen();
+});
