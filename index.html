@@ -183,8 +183,13 @@
 
     <!-- Video Container -->
     <div class="video-wrapper">
-        <video id="introVideo" src="/img/video/motion of naimur web 2.mp4"></video>
+        <video id="introVideo" 
+               src="/img/video/motion of naimur web 2.mp4" 
+               poster="/img/video/thumbnail.jpg" 
+               preload="metadata">
+        </video>
 
+        <!-- Custom Controls -->
         <div class="controls">
             <button id="playBtn">▶</button>
             <input type="range" id="progress" value="0">
