@@ -2232,7 +2232,7 @@ body, .services, .specialty {
   Contact Widget
 -----------------------*/
 .contact-widget {
-  background: #100028;
+  background: #080809;
   padding-bottom: 70px;
 }
 
@@ -2273,7 +2273,7 @@ body, .services, .specialty {
   Contact
 -----------------------*/
 .contact {
-  background: #100028;
+  background: #080809;
   padding-top: 0;
   overflow: hidden;
 }
@@ -3244,7 +3244,7 @@ h4, h5 {
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    background-color: #060011;
+    background-color: #0e0d0e;
 }
 
 .faq-section {
