@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,154 +9,353 @@
 <link rel="stylesheet" href="css/bootstrap.min.css">
 
 <style>
-body{font-family:'Josefin Sans',sans-serif;background:#f5f5f5;margin:0}
-header{background:#fff;padding:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-header img{height:50px}
-#dashboard-controls{text-align:center;margin:20px}
-#projects{display:flex;flex-wrap:wrap;justify-content:center}
-.card{background:#fff;border-radius:10px;margin:10px;padding:16px;width:360px;
-box-shadow:0 4px 12px rgba(0,0,0,.1);cursor:pointer}
-.card:hover{transform:scale(1.02)}
-.badge{padding:2px 6px;border-radius:4px;font-size:12px;color:#fff}
-.details{display:none;margin-top:8px;font-size:14px}
-.copy-link{color:blue;cursor:pointer;text-decoration:underline}
+body {
+    font-family: 'Josefin Sans', sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+}
+
+header {
+    background: #fff;
+    padding: 10px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+header img { height: 50px; }
+
+header nav a {
+    margin-left: 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+#dashboard-controls {
+    text-align: center;
+    margin: 20px;
+}
+
+#dashboard-container {
+    display: flex;
+    gap: 20px;
+    padding: 0 20px 20px 20px;
+    flex-wrap: wrap;
+}
+
+#projects {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 300px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 5px solid #ccc;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card.active {
+    background: #e0f7fa;
+    border-left-color: #007bff;
+}
+
+.badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #fff;
+}
+
+#detail-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.1);
+    max-height: 80vh;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.detail-item {
+    flex: 1 1 auto;
+    min-width: 150px;
+    padding: 10px;
+    border-radius: 6px;
+    color: #fff;
+    word-break: break-word;
+}
+
+.copy-link {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media(max-width: 768px) {
+    #dashboard-container {
+        flex-direction: column;
+    }
+    #projects {
+        width: 100%;
+    }
+    #detail-card {
+        width: 100%;
+    }
+}
 </style>
 </head>
-
 <body>
 
 <header>
-<div class="container d-flex justify-content-between align-items-center">
-<a href="./index.html"><img src="img/motion of naimur -Website Header logo 250-100.png"></a>
-<nav>
-<a href="./index.html">Home</a> |
-<a href="./portfolio.html">Work</a> |
-<a href="./services.html">Services</a> |
-<a href="./about.html">About</a>
-</nav>
-</div>
+    <div class="container d-flex justify-content-between align-items-center">
+        <a href="./index.html"><img src="img/motion of naimur -Website Header logo 250-100.png" alt="Logo"></a>
+        <nav>
+            <a href="./index.html">Home</a> |
+            <a href="./portfolio.html">Work</a> |
+            <a href="./services.html">Services</a> |
+            <a href="./about.html">About</a>
+        </nav>
+    </div>
 </header>
 
 <div id="dashboard-controls">
-<input type="text" id="searchInput" placeholder="Search Editor / Category / Tags">
-<select id="statusFilter"><option value="">All Status</option></select>
-<select id="priorityFilter"><option value="">All Priority</option></select>
+    <input type="text" id="searchInput" placeholder="Search Editor / Category / Tags">
+    <select id="statusFilter"><option value="">All Status</option></select>
+    <select id="priorityFilter"><option value="">All Priority</option></select>
+    <select id="editorFilter"><option value="">All Editors</option></select>
+    <select id="categoryFilter"><option value="">All Categories</option></select>
 </div>
 
-<div id="projects"></div>
+<div id="dashboard-container">
+    <div id="projects"></div>
+    <div id="detail-card">
+        <p>Select a project to see details here</p>
+    </div>
+</div>
 
 <script>
-const sheetAPI =
-"https://docs.google.com/spreadsheets/d/1-e2d2YHccBfhSYsdP4CT53txoR6YzTUGxnFQCOiDkZc/gviz/tq?tqx=out:json&gid=0";
+const sheetAPI = "https://docs.google.com/spreadsheets/d/1-e2d2YHccBfhSYsdP4CT53txoR6YzTUGxnFQCOiDkZc/gviz/tq?tqx=out:json&gid=0";
 
-let allProjects=[];
+let allProjects = [];
+let activeCard = null;
 
-function fetchProjects(){
-fetch(sheetAPI)
-.then(r=>r.text())
-.then(t=>{
-const json=JSON.parse(t.substring(47).slice(0,-2));
+// Field colors
+const colors = {
+    status: "#ff6b6b",
+    priority: "#ffa500",
+    editor: "#4caf50",
+    category: "#1abc9c",
+    deadline: "#2196f3",
+    duration: "#8e44ad",
+    payment: "#e67e22",
+    raw: "#f39c12",
+    script: "#d35400",
+    revision: "#c0392b",
+    notes: "#16a085",
+    feedback: "#2ecc71",
+    music: "#9b59b6",
+    vo: "#34495e",
+    graphics: "#e74c3c",
+    render: "#27ae60",
+    fileSize: "#2980b9",
+    source: "#f1c40f",
+    language: "#e84393",
+    completion: "#d63031",
+    approval: "#fd79a8",
+    review: "#6c5ce7",
+    tags: "#00b894",
+    default: "#7f8c8d"
+};
 
-allProjects=json.table.rows.map(r=>({
-SL:r.c[0]?.v||"",
-category:r.c[1]?.v||"-",
-format:r.c[2]?.v||"-",
-duration:r.c[3]?.v||"-",
-quantity:r.c[4]?.v||"-",
-status:r.c[5]?.v||"-",
-editor:r.c[6]?.v||"-",
-payment:r.c[7]?.v||"-",
-rawLink:r.c[8]?.v||"-",
-editedLink:r.c[9]?.v||"-",
-revisionLink:r.c[10]?.v||"-",
-rare:r.c[11]?.v||"-",
-frontName:r.c[12]?.v||"-",
-color:r.c[13]?.v||"#000",
-notes:r.c[14]?.v||"-",
-clientFeedback:r.c[15]?.v||"-",
-music:r.c[16]?.v||"-",
-vo:r.c[17]?.v||"-",
-graphics:r.c[18]?.v||"-",
-deadline:r.c[19]?.v||"-",
-priority:r.c[20]?.v||"-",
-tags:r.c[28]?.v||"-"
-}));
+// Fetch data from Google Sheet
+function fetchProjects() {
+    fetch(sheetAPI)
+        .then(res => res.text())
+        .then(text => {
+            const json = JSON.parse(text.substring(47).slice(0, -2));
 
-// ✅ NEWEST FIRST (latest sheet row first)
-allProjects.sort((a,b)=>Number(b.SL)-Number(a.SL));
+            allProjects = json.table.rows.map(r => ({
+                SL: r.c[0]?.v || "",
+                projectName: r.c[1]?.v || "-",
+                category: r.c[2]?.v || "-",
+                duration: r.c[3]?.v || "-",
+                quantity: r.c[4]?.v || "-",
+                status: r.c[5]?.v || "-",
+                editor: r.c[6]?.v || "-",
+                format: r.c[7]?.v || "-",
+                rawLink: r.c[8]?.v || "-",
+                scriptLink: r.c[9]?.v || "-",
+                revisionLink: r.c[10]?.v || "-",
+                rare: r.c[11]?.v || "-",
+                frontName: r.c[12]?.v || "-",
+                color: r.c[13]?.v || "#000",
+                notes: r.c[14]?.v || "-",
+                clientFeedback: r.c[15]?.v || "-",
+                music: r.c[16]?.v || "-",
+                vo: r.c[17]?.v || "-",
+                graphics: r.c[18]?.v || "-",
+                deadline: r.c[19]?.v || "-",
+                priority: r.c[20]?.v || "-",
+                renderFormat: r.c[21]?.v || "-",
+                fileSize: r.c[22]?.v || "-",
+                sourceFormat: r.c[23]?.v || "-",
+                language: r.c[24]?.v || "-",
+                completionDate: r.c[25]?.v || "-",
+                approvalStatus: r.c[26]?.v || "-",
+                reviewNotes: r.c[27]?.v || "-",
+                tags: r.c[28]?.v || "-"
+            }));
 
-populateFilters();
-renderProjects(allProjects);
-});
+            // Reverse for newest first
+            allProjects.reverse();
+
+            populateFilters();
+            renderProjects(allProjects);
+        });
 }
 
-function renderProjects(list){
-const box=document.getElementById("projects");
-box.innerHTML="";
-list.forEach(p=>{
-box.innerHTML+=`
-<div class="card" onclick="toggle(this)" style="border-left:5px solid ${p.color}">
-<h5>${p.category} (${p.format})
-<span class="badge" style="background:${p.priority==='High'?'red':p.priority==='Medium'?'orange':'green'}">${p.priority}</span>
-</h5>
-<p><b>Editor:</b> ${p.editor}</p>
+// Render project cards
+function renderProjects(list) {
+    const box = document.getElementById("projects");
+    box.innerHTML = "";
 
-<div class="details">
-<p><b>Status:</b> ${p.status}</p>
-<p><b>Duration:</b> ${p.duration} | Qty: ${p.quantity}</p>
-<p><b>Payment:</b> ${p.payment}</p>
-<p><b>Raw:</b> <span class="copy-link" onclick="copy('${p.rawLink}')">${p.rawLink}</span></p>
-<p><b>Edited:</b> <span class="copy-link" onclick="copy('${p.editedLink}')">${p.editedLink}</span></p>
-<p><b>Revision:</b> <span class="copy-link" onclick="copy('${p.revisionLink}')">${p.revisionLink}</span></p>
-<p><b>Instruction:</b> ${p.rare}</p>
-<p><b>Notes:</b> ${p.notes}</p>
-<p><b>Feedback:</b> ${p.clientFeedback}</p>
-<p><b>Music:</b> ${p.music} | VO: ${p.vo}</p>
-<p><b>Graphics:</b> ${p.graphics}</p>
-<p><b>Deadline:</b> ${p.deadline}</p>
-<p><b>Tags:</b> ${p.tags}</p>
-</div>
-</div>`;
-});
+    list.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.borderLeftColor = p.color;
+        card.innerHTML = `
+            <h5 style="margin-bottom:5px;">${p.projectName} (${p.category} | ${p.format})
+                <span class="badge" style="background:${p.priority==='High'?'red':p.priority==='Medium'?'orange':'green'}">
+                    ${p.priority}
+                </span>
+            </h5>
+            <p style="margin:0;font-size:14px;"><b>Editor:</b> ${p.editor}</p>
+        `;
+        card.onclick = () => showDetails(card, p);
+        box.appendChild(card);
+    });
 }
 
-function toggle(card){
-const d=card.querySelector(".details");
-d.style.display=d.style.display==="block"?"none":"block";
+// Show project details
+function showDetails(card, project) {
+    if(activeCard) activeCard.classList.remove("active");
+    card.classList.add("active");
+    activeCard = card;
+
+    const detailBox = document.getElementById("detail-card");
+    detailBox.innerHTML = "";
+
+    const fields = [
+        {name: "Status", value: project.status, color: colors.status},
+        {name: "Priority", value: project.priority, color: colors.priority},
+        {name: "Editor", value: project.editor, color: colors.editor},
+        {name: "Category", value: project.category, color: colors.category},
+        {name: "Deadline", value: project.deadline, color: colors.deadline},
+        {name: "Duration / Qty", value: `${project.duration} | ${project.quantity}`, color: colors.duration},
+        {name: "Payment", value: project.payment || "-", color: colors.payment},
+        {name: "Raw Files", value: project.rawLink, color: colors.raw, isLink: true},
+        {name: "Script & Others", value: project.scriptLink, color: colors.script, isLink: true},
+        {name: "Revision", value: project.revisionLink, color: colors.revision, isLink: true},
+        {name: "Instruction", value: project.rare, color: colors.notes},
+        {name: "Notes", value: project.notes, color: colors.notes},
+        {name: "Feedback", value: project.clientFeedback, color: colors.feedback},
+        {name: "Music", value: project.music, color: colors.music},
+        {name: "VO", value: project.vo, color: colors.vo},
+        {name: "Graphics / Animation", value: project.graphics, color: colors.graphics},
+        {name: "Render Format", value: project.renderFormat, color: colors.render},
+        {name: "File Size", value: project.fileSize, color: colors.fileSize},
+        {name: "Source Format", value: project.sourceFormat, color: colors.source},
+        {name: "Language", value: project.language, color: colors.language},
+        {name: "Completion Date", value: project.completionDate, color: colors.completion},
+        {name: "Approval Status", value: project.approvalStatus, color: colors.approval},
+        {name: "Review Notes", value: project.reviewNotes, color: colors.review},
+        {name: "Tags", value: project.tags, color: colors.tags}
+    ];
+
+    fields.forEach(f => {
+        if(f.value && f.value !== "-") {
+            const div = document.createElement("div");
+            div.className = "detail-item";
+            div.style.background = f.color;
+
+            if(f.isLink) {
+                div.innerHTML = `${f.name}: <span class="copy-link" onclick="copy('${f.value}')">${f.value}</span>`;
+            } else {
+                div.textContent = `${f.name}: ${f.value}`;
+            }
+
+            detailBox.appendChild(div);
+        }
+    });
 }
 
-function copy(t){
-navigator.clipboard.writeText(t);
-alert("Copied");
+// Copy text
+function copy(text) {
+    navigator.clipboard.writeText(text);
+    alert("Copied");
 }
 
-function populateFilters(){
-const s=document.getElementById("statusFilter");
-const p=document.getElementById("priorityFilter");
-s.innerHTML='<option value="">All Status</option>';
-p.innerHTML='<option value="">All Priority</option>';
+// Populate filters
+function populateFilters() {
+    const statusF = document.getElementById("statusFilter");
+    const priorityF = document.getElementById("priorityFilter");
+    const editorF = document.getElementById("editorFilter");
+    const categoryF = document.getElementById("categoryFilter");
 
-[...new Set(allProjects.map(x=>x.status))].forEach(v=>v&& (s.innerHTML+=`<option>${v}</option>`));
-[...new Set(allProjects.map(x=>x.priority))].forEach(v=>v&& (p.innerHTML+=`<option>${v}</option>`));
+    statusF.innerHTML = '<option value="">All Status</option>';
+    priorityF.innerHTML = '<option value="">All Priority</option>';
+    editorF.innerHTML = '<option value="">All Editors</option>';
+    categoryF.innerHTML = '<option value="">All Categories</option>';
+
+    [...new Set(allProjects.map(x => x.status))].forEach(v => v && (statusF.innerHTML += `<option>${v}</option>`));
+    [...new Set(allProjects.map(x => x.priority))].forEach(v => v && (priorityF.innerHTML += `<option>${v}</option>`));
+    [...new Set(allProjects.map(x => x.editor))].forEach(v => v && (editorF.innerHTML += `<option>${v}</option>`));
+    [...new Set(allProjects.map(x => x.category))].forEach(v => v && (categoryF.innerHTML += `<option>${v}</option>`));
 }
 
-document.getElementById("searchInput").oninput=filter;
-document.getElementById("statusFilter").onchange=filter;
-document.getElementById("priorityFilter").onchange=filter;
+// Filters
+document.getElementById("searchInput").oninput = filter;
+document.getElementById("statusFilter").onchange = filter;
+document.getElementById("priorityFilter").onchange = filter;
+document.getElementById("editorFilter").onchange = filter;
+document.getElementById("categoryFilter").onchange = filter;
 
-function filter(){
-const t=searchInput.value.toLowerCase();
-const s=statusFilter.value;
-const p=priorityFilter.value;
+function filter() {
+    const t = searchInput.value.toLowerCase();
+    const s = statusFilter.value;
+    const p = priorityFilter.value;
+    const e = editorFilter.value;
+    const c = categoryFilter.value;
 
-renderProjects(allProjects.filter(x=>
-(x.category+x.editor+x.tags).toLowerCase().includes(t) &&
-(!s||x.status===s)&&(!p||x.priority===p)
-));
+    const filtered = allProjects.filter(x =>
+        (x.projectName + x.category + x.editor + x.tags).toLowerCase().includes(t) &&
+        (!s || x.status === s) &&
+        (!p || x.priority === p) &&
+        (!e || x.editor === e) &&
+        (!c || x.category === c)
+    );
+
+    renderProjects(filtered);
+    document.getElementById("detail-card").innerHTML = "<p>Select a project to see details here</p>";
+    activeCard = null;
 }
 
 fetchProjects();
 </script>
-
 </body>
 </html>
