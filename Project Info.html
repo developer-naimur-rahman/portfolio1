@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Projects Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+
+<style>
+body{font-family:'Josefin Sans',sans-serif;background:#f5f5f5;margin:0}
+header{background:#fff;padding:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+header img{height:50px}
+#dashboard-controls{text-align:center;margin:20px}
+#projects{display:flex;flex-wrap:wrap;justify-content:center}
+.card{background:#fff;border-radius:10px;margin:10px;padding:16px;width:360px;
+box-shadow:0 4px 12px rgba(0,0,0,.1);cursor:pointer}
+.card:hover{transform:scale(1.02)}
+.badge{padding:2px 6px;border-radius:4px;font-size:12px;color:#fff}
+.details{display:none;margin-top:8px;font-size:14px}
+.copy-link{color:blue;cursor:pointer;text-decoration:underline}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="container d-flex justify-content-between align-items-center">
+<a href="./index.html"><img src="img/motion of naimur -Website Header logo 250-100.png"></a>
+<nav>
+<a href="./index.html">Home</a> |
+<a href="./portfolio.html">Work</a> |
+<a href="./services.html">Services</a> |
+<a href="./about.html">About</a>
+</nav>
+</div>
+</header>
+
+<div id="dashboard-controls">
+<input type="text" id="searchInput" placeholder="Search Editor / Category / Tags">
+<select id="statusFilter"><option value="">All Status</option></select>
+<select id="priorityFilter"><option value="">All Priority</option></select>
+</div>
+
+<div id="projects"></div>
+
+<script>
+const sheetAPI =
+"https://docs.google.com/spreadsheets/d/1-e2d2YHccBfhSYsdP4CT53txoR6YzTUGxnFQCOiDkZc/gviz/tq?tqx=out:json&gid=0";
+
+let allProjects=[];
+
+function fetchProjects(){
+fetch(sheetAPI)
+.then(r=>r.text())
+.then(t=>{
+const json=JSON.parse(t.substring(47).slice(0,-2));
+
+allProjects=json.table.rows.map(r=>({
+SL:r.c[0]?.v||"",
+category:r.c[1]?.v||"-",
+format:r.c[2]?.v||"-",
+duration:r.c[3]?.v||"-",
+quantity:r.c[4]?.v||"-",
+status:r.c[5]?.v||"-",
+editor:r.c[6]?.v||"-",
+payment:r.c[7]?.v||"-",
+rawLink:r.c[8]?.v||"-",
+editedLink:r.c[9]?.v||"-",
+revisionLink:r.c[10]?.v||"-",
+rare:r.c[11]?.v||"-",
+frontName:r.c[12]?.v||"-",
+color:r.c[13]?.v||"#000",
+notes:r.c[14]?.v||"-",
+clientFeedback:r.c[15]?.v||"-",
+music:r.c[16]?.v||"-",
+vo:r.c[17]?.v||"-",
+graphics:r.c[18]?.v||"-",
+deadline:r.c[19]?.v||"-",
+priority:r.c[20]?.v||"-",
+tags:r.c[28]?.v||"-"
+}));
+
+// ✅ NEWEST FIRST (latest sheet row first)
+allProjects.sort((a,b)=>Number(b.SL)-Number(a.SL));
+
+populateFilters();
+renderProjects(allProjects);
+});
+}
+
+function renderProjects(list){
+const box=document.getElementById("projects");
+box.innerHTML="";
+list.forEach(p=>{
+box.innerHTML+=`
+<div class="card" onclick="toggle(this)" style="border-left:5px solid ${p.color}">
+<h5>${p.category} (${p.format})
+<span class="badge" style="background:${p.priority==='High'?'red':p.priority==='Medium'?'orange':'green'}">${p.priority}</span>
+</h5>
+<p><b>Editor:</b> ${p.editor}</p>
+
+<div class="details">
+<p><b>Status:</b> ${p.status}</p>
+<p><b>Duration:</b> ${p.duration} | Qty: ${p.quantity}</p>
+<p><b>Payment:</b> ${p.payment}</p>
+<p><b>Raw:</b> <span class="copy-link" onclick="copy('${p.rawLink}')">${p.rawLink}</span></p>
+<p><b>Edited:</b> <span class="copy-link" onclick="copy('${p.editedLink}')">${p.editedLink}</span></p>
+<p><b>Revision:</b> <span class="copy-link" onclick="copy('${p.revisionLink}')">${p.revisionLink}</span></p>
+<p><b>Instruction:</b> ${p.rare}</p>
+<p><b>Notes:</b> ${p.notes}</p>
+<p><b>Feedback:</b> ${p.clientFeedback}</p>
+<p><b>Music:</b> ${p.music} | VO: ${p.vo}</p>
+<p><b>Graphics:</b> ${p.graphics}</p>
+<p><b>Deadline:</b> ${p.deadline}</p>
+<p><b>Tags:</b> ${p.tags}</p>
+</div>
+</div>`;
+});
+}
+
+function toggle(card){
+const d=card.querySelector(".details");
+d.style.display=d.style.display==="block"?"none":"block";
+}
+
+function copy(t){
+navigator.clipboard.writeText(t);
+alert("Copied");
+}
+
+function populateFilters(){
+const s=document.getElementById("statusFilter");
+const p=document.getElementById("priorityFilter");
+s.innerHTML='<option value="">All Status</option>';
+p.innerHTML='<option value="">All Priority</option>';
+
+[...new Set(allProjects.map(x=>x.status))].forEach(v=>v&& (s.innerHTML+=`<option>${v}</option>`));
+[...new Set(allProjects.map(x=>x.priority))].forEach(v=>v&& (p.innerHTML+=`<option>${v}</option>`));
+}
+
+document.getElementById("searchInput").oninput=filter;
+document.getElementById("statusFilter").onchange=filter;
+document.getElementById("priorityFilter").onchange=filter;
+
+function filter(){
+const t=searchInput.value.toLowerCase();
+const s=statusFilter.value;
+const p=priorityFilter.value;
+
+renderProjects(allProjects.filter(x=>
+(x.category+x.editor+x.tags).toLowerCase().includes(t) &&
+(!s||x.status===s)&&(!p||x.priority===p)
+));
+}
+
+fetchProjects();
+</script>
+
+</body>
+</html>
