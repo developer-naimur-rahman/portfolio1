@@ -230,3 +230,15 @@ volume.addEventListener("input", () => {
 fullscreenBtn.addEventListener("click", () => {
   if (video.requestFullscreen) video.requestFullscreen();
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
+
+  dropdownToggles.forEach(toggle => {
+    toggle.addEventListener("click", function (e) {
+      e.preventDefault();
+      this.parentElement.classList.toggle("open");
+    });
+  });
+});
