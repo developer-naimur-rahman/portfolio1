@@ -440,6 +440,24 @@ button:hover,
 }
 
 
+@media (max-width: 991px) {
+  .header__nav__menu ul li .dropdown {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    display: none;
+    background: #111;
+  }
+
+  .header__nav__menu ul li .dropdown li a {
+    color: #fff;
+  }
+
+  .header__nav__menu ul li.open .dropdown {
+    display: block;
+  }
+}
+
 
 
 
