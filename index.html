@@ -1841,6 +1841,35 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ==========================
+    // Mobile Menu Parent Click
+    // ==========================
+    // সব parent menu items নিয়ে আসা
+    const menuItems = document.querySelectorAll('.header__nav__menu ul li');
+
+    menuItems.forEach(item => {
+        // parent link
+        const link = item.querySelector('a');
+
+        // parent-এর dropdown (submenu)
+        const dropdown = item.querySelector('.dropdown');
+
+        // শুধুমাত্র যাদের dropdown আছে
+        if(dropdown) {
+            // link এ click event add করা
+            link.addEventListener('click', function(e) {
+                e.preventDefault(); // prevent link default behavior (যাতে page reload না হয়)
+
+                // parent item এ .open ক্লাস toggle করা
+                // CSS অনুযায়ী .open থাকলে dropdown দেখাবে
+                item.classList.toggle('open');
+            });
+        }
+    });
+});
+</script>
 
 
 
