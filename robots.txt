@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://motionofnaimur.netlify.app/sitemap.xml

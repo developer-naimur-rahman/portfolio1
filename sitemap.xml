@@ -1,47 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+  <!-- Home -->
+  <url>
+    <loc>https://motionofnaimur.netlify.app/index.html</loc>
+    <priority>1.0</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
 
-<url>
-  <loc>https://motionofnaimur.netlify.app/</loc>
-  <lastmod>2024-10-10T22:11:33+00:00</lastmod>
-  <priority>1.00</priority>
-</url>
-<url>
-  <loc>https://motionofnaimur.netlify.app/about</loc>
-  <lastmod>2024-10-10T22:11:33+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://motionofnaimur.netlify.app/portfolio</loc>
-  <lastmod>2024-10-10T22:11:33+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://motionofnaimur.netlify.app/services</loc>
-  <lastmod>2024-10-10T22:11:33+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://motionofnaimur.netlify.app/blog</loc>
-  <lastmod>2024-10-10T22:11:33+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://motionofnaimur.netlify.app/hire</loc>
-  <lastmod>2024-10-10T22:11:33+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://motionofnaimur.netlify.app/contact</loc>
-  <lastmod>2024-10-10T22:11:33+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
+  <!-- Services -->
+  <url>
+    <loc>https://motionofnaimur.netlify.app/services.html</loc>
+    <priority>0.8</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
 
+  <!-- Contact -->
+  <url>
+    <loc>https://motionofnaimur.netlify.app/contact.html</loc>
+    <priority>0.8</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
+
+  <!-- Footer Pages -->
+  <url>
+    <loc>https://motionofnaimur.netlify.app/about.html</loc>
+    <priority>0.7</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
+
+  <url>
+    <loc>https://motionofnaimur.netlify.app/hire.html</loc>
+    <priority>0.7</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
+
+  <url>
+    <loc>https://motionofnaimur.netlify.app/Project%20Info.html</loc>
+    <priority>0.7</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
+
+  <!-- Works Categories -->
+  <url>
+    <loc>https://motionofnaimur.netlify.app/UGC%20Ads.html</loc>
+    <priority>0.7</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
+
+  <url>
+    <loc>https://motionofnaimur.netlify.app/YouTube%20Content%20Editing.html</loc>
+    <priority>0.7</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
+
+  <url>
+    <loc>https://motionofnaimur.netlify.app/Promotional%20&%20Brand%20Videos.html</loc>
+    <priority>0.7</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
+
+  <url>
+    <loc>https://motionofnaimur.netlify.app/Documentary%20&%20Storytelling.html</loc>
+    <priority>0.7</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
+
+  <url>
+    <loc>https://motionofnaimur.netlify.app/Short%20form.html</loc>
+    <priority>0.7</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
+
+  <url>
+    <loc>https://motionofnaimur.netlify.app/ui%20animation</loc>
+    <priority>0.7</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
+
+  <url>
+    <loc>https://motionofnaimur.netlify.app/saas.html</loc>
+    <priority>0.7</priority>
+    <lastmod>2026-01-30</lastmod>
+  </url>
 
 </urlset>
