@@ -1493,9 +1493,9 @@ body, .services, .specialty {
 
 /* Holo Gradient Animation */
 @keyframes holoGradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Responsive */
@@ -2071,6 +2071,7 @@ body, .services, .specialty {
     0 0 30px rgba(80,120,255,0.25);
 }
 
+
 /* Holo Glass Overlay */
 .portfolio__item::before {
   content: "";
@@ -2103,7 +2104,7 @@ body, .services, .specialty {
 .portfolio__item__video {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16/9;
   display: flex;
   align-items: center;
   justify-content: center;
