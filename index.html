@@ -200,7 +200,7 @@
                     <video id="introVideo"
                         src="/img/video/motion of naimur web 2.mp4"
                         poster="/img/video/thumbnail.jpg"
-                        preload="metadata">
+                        preload="none">
                     </video>
 
                     <!-- Custom Controls -->
@@ -1863,6 +1863,32 @@ document.addEventListener("DOMContentLoaded", () => {
       wrapper.classList.add("vertical");
     }
   });
+});
+</script>
+
+<script>document.addEventListener("DOMContentLoaded", () => {
+    const video = document.getElementById("introVideo");
+    const playBtn = document.getElementById("playBtn");
+
+    // Prevent video from loading on page load
+    video.preload = "none";
+    video.src = ""; // src খালি রাখো যাতে লোড না হয়
+
+    // Play button click – lazy load video
+    playBtn.addEventListener("click", () => {
+        if (!video.src || video.src === window.location.href) {
+            video.src = "/img/video/motion of naimur web 2.mp4";
+            video.load();
+        }
+
+        if (video.paused) {
+            video.play();
+            playBtn.textContent = "❚❚"; // pause icon
+        } else {
+            video.pause();
+            playBtn.textContent = "▶"; // play icon
+        }
+    });
 });
 </script>
             <script>
