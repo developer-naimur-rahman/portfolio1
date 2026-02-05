@@ -200,7 +200,7 @@
                     <video id="introVideo"
                         src="/img/video/motion of naimur web 2.mp4"
                         poster="/img/video/thumbnail.jpg"
-                        preload="none">
+                        preload="metadata">
                     </video>
 
                     <!-- Custom Controls -->
@@ -1864,30 +1864,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-</script>
-
-<script>document.addEventListener("DOMContentLoaded", () => {
+<script>
+document.addEventListener("DOMContentLoaded", () => {
     const video = document.getElementById("introVideo");
     const playBtn = document.getElementById("playBtn");
 
-    // Prevent video from loading on page load
-    video.preload = "none";
-    video.src = ""; // src খালি রাখো যাতে লোড না হয়
+    // Lazy load flag
+    let isLoaded = false;
 
-    // Play button click – lazy load video
     playBtn.addEventListener("click", () => {
-        if (!video.src || video.src === window.location.href) {
+        // ভিডিও লোড না হলে lazy load
+        if (!isLoaded) {
             video.src = "/img/video/motion of naimur web 2.mp4";
+            video.preload = "auto"; // lazy load complete করার জন্য
             video.load();
-        }
+            isLoaded = true;
 
-        if (video.paused) {
-            video.play();
-            playBtn.textContent = "❚❚"; // pause icon
+            // ভিডিও ready হলে play কর
+            video.addEventListener("canplay", () => {
+                video.play();
+                playBtn.textContent = "❚❚"; // pause icon
+            }, { once: true }); // একবারের জন্য
         } else {
-            video.pause();
-            playBtn.textContent = "▶"; // play icon
+            // play/pause toggle
+            if (video.paused) {
+                video.play();
+                playBtn.textContent = "❚❚";
+            } else {
+                video.pause();
+                playBtn.textContent = "▶";
+            }
         }
+    });
+
+    // ভিডিও শেষ হলে icon রিসেট
+    video.addEventListener("ended", () => {
+        playBtn.textContent = "▶";
     });
 });
 </script>
