@@ -10,88 +10,72 @@
     <style>
         :root { --bg: #050508; --card: #0f0f16; --primary: #3b82f6; --border: rgba(255,255,255,0.06); --text: #ffffff; --text-sec: #94a3b8; }
         body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-        
-        /* Navigation */
         nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; border-bottom: 1px solid var(--border); background: rgba(5,5,8,0.8); backdrop-filter: blur(10px); position: sticky; top:0; z-index: 100; }
-        
-        .container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; transition: 0.3s; }
+        .container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
         .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; }
-        
-        /* Cards */
         .p-card { background: var(--card); border-radius: 20px; padding: 25px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
         .p-card:hover { border-color: var(--primary); transform: translateY(-3px); }
         
-        /* Full Page View */
         #project-view { display: none; background: var(--bg); min-height: 100vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 200; padding: 2rem 5%; box-sizing: border-box; }
-        
-        /* Form Layout */
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; }
         .full { grid-column: span 2; }
         .c-input { width: 100%; padding: 12px; background: #15151e; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
-        .c-label { font-size: 0.75rem; color: var(--text-sec); margin-bottom: 4px; display: block; font-weight: 600; }
+        .c-label { font-size: 0.75rem; color: var(--text-sec); margin-bottom: 4px; display: block; }
         
-        /* Tabs */
         .tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--border); margin-bottom: 25px; }
         .tab-btn { padding: 12px 20px; background: none; border: none; color: var(--text-sec); cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-        
-        /* Chat Area */
+        .tab-content { display: none; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         .chat-box { height: 400px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 12px; border: 1px solid #222; }
-        .bubble { padding: 12px 18px; border-radius: 18px; max-width: 75%; font-size: 0.9rem; line-height: 1.5; position: relative; }
+        .bubble { padding: 12px 18px; border-radius: 18px; max-width: 75%; font-size: 0.9rem; }
         .b-admin { background: #222; align-self: flex-start; border-bottom-left-radius: 2px; }
         .b-client { background: var(--primary); align-self: flex-end; border-bottom-right-radius: 2px; }
         
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
-        .btn:hover { opacity: 0.9; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; }
         .back-btn { background: none; border: 1px solid #333; color: var(--text-sec); padding: 8px 15px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div style="font-weight:800; font-size:1.4rem; letter-spacing:1px;">MOTION OF NAIMUR <span style="font-weight:300; color:var(--text-sec);">OS</span></div>
+        <div style="font-weight:800; font-size:1.4rem;">MOTION OF NAIMUR OS</div>
         <div style="display:flex; align-items:center; gap:15px;">
             <img id="u-pic" style="width:38px; height:38px; border-radius:50%; border:2px solid var(--primary);">
-            <button onclick="logout()" class="btn" style="background:#1a1a1a; border:1px solid #333; padding:8px 16px;">Logout</button>
+            <button onclick="logout()" style="background:#1a1a1a; color:white; border:1px solid #333; padding:8px 16px; border-radius:8px; cursor:pointer;">Logout</button>
         </div>
     </nav>
 
     <div id="main-dashboard" class="container">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
-            <h1 style="font-size:1.8rem;">Your Productions</h1>
+            <h1>Your Productions</h1>
             <button onclick="createProject()" class="btn"><i data-lucide="plus"></i> New Project</button>
         </div>
         <div id="project-list" class="project-grid">Syncing workspace...</div>
     </div>
 
     <div id="project-view">
-        <button class="back-btn" onclick="closeView()"><i data-lucide="arrow-left" size="18"></i> Back to Dashboard</button>
-        
-        <div style="display:flex; justify-content:space-between; align-items: flex-end; margin-bottom:30px;">
-            <h1 id="v-title" style="margin:0; font-size:2.2rem;">Project Name</h1>
-            <div id="v-status" style="color:var(--primary); font-weight:800; letter-spacing:1px;">STATUS</div>
+        <button class="back-btn" onclick="closeView()"><i data-lucide="arrow-left"></i> Back to Dashboard</button>
+        <div style="display:flex; justify-content:space-between; margin-bottom:30px;">
+            <h1 id="v-title">Project Name</h1>
+            <div id="v-status" style="color:var(--primary); font-weight:800;">STATUS</div>
         </div>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab(event, 'sec-det')">Project Details</button>
-            <button class="tab-btn" onclick="switchTab(event, 'sec-rev')">Revision Logs</button>
-            <button class="tab-btn" onclick="switchTab(event, 'sec-msg')">Messages</button>
+            <button class="tab-btn active" onclick="switchTab(event, 'sec-det')">Details</button>
+            <button class="tab-btn" onclick="switchTab(event, 'sec-msg')">Messages & Revisions</button>
         </div>
 
-        <div id="sec-det" class="tab-content">
-            <div class="form-grid" id="detail-inputs">
-                </div>
+        <div id="sec-det" class="tab-content" style="display:block;">
+            <div class="form-grid" id="detail-inputs"></div>
         </div>
 
-        <div id="sec-rev" class="tab-content" style="display:none;">
-            <div class="chat-box" id="rev-container">Revisions will appear here...</div>
-        </div>
-
-        <div id="sec-msg" class="tab-content" style="display:none;">
-            <div class="chat-box" id="chat-container">Loading conversation...</div>
+        <div id="sec-msg" class="tab-content">
+            <div class="chat-box" id="chat-container"></div>
             <div style="display:flex; gap:10px; margin-top:15px;">
-                <input id="chat-input" placeholder="Type your message..." class="c-input">
-                <button id="send-btn" class="btn" style="width:120px;">Send <i data-lucide="send" size="16"></i></button>
+                <input id="chat-input" placeholder="Type your message or revision request..." class="c-input">
+                <button id="send-btn" class="btn">Send <i data-lucide="send" size="16"></i></button>
             </div>
         </div>
     </div>
@@ -102,22 +86,25 @@
         let cache = [];
 
         async function sync() {
-            const res = await fetch(`${API}?sheet=Projects&email=${email}`);
-            cache = await res.json();
-            renderDashboard();
+            try {
+                const res = await fetch(`${API}?sheet=Projects&email=${email}`);
+                const data = await res.json();
+                // লেটেস্ট প্রজেক্ট সবার আগে দেখানোর জন্য সর্টিং (Reverse)
+                cache = data.reverse(); 
+                renderDashboard();
+            } catch(e) { console.error("Sync Error", e); }
         }
 
         function renderDashboard() {
-            if(!cache.length) { document.getElementById('project-list').innerHTML = "No projects found."; return; }
             document.getElementById('project-list').innerHTML = cache.map(p => `
                 <div class="p-card" onclick="openView('${p['Project ID']}')">
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                        <span style="font-size:0.7rem; color:var(--primary); font-weight:bold; text-transform:uppercase;">${p.Status || 'Active'}</span>
-                        <span style="font-size:0.7rem; color:var(--text-sec);">${p.Priority || 'Normal'}</span>
+                        <span style="font-size:0.7rem; color:var(--primary); font-weight:bold;">${p.Status || 'Active'}</span>
+                        <span style="font-size:0.7rem; color:var(--text-sec);">#${p['Project ID']}</span>
                     </div>
                     <h3 style="margin:0 0 15px 0;">${p['Project Name']}</h3>
                     <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
-                        <span style="color:var(--text-sec);"><i data-lucide="calendar" size="14"></i> ${p.Deadline}</span>
+                        <span><i data-lucide="calendar" size="14"></i> ${p.Deadline}</span>
                         <b>৳ ${p['Budget (BDT)']}</b>
                     </div>
                 </div>
@@ -130,21 +117,17 @@
             document.getElementById('v-title').innerText = p['Project Name'];
             document.getElementById('v-status').innerText = p.Status;
             
-            // Fill Details
             document.getElementById('detail-inputs').innerHTML = `
                 <div class="full"><label class="c-label">Footage Link</label><input class="c-input" value="${p['Footage Link']}" readonly></div>
-                <div><label class="c-label">Reference 1</label><input class="c-input" value="${p['Reference Link-1'] || ''}" readonly></div>
-                <div><label class="c-label">Reference 2</label><input class="c-input" value="${p['Reference Link-2'] || ''}" readonly></div>
+                <div><label class="c-label">Reference Link</label><input class="c-input" value="${p['Reference Link-1'] || ''}" readonly></div>
                 <div><label class="c-label">Deadline</label><input class="c-input" value="${p.Deadline}" readonly></div>
-                <div><label class="c-label">Contact</label><input class="c-input" value="${p.Number || ''}" readonly></div>
                 <div class="full"><label class="c-label">Notes</label><textarea class="c-input" style="height:100px;" readonly>${p.Notes || ''}</textarea></div>
-                <a href="${p['Delivery Link'] || '#'}" target="_blank" class="btn full" style="background:#059669; justify-content:center;">Download Delivery</a>
+                <a href="${p['Delivery Link'] || '#'}" target="_blank" class="btn full" style="background:#059669; justify-content:center;">Download Final Delivery</a>
             `;
 
             document.getElementById('main-dashboard').style.display = 'none';
             document.getElementById('project-view').style.display = 'block';
             document.getElementById('send-btn').onclick = () => sendMsg(id);
-            window.scrollTo(0,0);
             loadMessages(id);
         }
 
@@ -155,12 +138,8 @@
             evt.currentTarget.classList.add('active');
         }
 
-        function closeView() {
-            document.getElementById('main-dashboard').style.display = 'block';
-            document.getElementById('project-view').style.display = 'none';
-        }
-
         async function loadMessages(id) {
+            document.getElementById('chat-container').innerHTML = "Loading...";
             const res = await fetch(`${API}?sheet=Messages&pId=${id}`);
             const msgs = await res.json();
             document.getElementById('chat-container').innerHTML = msgs.map(m => `
@@ -168,7 +147,7 @@
                     <div style="font-size:0.7rem; opacity:0.7; margin-bottom:5px;">${m.From === email ? 'You' : 'Naimur'}</div>
                     ${m['Message Text']}
                 </div>
-            `).join('') || "No messages yet.";
+            `).join('') || "No conversation started yet.";
         }
 
         async function sendMsg(id) {
@@ -178,17 +157,9 @@
             loadMessages(id);
         }
 
-        // Logic for Create Project stays same as your sweetalert form
-        async function createProject() {
-            const { value: f } = await Swal.fire({
-                title: 'New Production Form', width: '800px', background: '#0f0f16', color: '#fff',
-                html: `<div class="form-grid">... (Your same form fields) ...</div>`,
-                preConfirm: () => ({ /* same as before */ })
-            });
-            if(f && f.name) {
-                // Fetch POST logic same as before
-                sync();
-            }
+        function closeView() {
+            document.getElementById('main-dashboard').style.display = 'block';
+            document.getElementById('project-view').style.display = 'none';
         }
 
         function logout() { localStorage.clear(); window.location.href = 'index.html'; }
