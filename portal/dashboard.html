@@ -1,187 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard | Motion Of Naimur</title>
-<style>
-body { font-family: Arial, sans-serif; margin:20px; background:#f4f6f8; }
-h1 { color:#333; }
-table { width:100%; border-collapse:collapse; margin-top:20px; background:#fff; box-shadow:0 0 10px rgba(0,0,0,0.05);}
-th, td { padding:12px; border:1px solid #ddd; text-align:left; }
-th { background:#007BFF; color:#fff; }
-tr:nth-child(even) { background:#f9f9f9; }
-button { padding:6px 12px; border:none; border-radius:3px; cursor:pointer; color:#fff; }
-button.edit { background:#ffc107; }
-button.message { background:#17a2b8; }
-button:hover { opacity:0.9; }
-input, select { padding:6px; margin-right:10px; }
-.modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; }
-.modal-content { background:#fff; padding:20px; border-radius:5px; width:400px; }
-.modal-content h2 { margin-top:0; }
-.modal-content textarea, .modal-content input { width:100%; padding:6px; margin:8px 0; }
-.modal-content button { margin-top:10px; }
-</style>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion Of Naimur | Agency OS</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #05060b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #00f2ff; }
+        body { background: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid var(--border); }
+        .neo-btn { transition: all 0.3s ease; }
+        .neo-btn:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
+        input, textarea, select { background: rgba(255,255,255,0.05) !important; border: 1px solid var(--border) !important; color: white !important; }
+        .status-badge { padding: 4px 12px; border-radius: 100px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .status-Pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .status-Completed { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex">
 
-<h1>Dashboard</h1>
+    <aside class="w-64 glass border-r border-white/10 p-6 flex flex-col fixed h-full">
+        <div class="mb-10 text-center">
+            <h1 class="text-xl font-bold tracking-tighter text-cyan-400">MOTION OF NAIMUR</h1>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest">SaaS Engine v2.0</p>
+        </div>
+        <nav class="space-y-2 flex-grow">
+            <div class="p-3 glass rounded-xl text-cyan-400 flex items-center gap-3 cursor-pointer"><i data-lucide="layout-grid"></i> Dashboard</div>
+            <div class="p-3 hover:bg-white/5 rounded-xl flex items-center gap-3 cursor-pointer"><i data-lucide="folder"></i> Projects</div>
+            <div class="p-3 hover:bg-white/5 rounded-xl flex items-center gap-3 cursor-pointer"><i data-lucide="message-square"></i> Messages</div>
+        </nav>
+        <div class="border-t border-white/10 pt-4 text-center">
+            <p id="displayEmail" class="text-xs text-slate-500">naimur582582@gmail.com</p>
+        </div>
+    </aside>
 
-<!-- Filters -->
-<div>
-<input type="text" id="searchInput" placeholder="Search Project...">
-<select id="statusFilter">
-  <option value="">All Status</option>
-  <option value="Pending">Pending</option>
-  <option value="Completed">Completed</option>
-  <option value="In Progress">In Progress</option>
-</select>
-<button onclick="loadProjects()">Filter</button>
-</div>
+    <main class="ml-64 flex-grow p-10">
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="text-3xl font-bold">Production Hub</h2>
+                <p class="text-slate-400">Manage video workflows and revisions.</p>
+            </div>
+            <button onclick="openModal('projectModal')" class="neo-btn bg-cyan-500 text-black px-6 py-3 rounded-2xl font-bold flex items-center gap-2">
+                <i data-lucide="plus-circle"></i> New Project
+            </button>
+        </header>
 
-<!-- Projects Table -->
-<table id="projectsTable">
-<thead>
-<tr>
-<th>Project ID</th>
-<th>Project Name</th>
-<th>Category</th>
-<th>Type</th>
-<th>Client Email</th>
-<th>Assigned Editor</th>
-<th>Status</th>
-<th>Revision Count</th>
-<th>Version</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
+        <div class="grid grid-cols-4 gap-6 mb-10">
+            <div class="glass p-6 rounded-2xl"><h3>Active</h3><p class="text-2xl font-bold" id="statActive">0</p></div>
+            <div class="glass p-6 rounded-2xl"><h3>Pending</h3><p class="text-2xl font-bold" id="statPending">0</p></div>
+            <div class="glass p-6 rounded-2xl"><h3>Total Budget</h3><p class="text-2xl font-bold" id="statBudget">৳ 0</p></div>
+            <div class="glass p-6 rounded-2xl"><h3>Completed</h3><p class="text-2xl font-bold" id="statDone">0</p></div>
+        </div>
 
-<!-- Revision Modal -->
-<div class="modal" id="revisionModal">
-<div class="modal-content">
-<h2>Add Revision</h2>
-<textarea id="revisionNotes" placeholder="Enter revision notes"></textarea>
-<select id="revisionMethod">
-  <option value="File Upload">File Upload</option>
-  <option value="Drive">Drive</option>
-  <option value="Dropbox">Dropbox</option>
-  <option value="Frame.io">Frame.io</option>
-</select>
-<input type="text" id="filesLink" placeholder="Files / Links">
-<button onclick="submitRevision()">Submit Revision</button>
-<button onclick="closeModal('revisionModal')">Cancel</button>
-</div>
-</div>
+        <div id="projectGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            </div>
+    </main>
 
-<!-- Message Modal -->
-<div class="modal" id="messageModal">
-<div class="modal-content">
-<h2>Send Message</h2>
-<textarea id="messageText" placeholder="Enter message"></textarea>
-<button onclick="submitMessage()">Send</button>
-<button onclick="closeModal('messageModal')">Cancel</button>
-</div>
-</div>
+    <div id="projectModal" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4">
+        <div class="glass w-full max-w-2xl p-8 rounded-[32px] relative">
+            <button onclick="closeModal('projectModal')" class="absolute right-6 top-6"><i data-lucide="x"></i></button>
+            <h3 class="text-2xl font-bold mb-6 text-cyan-400">Create Project</h3>
+            <form id="pForm" class="grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <label class="text-[10px] uppercase font-bold text-slate-500">Project Name</label>
+                    <input type="text" id="projectName" required class="w-full p-4 rounded-xl mt-1">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-slate-500">Deadline</label>
+                    <input type="date" id="deadline" class="w-full p-4 rounded-xl mt-1">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-slate-500">Type</label>
+                    <select id="projectType" class="w-full p-4 rounded-xl mt-1">
+                        <option>Video Editing</option>
+                        <option>Motion Graphics</option>
+                        <option>YouTube/Shorts</option>
+                    </select>
+                </div>
+                <div class="col-span-2 glass p-4 rounded-xl flex items-center justify-between">
+                    <label class="text-xs font-bold uppercase">Budget (BDT)</label>
+                    <div class="flex items-center gap-4">
+                        <button type="button" onclick="adj('budget', -500)" class="w-10 h-10 bg-white/10 rounded-lg">-</button>
+                        <input type="number" id="budget" value="0" class="w-20 text-center bg-transparent border-none font-bold text-lg">
+                        <button type="button" onclick="adj('budget', 500)" class="w-10 h-10 bg-white/10 rounded-lg">+</button>
+                    </div>
+                </div>
+                <div class="col-span-2">
+                    <textarea id="notes" placeholder="Additional Notes..." class="w-full p-4 rounded-xl h-24 mt-2"></textarea>
+                </div>
+                <button type="submit" class="col-span-2 bg-cyan-500 text-black py-4 rounded-2xl font-bold neo-btn">Launch Project</button>
+            </form>
+        </div>
+    </div>
 
-<script>
-let currentUser = { email:"", name:"", role:"" };
-let selectedProjectID = "";
+    <script>
+        lucide.createIcons();
+        const userEmail = "naimur582582@gmail.com"; // Get from Google Login
+        let allData = [];
 
-// Google Sign-In callback
-function handleCredentialResponse(response){
-  const userObject = JSON.parse(atob(response.credential.split('.')[1]));
-  currentUser.email = userObject.email;
-  currentUser.name = userObject.name || userObject.email;
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function adj(id, val) { const el = document.getElementById(id); let v = parseInt(el.value); if(v+val >= 0) el.value = v+val; }
 
-  // Get role from Apps Script
-  google.script.run.withSuccessHandler(role=>{
-    currentUser.role = role;
-    loadProjects();
-  }).getUserRole(currentUser.email);
-}
+        // Fetch Projects (Logic #8)
+        function loadProjects() {
+            google.script.run.withSuccessHandler(data => {
+                allData = data;
+                render(data);
+            }).getProjectsForUser(userEmail, "Admin");
+        }
 
-window.onload = function(){
-  google.accounts.id.initialize({
-    client_id: "YOUR_GOOGLE_CLIENT_ID",
-    callback: handleCredentialResponse
-  });
-  google.accounts.id.prompt();
-}
+        function render(data) {
+            const grid = document.getElementById('projectGrid');
+            grid.innerHTML = data.map(p => `
+                <div class="glass p-6 rounded-[24px] hover:border-cyan-500/50 transition cursor-pointer">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="status-badge status-${p[9]}">${p[9]}</span>
+                        <span class="text-[10px] text-slate-500 font-bold">${p[1]}</span>
+                    </div>
+                    <h4 class="text-xl font-bold mb-2">${p[2]}</h4>
+                    <div class="flex items-center gap-6 text-xs text-slate-400 mb-6">
+                        <span class="flex items-center gap-1"><i data-lucide="user" size="14"></i> ${p[7] || 'Unassigned'}</span>
+                        <span class="flex items-center gap-1"><i data-lucide="clock" size="14"></i> ${p[19]}</span>
+                        <span class="flex items-center gap-1 text-cyan-400 font-bold"><i data-lucide="layers" size="14"></i> ${p[23]}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="flex-1 bg-white/5 py-3 rounded-xl font-bold text-xs hover:bg-white/10">View Work</button>
+                        <button onclick="reqRevision('${p[1]}')" class="flex-1 border border-cyan-500/30 text-cyan-400 py-3 rounded-xl font-bold text-xs hover:bg-cyan-500/10">Revision</button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
 
-// Load projects
-function loadProjects(){
-  const searchValue = document.getElementById("searchInput").value.toLowerCase();
-  const statusValue = document.getElementById("statusFilter").value;
+        // Logic #2: Add Project (Sync with your Code.gs)
+        document.getElementById('pForm').onsubmit = (e) => {
+            e.preventDefault();
+            const pData = {
+                projectName: document.getElementById('projectName').value,
+                deadline: document.getElementById('deadline').value,
+                projectType: document.getElementById('projectType').value,
+                budget: document.getElementById('budget').value,
+                notes: document.getElementById('notes').value
+            };
+            google.script.run.withSuccessHandler(() => {
+                closeModal('projectModal');
+                loadProjects();
+            }).addProject(pData, userEmail);
+        }
 
-  google.script.run.withSuccessHandler(projects=>{
-    const tbody = document.querySelector("#projectsTable tbody");
-    tbody.innerHTML = "";
-
-    projects.forEach(project=>{
-      const projectID = project[1];
-      const projectName = project[2];
-      const status = project[9];
-      const revisionCount = project[22];
-      const version = project[23];
-
-      if((statusValue === "" || status === statusValue) &&
-         (searchValue === "" || projectName.toLowerCase().includes(searchValue))){
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-<td>${projectID}</td>
-<td>${projectName}</td>
-<td>${project[3]}</td>
-<td>${project[4]}</td>
-<td>${project[5]}</td>
-<td>${project[7]}</td>
-<td>${status}</td>
-<td>${revisionCount}</td>
-<td>${version}</td>
-<td>
-  <button class="edit" onclick="openRevisionModal('${projectID}')">Add Revision</button>
-  <button class="message" onclick="openMessageModal('${projectID}')">Message</button>
-</td>
-        `;
-        tbody.appendChild(tr);
-      }
-    });
-
-  }).getProjectsForUser(currentUser.email, currentUser.role);
-}
-
-// Modals
-function openRevisionModal(projectID){ selectedProjectID = projectID; document.getElementById('revisionModal').style.display="flex"; }
-function openMessageModal(projectID){ selectedProjectID = projectID; document.getElementById('messageModal').style.display="flex"; }
-function closeModal(id){ document.getElementById(id).style.display="none"; }
-
-// Submit revision
-function submitRevision(){
-  const notes = document.getElementById('revisionNotes').value;
-  const method = document.getElementById('revisionMethod').value;
-  const files = document.getElementById('filesLink').value;
-
-  if(!notes){ alert("Revision notes required"); return; }
-
-  google.script.run.addRevision(selectedProjectID, {revisionNotes: notes, revisionMethod: method, filesLink: files}, currentUser.email, currentUser.role);
-  alert("Revision added!");
-  closeModal('revisionModal');
-  loadProjects();
-}
-
-// Submit message
-function submitMessage(){
-  const text = document.getElementById('messageText').value;
-  if(!text){ alert("Message required"); return; }
-
-  google.script.run.addMessage(selectedProjectID, text, currentUser.email, currentUser.name, currentUser.role, "Text", true);
-  alert("Message sent!");
-  closeModal('messageModal');
-}
-</script>
-
+        window.onload = loadProjects;
+    </script>
 </body>
 </html>
