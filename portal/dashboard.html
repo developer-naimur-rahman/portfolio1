@@ -8,76 +8,87 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { --bg: #050508; --card: #0f0f16; --primary: #3b82f6; --border: rgba(255,255,255,0.06); --text: #ffffff; --text-sec: #94a3b8; --success: #059669; }
+        :root { --bg: #050508; --card: #0f0f16; --primary: #3b82f6; --border: rgba(255,255,255,0.06); --text: #ffffff; --text-sec: #94a3b8; --success: #059669; --danger: #ef4444; }
         body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; border-bottom: 1px solid var(--border); background: rgba(5,5,8,0.8); backdrop-filter: blur(10px); position: sticky; top:0; z-index: 100; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; border-bottom: 1px solid var(--border); background: rgba(5,5,8,0.8); backdrop-filter: blur(10px); position: sticky; top:0; z-index: 100; }
         .container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
-        .p-card { background: var(--card); border-radius: 20px; padding: 25px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
-        .p-card:hover { border-color: var(--primary); transform: translateY(-3px); }
         
-        #project-view { display: none; background: var(--bg); min-height: 100vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 200; padding: 2rem 5%; box-sizing: border-box; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; }
+        /* Dashboard Grid */
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .p-card { background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .p-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(59,130,246,0.1); }
+        
+        /* View Modal */
+        #project-view { display: none; background: var(--bg); min-height: 100vh; width: 100%; position: fixed; top: 0; left: 0; z-index: 200; padding: 2rem 5%; box-sizing: border-box; overflow-y: auto; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full { grid-column: span 2; }
-        .c-input { width: 100%; padding: 12px; background: #15151e; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; margin-bottom: 5px; }
-        .c-label { font-size: 0.75rem; color: var(--text-sec); margin-bottom: 5px; display: block; font-weight: 600; text-transform: uppercase; }
         
-        .tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--border); margin-bottom: 25px; }
-        .tab-btn { padding: 12px 20px; background: none; border: none; color: var(--text-sec); cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; }
-        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-        .tab-content { display: none; }
-
-        .chat-box { height: 400px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 12px; border: 1px solid #222; margin-bottom: 10px; }
-        .bubble { padding: 12px 18px; border-radius: 18px; max-width: 80%; font-size: 0.9rem; line-height: 1.4; position: relative; }
-        .b-admin { background: #222; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #333; }
+        /* Inputs */
+        .c-input { width: 100%; padding: 12px; background: #15151e; border: 1px solid #333; color: #fff; border-radius: 10px; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; transition: 0.2s; }
+        .c-input:focus { border-color: var(--primary); outline: none; background: #1a1a26; }
+        .c-label { font-size: 0.7rem; color: var(--text-sec); margin-bottom: 6px; display: block; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        /* Chat UI */
+        .chat-box { height: 450px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .bubble { padding: 10px 15px; border-radius: 15px; max-width: 75%; font-size: 0.9rem; position: relative; animation: fadeIn 0.3s ease; }
+        .b-admin { background: #222; align-self: flex-start; border-bottom-left-radius: 2px; }
         .b-client { background: var(--primary); align-self: flex-end; border-bottom-right-radius: 2px; }
         
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; justify-content: center; transition: 0.2s; }
-        .btn:hover { opacity: 0.9; }
-        .back-btn { background: none; border: 1px solid #333; color: var(--text-sec); padding: 8px 15px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; }
+        /* Buttons */
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; justify-content: center; transition: 0.2s; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .back-btn { background: #1a1a1a; border: 1px solid #333; color: var(--text-sec); padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <nav>
-        <div style="font-weight:800; font-size:1.4rem; letter-spacing:-1px;">MOTION OF NAIMUR OS</div>
+        <div style="font-weight:800; font-size:1.4rem; letter-spacing:-1px; color:var(--primary);">MOTION OF NAIMUR</div>
         <div style="display:flex; align-items:center; gap:15px;">
-            <img id="u-pic" style="width:38px; height:38px; border-radius:50%; border:2px solid var(--primary);">
-            <button onclick="logout()" style="background:#1a1a1a; color:white; border:1px solid #333; padding:8px 16px; border-radius:8px; cursor:pointer;">Logout</button>
+            <img id="u-pic" style="width:35px; height:35px; border-radius:50%; border:2px solid var(--primary);">
+            <button onclick="logout()" class="back-btn" style="margin:0;">Logout</button>
         </div>
     </nav>
 
     <div id="main-dashboard" class="container">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
-            <h1 id="welcome-title">Loading...</h1>
+            <div>
+                <h1 id="welcome-title" style="margin:0;">Loading...</h1>
+                <p style="color:var(--text-sec); margin-top:5px;">Manage your video production projects.</p>
+            </div>
             <button id="client-add-btn" onclick="createProject()" class="btn"><i data-lucide="plus"></i> New Project</button>
         </div>
-        <div id="project-list" class="project-grid">Syncing with Google Sheets...</div>
+        <div id="project-list" class="project-grid">Syncing data...</div>
     </div>
 
     <div id="project-view">
-        <button class="back-btn" onclick="closeView()"><i data-lucide="arrow-left"></i> Back</button>
-        <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom:20px;">
-            <h1 id="v-title" style="margin:0;">Project</h1>
-            <div id="v-status" style="color:var(--primary); font-weight:800; background:rgba(59,130,246,0.1); padding:6px 18px; border-radius:20px; font-size:0.8rem;">STATUS</div>
+        <button class="back-btn" onclick="closeView()"><i data-lucide="arrow-left"></i> Back to Dashboard</button>
+        
+        <div style="display:flex; justify-content:space-between; align-items: flex-start; margin-bottom:30px; border-bottom: 1px solid var(--border); padding-bottom: 20px;">
+            <div>
+                <h1 id="v-title" style="margin:0 0 5px 0;">Project Name</h1>
+                <span id="v-id" style="color:var(--text-sec); font-size:0.8rem;">ID: #0000</span>
+            </div>
+            <div id="v-status" style="background:var(--primary); color:white; padding:8px 20px; border-radius:30px; font-weight:800; font-size:0.75rem; text-transform:uppercase;">STATUS</div>
         </div>
 
-        <div class="tabs">
-            <button class="tab-btn active" id="tab-det-btn" onclick="switchTab('sec-det')">Details</button>
-            <button class="tab-btn" id="tab-msg-btn" onclick="switchTab('sec-msg')">Messages & Revisions</button>
+        <div class="tabs" style="display:flex; gap:30px; margin-bottom:25px; border-bottom:1px solid var(--border);">
+            <button class="tab-btn active" id="tab-det-btn" onclick="switchTab('sec-det')" style="background:none; border:none; color:var(--text-sec); padding:10px; cursor:pointer; font-weight:700;">DETAILS</button>
+            <button class="tab-btn" id="tab-msg-btn" onclick="switchTab('sec-msg')" style="background:none; border:none; color:var(--text-sec); padding:10px; cursor:pointer; font-weight:700;">CHAT & REVISIONS</button>
         </div>
 
-        <div id="sec-det" class="tab-content" style="display:block;">
+        <div id="sec-det" class="tab-content">
             <div id="admin-assign-zone"></div>
             <div class="form-grid" id="detail-inputs"></div>
             <div id="delivery-zone"></div>
-            <div id="admin-danger-zone"></div>
         </div>
 
-        <div id="sec-msg" class="tab-content">
+        <div id="sec-msg" class="tab-content" style="display:none;">
             <div class="chat-box" id="chat-container"></div>
             <div style="display:flex; gap:10px;">
-                <input id="chat-input" placeholder="Write message or revision notes..." class="c-input">
+                <input id="chat-input" placeholder="Type your message..." class="c-input">
                 <button id="send-btn" class="btn">Send <i data-lucide="send" size="16"></i></button>
             </div>
         </div>
@@ -102,19 +113,19 @@
         }
 
         function renderDashboard() {
-            document.getElementById('welcome-title').innerText = isAdmin ? "Admin Panel" : (isEditor ? "Editor Portal" : "Client Dashboard");
-            if(!cache.length) { document.getElementById('project-list').innerHTML = "No projects found."; return; }
+            document.getElementById('welcome-title').innerText = isAdmin ? "Admin OS" : (isEditor ? "Editor OS" : "Client OS");
+            if(!cache.length) { document.getElementById('project-list').innerHTML = "<p>No active projects found.</p>"; return; }
             
             document.getElementById('project-list').innerHTML = cache.map(p => `
                 <div class="p-card" onclick="openView('${p['Project ID']}')">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-                        <span style="color:var(--primary); font-weight:bold; font-size:0.7rem;">${p.Status || 'Review'}</span>
-                        <span style="color:var(--text-sec); font-size:0.7rem;">#${p['Project ID']}</span>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+                        <span style="color:var(--primary); font-weight:800; font-size:0.65rem; background:rgba(59,130,246,0.1); padding:4px 10px; border-radius:5px;">${p.Status || 'REVIEW'}</span>
+                        <span style="color:var(--text-sec); font-size:0.7rem; font-weight:600;">#${p['Project ID']}</span>
                     </div>
-                    <h3 style="margin:0 0 10px 0;">${p['Project Name']}</h3>
-                    <div style="font-size:0.8rem; color:var(--text-sec); display:flex; justify-content:space-between;">
-                        <span>Deadline: ${p.Deadline || 'N/A'}</span>
-                        <span>৳ ${p['Budget (BDT)'] || '0'}</span>
+                    <h3 style="margin:0 0 15px 0; font-size:1.1rem; line-height:1.2;">${p['Project Name']}</h3>
+                    <div style="font-size:0.8rem; color:var(--text-sec); display:flex; justify-content:space-between; border-top:1px solid var(--border); pt:10px; margin-top:10px; padding-top:10px;">
+                        <span><i data-lucide="calendar" size="12" style="vertical-align:middle; margin-right:5px;"></i> ${p.Deadline || 'N/A'}</span>
+                        <span style="color:var(--success); font-weight:800;">৳ ${p['Budget (BDT)'] || '0'}</span>
                     </div>
                 </div>
             `).join('');
@@ -124,47 +135,60 @@
         function openView(id) {
             const p = cache.find(x => x['Project ID'].toString() === id.toString());
             document.getElementById('v-title').innerText = p['Project Name'];
+            document.getElementById('v-id').innerText = `ID: #${p['Project ID']}`;
             document.getElementById('v-status').innerText = p.Status;
 
+            // Admin: Assign Editor UI
             if (isAdmin) {
                 document.getElementById('admin-assign-zone').innerHTML = `
-                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:12px; margin-bottom:20px; border:1px dashed var(--primary);">
-                        <label class="c-label">Assign Editor</label>
+                    <div style="background:rgba(59,130,246,0.05); padding:20px; border-radius:15px; margin-bottom:25px; border:1px solid var(--primary);">
+                        <label class="c-label">Assign Production Editor</label>
                         <div style="display:flex; gap:10px;">
                             <select id="assign-editor-select" class="c-input">
-                                <option value="">Select Editor</option>
+                                <option value="">Not Assigned</option>
                                 <option value="mahabur1in4@gmail.com" ${p['Assigned Editor'] === 'mahabur1in4@gmail.com' ? 'selected' : ''}>Mahabur</option>
                                 <option value="juel@gmail.com" ${p['Assigned Editor'] === 'juel@gmail.com' ? 'selected' : ''}>Juel</option>
                             </select>
-                            <button onclick="assignNow('${id}')" class="btn">Assign</button>
+                            <button onclick="assignNow('${id}')" class="btn">Update Assignment</button>
                         </div>
                     </div>
                 `;
             }
 
+            // Common Details
             document.getElementById('detail-inputs').innerHTML = `
-                <div class="full"><label class="c-label">Footage Link</label><input class="c-input" value="${p['Footage Link']}" readonly></div>
-                <div><label class="c-label">Script</label><input class="c-input" value="${p.Script || ''}" readonly></div>
-                <div><label class="c-label">Script Link</label><input class="c-input" value="${p['Script Link'] || ''}" readonly></div>
-                <div><label class="c-label">Ref Link 1</label><input class="c-input" value="${p['Reference Link-1'] || ''}" readonly></div>
-                <div><label class="c-label">Ref Link 2</label><input class="c-input" value="${p['Reference Link-2'] || ''}" readonly></div>
+                <div class="full"><label class="c-label">Footage URL</label><input class="c-input" value="${p['Footage Link']}" readonly onclick="window.open(this.value)"></div>
+                <div><label class="c-label">Script Topic</label><input class="c-input" value="${p.Script || 'N/A'}" readonly></div>
+                <div><label class="c-label">Script Link</label><input class="c-input" value="${p['Script Link'] || ''}" readonly onclick="window.open(this.value)"></div>
                 <div><label class="c-label">Deadline</label><input class="c-input" value="${p.Deadline || ''}" readonly></div>
-                <div><label class="c-label">Budget</label><input class="c-input" value="${p['Budget (BDT)'] || ''}" readonly></div>
-                <div class="full"><label class="c-label">Notes</label><textarea class="c-input" readonly>${p.Notes || ''}</textarea></div>
+                <div><label class="c-label">Budget (BDT)</label><input class="c-input" value="${p['Budget (BDT)'] || ''}" readonly></div>
+                <div class="full"><label class="c-label">Reference Links</label><div style="display:flex; gap:10px;">
+                    <input class="c-input" value="${p['Reference Link-1'] || ''}" readonly onclick="window.open(this.value)">
+                    <input class="c-input" value="${p['Reference Link-2'] || ''}" readonly onclick="window.open(this.value)">
+                </div></div>
+                <div class="full"><label class="c-label">Project Notes</label><textarea class="c-input" style="height:80px;" readonly>${p.Notes || 'No notes provided.'}</textarea></div>
             `;
 
+            // Delivery Zone (Admin/Editor can edit, Client only views)
             if (isAdmin || isEditor) {
                 document.getElementById('delivery-zone').innerHTML = `
-                    <div style="background:rgba(5,150,105,0.1); padding:15px; border-radius:12px; margin-top:20px;">
-                        <label class="c-label">Delivery Link</label>
+                    <div style="background:rgba(5,150,105,0.05); padding:20px; border-radius:15px; margin-top:25px; border:1px solid var(--success);">
+                        <label class="c-label" style="color:var(--success);">Final Delivery URL</label>
                         <div style="display:flex; gap:10px;">
-                            <input id="dev-link" class="c-input" value="${p['Delivery Link'] || ''}" placeholder="Paste link">
-                            <button onclick="updateDevLink('${id}')" class="btn" style="background:var(--success);">Update</button>
+                            <input id="dev-link" class="c-input" value="${p['Delivery Link'] || ''}" placeholder="Paste Google Drive/Mega Link">
+                            <button onclick="updateDevLink('${id}')" class="btn" style="background:var(--success);">Push Delivery</button>
                         </div>
                     </div>
                 `;
             } else if (p['Delivery Link']) {
-                document.getElementById('delivery-zone').innerHTML = `<a href="${p['Delivery Link']}" target="_blank" class="btn full" style="background:var(--success); margin-top:20px;">Download Final File</a>`;
+                document.getElementById('delivery-zone').innerHTML = `
+                    <div style="margin-top:25px;">
+                        <a href="${p['Delivery Link']}" target="_blank" class="btn full" style="background:var(--success); font-size:1rem; height:55px;">
+                            <i data-lucide="download"></i> Download Delivered Files
+                        </a>
+                    </div>`;
+            } else {
+                document.getElementById('delivery-zone').innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-sec); font-style:italic;">Delivery will appear here once ready.</div>`;
             }
 
             document.getElementById('main-dashboard').style.display = 'none';
@@ -176,60 +200,65 @@
 
         async function createProject() {
             const { value: f } = await Swal.fire({
-                title: 'New Production Form',
+                title: 'New Project Brief',
                 width: '600px', background: '#0f0f16', color: '#fff',
                 html: `
-                    <div class="form-grid">
-                        <div class="full"><label class="c-label">Project Name*</label><input id="p-name" class="c-input"></div>
-                        <div class="full"><label class="c-label">Footage Link</label><input id="p-foot" class="c-input" value="http://"></div>
-                        <div class="full"><label class="c-label">Script</label><input id="p-script" class="c-input"></div>
-                        <div class="full"><label class="c-label">Script Link</label><input id="p-script-l" class="c-input" value="http://"></div>
-                        <div><label class="c-label">Ref Link 1</label><input id="p-ref1" class="c-input" value="http://"></div>
-                        <div><label class="c-label">Ref Link 2</label><input id="p-ref2" class="c-input" value="http://"></div>
+                    <div class="form-grid" style="text-align:left;">
+                        <div class="full"><label class="c-label">Project Title*</label><input id="p-name" class="c-input" placeholder="e.g. Cinematic Vlog Editing"></div>
+                        <div class="full"><label class="c-label">Footage Link (GDrive/Dropbox)*</label><input id="p-foot" class="c-input" placeholder="https://"></div>
+                        <div class="full"><label class="c-label">Script Topic / Instructions</label><input id="p-script" class="c-input"></div>
                         <div><label class="c-label">Deadline</label><input id="p-date" type="date" class="c-input"></div>
                         <div><label class="c-label">Budget (BDT)</label><input id="p-budget" type="number" class="c-input"></div>
-                        <div class="full"><label class="c-label">Notes</label><textarea id="p-note" class="c-input"></textarea></div>
+                        <div class="full"><label class="c-label">Instructions / Notes</label><textarea id="p-note" class="c-input" style="height:60px;"></textarea></div>
                     </div>
                 `,
-                preConfirm: () => ({
-                    name: document.getElementById('p-name').value,
-                    foot: document.getElementById('p-foot').value,
-                    script: document.getElementById('p-script').value,
-                    scriptL: document.getElementById('p-script-l').value,
-                    ref1: document.getElementById('p-ref1').value,
-                    ref2: document.getElementById('p-ref2').value,
-                    date: document.getElementById('p-date').value,
-                    budget: document.getElementById('p-budget').value,
-                    note: document.getElementById('p-note').value
-                })
+                preConfirm: () => {
+                    const name = document.getElementById('p-name').value;
+                    if(!name) return Swal.showValidationMessage('Project Name is required');
+                    return {
+                        name,
+                        foot: document.getElementById('p-foot').value,
+                        script: document.getElementById('p-script').value,
+                        date: document.getElementById('p-date').value,
+                        budget: document.getElementById('p-budget').value,
+                        note: document.getElementById('p-note').value
+                    }
+                }
             });
 
-            if(f && f.name) {
-                Swal.fire({title: 'Submitting...', didOpen: () => Swal.showLoading()});
+            if(f) {
+                Swal.fire({title: 'Submitting Brief...', didOpen: () => Swal.showLoading()});
                 await fetch(API, { method: 'POST', body: JSON.stringify({
                     action: "add", sheet: "Projects", 
                     "Project Name": f.name, "Client Email": userEmail, "Footage Link": f.foot, 
-                    "Script": f.script, "Script Link": f.scriptL, "Reference Link-1": f.ref1, 
-                    "Reference Link-2": f.ref2, "Deadline": f.date, "Budget (BDT)": f.budget, 
+                    "Script": f.script, "Deadline": f.date, "Budget (BDT)": f.budget, 
                     "Notes": f.note, "Status": "Review"
                 })});
-                Swal.fire('Success', 'Project Added!', 'success');
+                Swal.fire('Success', 'Project Brief Received!', 'success');
                 sync();
             }
         }
 
         async function loadMessages(id) {
             const container = document.getElementById('chat-container');
-            container.innerHTML = "Loading...";
+            container.innerHTML = "<p style='text-align:center; opacity:0.5;'>Loading Chat...</p>";
             try {
-                const res = await fetch(`${API}?sheet=Messages&pId=${id}`);
-                const msgs = await res.json();
-                container.innerHTML = msgs.map(m => `
-                    <div class="bubble ${m.From === userEmail ? 'b-client' : 'b-admin'}">
-                        <div style="font-size:0.6rem; opacity:0.7; margin-bottom:3px;">${m.From === ADMIN_EMAIL ? 'Naimur' : (m.From === userEmail ? 'You' : 'Editor')}</div>
+                const res = await fetch(`${API}?sheet=Messages&email=${userEmail}`);
+                const all = await res.json();
+                const msgs = all.filter(m => m['Project ID'].toString() === id.toString());
+                
+                container.innerHTML = msgs.map(m => {
+                    const isMe = m.From === userEmail;
+                    let label = "CLIENT";
+                    if(m.From === ADMIN_EMAIL) label = "NAIMUR (ADMIN)";
+                    else if(EDITORS.includes(m.From)) label = "EDITOR";
+
+                    return `
+                    <div class="bubble ${isMe ? 'b-client' : 'b-admin'}">
+                        <div style="font-size:0.6rem; font-weight:800; opacity:0.8; margin-bottom:4px;">${isMe ? 'YOU' : label}</div>
                         ${m['Message Text']}
-                    </div>
-                `).join('') || "No messages yet.";
+                    </div>`;
+                }).join('') || "<p style='text-align:center; opacity:0.5;'>No messages yet. Start the conversation!</p>";
                 container.scrollTop = container.scrollHeight;
             } catch(e) { container.innerHTML = "Error loading messages."; }
         }
@@ -240,42 +269,60 @@
             if(!text) return;
             
             input.disabled = true;
+            const currentProject = cache.find(p => p['Project ID'].toString() === id.toString());
+            const clientEmail = currentProject ? currentProject['Client Email'] : userEmail;
+
             await fetch(API, { method: 'POST', body: JSON.stringify({ 
                 action: "add", sheet: "Messages", 
-                "Project ID": id, "From": userEmail, "Message Text": text, "Client Email": userEmail 
+                "Project ID": id, "From": userEmail, "Message Text": text, "Client Email": clientEmail 
             })});
             input.value = '';
             input.disabled = false;
             loadMessages(id);
         }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).style.display = 'block';
-            if(tabId === 'sec-det') document.getElementById('tab-det-btn').classList.add('active');
-            else document.getElementById('tab-msg-btn').classList.add('active');
-        }
-
         async function assignNow(id) {
             const ed = document.getElementById('assign-editor-select').value;
-            if(!ed) return;
-            Swal.fire({title: 'Updating...', didOpen: () => Swal.showLoading()});
-            await fetch(API, { method: 'POST', body: JSON.stringify({ action: "update", sheet: "Projects", id: id, updates: { "Assigned Editor": ed, "Status": "In Progress" }})});
-            Swal.fire('Success', 'Assigned!', 'success');
+            Swal.fire({title: 'Assigning...', didOpen: () => Swal.showLoading()});
+            await fetch(API, { method: 'POST', body: JSON.stringify({ 
+                action: "update", 
+                sheet: "Projects", 
+                "Project ID": id, 
+                "Assigned Editor": ed, 
+                "Status": ed ? "In Progress" : "Review" 
+            })});
+            Swal.fire('Success', 'Assignment Updated!', 'success');
             sync();
+            closeView();
         }
 
         async function updateDevLink(id) {
             const link = document.getElementById('dev-link').value;
-            await fetch(API, { method: 'POST', body: JSON.stringify({ action: "update", sheet: "Projects", id: id, updates: { "Delivery Link": link, "Status": "Delivered" }})});
-            Swal.fire('Success', 'Link Saved!', 'success');
+            Swal.fire({title: 'Updating Delivery...', didOpen: () => Swal.showLoading()});
+            await fetch(API, { method: 'POST', body: JSON.stringify({ 
+                action: "update", 
+                sheet: "Projects", 
+                "Project ID": id, 
+                "Delivery Link": link, 
+                "Status": "Delivered" 
+            })});
+            Swal.fire('Success', 'Project Delivered!', 'success');
             sync();
+            closeView();
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).style.display = 'block';
+            event.currentTarget.classList.add('active');
         }
 
         function closeView() { document.getElementById('main-dashboard').style.display = 'block'; document.getElementById('project-view').style.display = 'none'; }
         function logout() { localStorage.clear(); window.location.href = 'index.html'; }
-        document.getElementById('u-pic').src = localStorage.getItem('clientPic');
+        
+        // Init
+        document.getElementById('u-pic').src = localStorage.getItem('clientPic') || 'https://via.placeholder.com/150';
         sync();
     </script>
 </body>
