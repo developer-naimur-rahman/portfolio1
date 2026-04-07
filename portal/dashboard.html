@@ -8,202 +8,194 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { 
-            --bg: #050508; --card: #0f0f16; --primary: #3b82f6; 
-            --accent: #a855f7; --border: rgba(255,255,255,0.06); 
-            --text: #ffffff; --text-sec: #94a3b8;
-            --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
-        }
+        :root { --bg: #050508; --card: #0f0f16; --primary: #3b82f6; --border: rgba(255,255,255,0.06); --text: #ffffff; --text-sec: #94a3b8; }
         body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); }
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; background: rgba(5,5,8,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
         .container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; }
+        .p-card { background: var(--card); border-radius: 20px; padding: 25px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
+        .p-card:hover { border-color: var(--primary); transform: translateY(-3px); }
         
-        /* Stats & Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .stat-card { background: var(--card); padding: 25px; border-radius: 24px; border: 1px solid var(--border); }
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 25px; }
-        .p-card { background: var(--card); border-radius: 30px; padding: 30px; border: 1px solid var(--border); cursor: pointer; transition: 0.4s; }
-        .p-card:hover { border-color: var(--primary); transform: translateY(-5px); }
-
-        /* Interactive Tabs in Popup */
+        /* Form Layout from Screenshot */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; }
+        .full { grid-column: span 2; }
+        .c-input { width: 100%; padding: 12px; background: #15151e; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; }
+        .c-label { font-size: 0.75rem; color: var(--text-sec); margin-bottom: 4px; display: block; }
+        
+        /* Tabs & Messages */
         .tab-btn { padding: 10px 20px; background: none; border: none; color: var(--text-sec); cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-        .tab-content { display: none; padding-top: 20px; animation: fadeIn 0.3s; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Form Styling */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; }
-        .full-width { grid-column: span 2; }
-        .custom-input { width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 12px; box-sizing: border-box; }
-        
-        /* Message Area */
-        .chat-box { height: 300px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 15px; padding: 15px; border: 1px solid #222; }
-        .bubble { padding: 10px 15px; border-radius: 15px; margin-bottom: 8px; max-width: 80%; font-size: 0.85rem; }
-        .b-admin { background: var(--primary); align-self: flex-end; margin-left: auto; }
-        .b-client { background: #333; align-self: flex-start; }
-
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; justify-content: center; }
+        .chat-box { height: 320px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #222; }
+        .bubble { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 0.85rem; line-height: 1.4; }
+        .b-admin { background: #222; border: 1px solid #333; align-self: flex-start; }
+        .b-client { background: var(--primary); align-self: flex-end; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; justify-content: center; width: 100%; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div style="display:flex; align-items:center; gap:12px;">
-            <div style="background:var(--primary); width:42px; height:42px; border-radius:12px; display:grid; place-items:center;"><i data-lucide="clapperboard" color="white" size="22"></i></div>
-            <b style="font-size:1.3rem; letter-spacing:1px;">MOTION OF NAIMUR <span style="font-weight:300; color:var(--text-sec);">OS</span></b>
-        </div>
+    <nav style="display:flex; justify-content:space-between; align-items:center; padding: 1.2rem 5%; border-bottom: 1px solid var(--border); background: rgba(5,5,8,0.8); backdrop-filter: blur(10px); position: sticky; top:0; z-index:100;">
+        <div style="font-weight:800; font-size:1.4rem; letter-spacing:1px;">MOTION OF NAIMUR <span style="font-weight:300; color:var(--text-sec);">OS</span></div>
         <div style="display:flex; align-items:center; gap:15px;">
-            <div id="admin-tag" style="display:none;" class="stat-card">GOD MODE</div>
-            <img id="u-pic" style="width:40px; height:40px; border-radius:50%; border:2px solid var(--primary);">
-            <button onclick="logout()" class="btn" style="background:#1a1a1a;">Logout</button>
+            <img id="u-pic" style="width:38px; height:38px; border-radius:50%; border:2px solid var(--primary);">
+            <button onclick="logout()" style="background:#1a1a1a; color:white; border:1px solid #333; padding:8px 16px; border-radius:8px; cursor:pointer; font-size:0.8rem;">Logout</button>
         </div>
     </nav>
 
     <div class="container">
-        <div class="stats-grid" id="stats"></div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:30px;">
-            <input type="text" id="search" placeholder="Search..." style="padding:12px; border-radius:12px; border:1px solid #222; background:var(--card); color:white; width:300px;" onkeyup="filter()">
-            <button onclick="createProject()" class="btn"><i data-lucide="plus"></i> New Project</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
+            <h1 style="font-size:1.8rem;">Your Productions</h1>
+            <button onclick="createProject()" style="width:auto; padding: 12px 25px;" class="btn"><i data-lucide="plus"></i> New Project</button>
         </div>
-        <div id="project-list" class="project-grid"></div>
+        <div id="project-list" class="project-grid">Fetching your projects from cloud...</div>
     </div>
 
     <script>
-        const API = "আপনার_স্ক্রিপ্ট_ইউআরএল_এখানে_বসান"; 
+        const API = "আপনার_গুগল_অ্যাপ_স্ক্রিপ্ট_ইউআরএল"; 
         const email = localStorage.getItem('clientEmail');
-        const isAdmin = (email === "naimur582582@gmail.com");
-        let cache = [];
-
-        if(isAdmin) document.getElementById('admin-tag').style.display = 'block';
 
         async function sync() {
-            const res = await fetch(`${API}?sheet=Projects&email=${email}`);
-            cache = await res.json();
-            render();
+            try {
+                const res = await fetch(`${API}?sheet=Projects&email=${email}`);
+                const data = await res.json();
+                render(data);
+            } catch (e) {
+                document.getElementById('project-list').innerHTML = "No projects found or connection error.";
+            }
         }
 
-        function render() {
-            document.getElementById('project-list').innerHTML = cache.map(p => `
-                <div class="p-card" onclick="openDetails('${p['Project ID']}')">
-                    <div style="display:flex; justify-content:space-between;">
-                        <span style="font-size:0.7rem; color:var(--primary); font-weight:bold;">${p.Status}</span>
-                        <span style="font-size:0.7rem; color:var(--text-sec);">${p.Priority} Priority</span>
+        function render(projects) {
+            if(!projects || projects.length === 0) {
+                document.getElementById('project-list').innerHTML = "No active projects found for " + email;
+                return;
+            }
+            document.getElementById('project-list').innerHTML = projects.map(p => `
+                <div class="p-card" onclick="openProject('${p['Project ID']}')">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                        <span style="font-size:0.7rem; color:var(--primary); font-weight:bold; text-transform:uppercase; letter-spacing:1px;">${p.Status || 'Active'}</span>
+                        <span style="font-size:0.7rem; color:var(--text-sec);">${p.Priority || 'Normal'} Priority</span>
                     </div>
-                    <h3 style="margin:15px 0 5px;">${p['Project Name']}</h3>
-                    <p style="font-size:0.7rem; color:var(--text-sec); margin-bottom:15px;">ID: ${p['Project ID']}</p>
-                    <div style="height:6px; background:#222; border-radius:10px;"><div style="width:${p.Progress}%; height:100%; background:var(--primary); border-radius:10px;"></div></div>
-                    <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:0.75rem;">
-                        <span><i data-lucide="calendar" size="12"></i> ${p.Deadline}</span>
-                        <b style="color:var(--success)">৳${p['Budget (BDT)']}</b>
+                    <h3 style="margin:0 0 15px 0; font-size:1.2rem;">${p['Project Name']}</h3>
+                    <div style="height:4px; background:#222; border-radius:10px; margin-bottom:15px;">
+                        <div style="width:40%; height:100%; background:var(--primary); border-radius:10px;"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                        <span style="color:var(--text-sec);"><i data-lucide="calendar" size="14" style="vertical-align:middle; margin-right:5px;"></i> ${p.Deadline || 'No date'}</span>
+                        <b style="color:#fff">৳ ${p['Budget (BDT)'] || '0'}</b>
                     </div>
                 </div>
             `).join('');
             lucide.createIcons();
         }
 
-        async function openDetails(id) {
-            const p = cache.find(x => x['Project ID'] === id);
+        async function openProject(id) {
+            const res = await fetch(`${API}?sheet=Projects&email=${email}`);
+            const all = await res.json();
+            const p = all.find(x => x['Project ID'].toString() === id.toString());
+
             Swal.fire({
                 title: p['Project Name'], width: '900px', background: '#050508', color: '#fff', showConfirmButton: false,
                 html: `
                     <div style="display:flex; border-bottom:1px solid #222; margin-bottom:20px;">
-                        <button class="tab-btn active" onclick="switchTab(event, 'details')">Details</button>
-                        <button class="tab-btn" onclick="switchTab(event, 'chat-tab')">Messages & Revision</button>
+                        <button class="tab-btn active" id="btn-det" onclick="switchTab('det')">Project Details</button>
+                        <button class="tab-btn" id="btn-msg" onclick="switchTab('msg')">Revisions & Chat</button>
                     </div>
-
-                    <div id="details" class="tab-content active">
+                    <div id="sec-det">
                         <div class="form-grid">
-                            <div class="stat-card"><b>Status:</b> ${p.Status}</div>
-                            <div class="stat-card"><b>Deadline:</b> ${p.Deadline}</div>
-                            <div class="stat-card"><b>Payment:</b> ${p['Payment Status']}</div>
-                            <div class="stat-card"><b>Priority:</b> ${p.Priority}</div>
-                            <div class="full-width" style="margin-top:10px;">
-                                <a href="${p['Footage Link']}" target="_blank" class="btn" style="background:#222; margin-bottom:10px;">Raw Footage</a>
-                                <a href="${p['Delivery Link']}" target="_blank" class="btn">Delivery Link</a>
-                            </div>
+                            <div class="full"><label class="c-label">Footage Link</label><input class="c-input" value="${p['Footage Link']}" readonly></div>
+                            <div><label class="c-label">Script Link</label><input class="c-input" value="${p['Script Link'] || ''}" readonly></div>
+                            <div><label class="c-label">Client Website</label><input class="c-input" value="${p['Client Website'] || ''}" readonly></div>
+                            <div><label class="c-label">Reference 1</label><input class="c-input" value="${p['Reference Link-1'] || ''}" readonly></div>
+                            <div><label class="c-label">Reference 2</label><input class="c-input" value="${p['Reference Link-2'] || ''}" readonly></div>
+                            <div class="full"><label class="c-label">Project Notes</label><textarea class="c-input" style="height:80px;" readonly>${p.Notes || ''}</textarea></div>
+                            <a href="${p['Delivery Link'] || '#'}" target="_blank" class="btn full" style="background:#059669;">Access Delivery Files</a>
                         </div>
                     </div>
-
-                    <div id="chat-tab" class="tab-content">
-                        <div class="chat-box" id="chat">Loading...</div>
+                    <div id="sec-msg" style="display:none;">
+                        <div class="chat-box" id="chat-container">Loading conversation...</div>
                         <div style="display:flex; gap:10px; margin-top:15px;">
-                            <input id="msg" placeholder="Message or Revision Note..." class="custom-input">
-                            <button onclick="send('${id}', '${p['Client Email']}')" class="btn"><i data-lucide="send"></i></button>
+                            <input id="chat-input" placeholder="Type your revision request or message..." class="c-input">
+                            <button onclick="sendMsg('${id}')" class="btn" style="width:80px;"><i data-lucide="send"></i></button>
                         </div>
                     </div>
                 `
             });
             lucide.createIcons();
-            loadChat(id);
+            loadMessages(id);
         }
 
-        function switchTab(evt, tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            evt.currentTarget.classList.add('active');
+        function switchTab(t) {
+            document.getElementById('sec-det').style.display = t === 'det' ? 'block' : 'none';
+            document.getElementById('sec-msg').style.display = t === 'msg' ? 'block' : 'none';
+            document.getElementById('btn-det').classList.toggle('active', t === 'det');
+            document.getElementById('btn-msg').classList.toggle('active', t === 'msg');
         }
 
         async function createProject() {
-            const { value: v } = await Swal.fire({
-                title: 'Add New Project', width: '800px', background: '#050508', color: '#fff',
+            const { value: f } = await Swal.fire({
+                title: 'New Production Form', width: '800px', background: '#0f0f16', color: '#fff',
                 html: `
                     <div class="form-grid">
-                        <input id="n-name" placeholder="Project Name" class="custom-input">
-                        <input id="n-email" placeholder="Client Email" class="custom-input" value="${isAdmin?'':email}">
-                        <input id="n-budget" placeholder="Budget (BDT)" class="custom-input">
-                        <input id="n-deadline" type="date" class="custom-input">
-                        <select id="n-prio" class="custom-input">
-                            <option>Normal</option><option>Medium</option><option>High</option>
-                        </select>
-                        <select id="n-pay" class="custom-input">
-                            <option>Unpaid</option><option>Partial</option><option>Paid</option>
-                        </select>
-                        <input id="n-foot" placeholder="Footage Link" class="custom-input full-width">
-                        <input id="n-script" placeholder="Script Link" class="custom-input full-width">
-                        <textarea id="n-notes" placeholder="Additional Notes" class="custom-input full-width" style="height:80px"></textarea>
+                        <div class="full"><label class="c-label">Project Name*</label><input id="p-name" class="c-input"></div>
+                        <div><label class="c-label">Footage Link</label><input id="p-foot" class="c-input" placeholder="http://"></div>
+                        <div><label class="c-label">Script Link</label><input id="p-script" class="c-input" placeholder="http://"></div>
+                        <div><label class="c-label">Reference Link-1</label><input id="p-ref1" class="c-input" placeholder="http://"></div>
+                        <div><label class="c-label">Reference Link-2</label><input id="p-ref2" class="c-input" placeholder="http://"></div>
+                        <div><label class="c-label">Client Website</label><input id="p-web" class="c-input" placeholder="http://"></div>
+                        <div><label class="c-label">Deadline</label><input id="p-date" type="date" class="c-input"></div>
+                        <div><label class="c-label">Contact Number</label><input id="p-num" type="number" class="c-input"></div>
+                        <div><label class="c-label">Estimated Budget (BDT)</label><input id="p-budget" type="number" class="c-input"></div>
+                        <div class="full"><label class="c-label">Additional Instructions / Notes</label><textarea id="p-note" class="c-input" style="height:80px;"></textarea></div>
                     </div>
                 `,
+                confirmButtonText: 'Launch Project',
                 preConfirm: () => ({
-                    name: document.getElementById('n-name').value,
-                    email: document.getElementById('n-email').value,
-                    budget: document.getElementById('n-budget').value,
-                    deadline: document.getElementById('n-deadline').value,
-                    priority: document.getElementById('n-prio').value,
-                    payment: document.getElementById('n-pay').value,
-                    footage: document.getElementById('n-foot').value,
-                    script: document.getElementById('n-script').value,
-                    notes: document.getElementById('n-notes').value
+                    name: document.getElementById('p-name').value,
+                    foot: document.getElementById('p-foot').value,
+                    script: document.getElementById('p-script').value,
+                    ref1: document.getElementById('p-ref1').value,
+                    ref2: document.getElementById('p-ref2').value,
+                    web: document.getElementById('p-web').value,
+                    date: document.getElementById('p-date').value,
+                    num: document.getElementById('p-num').value,
+                    budget: document.getElementById('p-budget').value,
+                    note: document.getElementById('p-note').value
                 })
             });
-            if(v && v.name) {
-                await fetch(API, { method: 'POST', body: JSON.stringify({ 
-                    action: "add", sheet: "Projects", 
-                    "Project Name": v.name, "Client Email": v.email, "Budget (BDT)": v.budget,
-                    "Deadline": v.deadline, "Priority": v.priority, "Payment Status": v.payment,
-                    "Footage Link": v.footage, "Script Link": v.script, "Notes": v.notes,
-                    "Status": "Order Placed", "Progress": 10
+
+            if(f && f.name) {
+                Swal.fire({ title: 'Syncing with Sheet...', didOpen: () => Swal.showLoading() });
+                await fetch(API, { method: 'POST', body: JSON.stringify({
+                    action: "add", sheet: "Projects",
+                    "Project Name": f.name, "Client Email": email, "Footage Link": f.foot,
+                    "Script Link": f.script, "Reference Link-1": f.ref1, "Reference Link-2": f.ref2,
+                    "Client Website": f.web, "Deadline": f.date, "Number": f.num,
+                    "Budget (BDT)": f.budget, "Notes": f.note, "Status": "Reviewing"
                 })});
+                Swal.fire('Success', 'Project added. Refreshing list...', 'success');
                 sync();
             }
         }
 
-        async function loadChat(id) {
-            const res = await fetch(`${API}?sheet=Messages&pId=${id}&email=${email}`);
-            const data = await res.json();
-            document.getElementById('chat').innerHTML = data.map(m => `
-                <div class="bubble ${m.From === isAdmin ? 'b-admin' : 'b-client'}">${m['Message Text']}</div>
-            `).join('') || 'No messages.';
+        async function loadMessages(id) {
+            const res = await fetch(`${API}?sheet=Messages&pId=${id}`);
+            const msgs = await res.json();
+            document.getElementById('chat-container').innerHTML = msgs.map(m => `
+                <div class="bubble ${m.From === email ? 'b-client' : 'b-admin'}">
+                    <div style="font-size:0.65rem; opacity:0.6; margin-bottom:4px;">${m.From === email ? 'You' : 'Naimur'}</div>
+                    ${m['Message Text']}
+                </div>
+            `).join('') || '<div style="text-align:center; color:gray; margin-top:100px;">Start a conversation about this project.</div>';
         }
 
-        async function send(id, cEmail) {
-            const txt = document.getElementById('msg').value; if(!txt) return;
-            await fetch(API, { method: 'POST', body: JSON.stringify({ sheet: "Messages", action: "add", "Project ID": id, "From": email, "Message Text": txt, clientEmail: cEmail })});
-            loadChat(id);
+        async function sendMsg(id) {
+            const text = document.getElementById('chat-input').value; if(!text) return;
+            document.getElementById('chat-input').value = '';
+            await fetch(API, { method: 'POST', body: JSON.stringify({ action: "add", sheet: "Messages", "Project ID": id, "From": email, "Message Text": text })});
+            loadMessages(id);
         }
 
         function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+        document.getElementById('u-pic').src = localStorage.getItem('clientPic');
         sync();
     </script>
 </body>
