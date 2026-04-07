@@ -1,157 +1,201 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motion Of Naimur | Agency OS</title>
+    <base target="_top">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #05060b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #00f2ff; }
-        body { background: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
         .glass { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid var(--border); }
-        .neo-btn { transition: all 0.3s ease; }
-        .neo-btn:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
-        input, textarea, select { background: rgba(255,255,255,0.05) !important; border: 1px solid var(--border) !important; color: white !important; }
-        .status-badge { padding: 4px 12px; border-radius: 100px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-        .status-Pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-        .status-Completed { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        
+        /* Status Logic - Logic #6 & #10 */
+        .status-Pending { color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
+        .status-Completed { color: #10b981; background: rgba(16, 185, 129, 0.1); }
+        
+        input, select, textarea { background: rgba(255,255,255,0.05) !important; border: 1px solid var(--border) !important; color: white !important; outline: none !important; }
+        .neo-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .neo-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -10px var(--accent); }
+        
+        .loading-spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="min-h-screen flex">
+<body class="flex">
 
-    <aside class="w-64 glass border-r border-white/10 p-6 flex flex-col fixed h-full">
-        <div class="mb-10 text-center">
-            <h1 class="text-xl font-bold tracking-tighter text-cyan-400">MOTION OF NAIMUR</h1>
-            <p class="text-[10px] text-slate-500 uppercase tracking-widest">SaaS Engine v2.0</p>
+    <aside class="w-64 glass border-r border-white/5 p-6 flex flex-col fixed h-full z-50">
+        <div class="mb-10">
+            <h1 class="text-xl font-bold text-cyan-400 tracking-tighter italic">MOTION OF NAIMUR</h1>
+            <p class="text-[10px] text-slate-500 uppercase tracking-[3px]">Agency OS v2.0</p>
         </div>
-        <nav class="space-y-2 flex-grow">
-            <div class="p-3 glass rounded-xl text-cyan-400 flex items-center gap-3 cursor-pointer"><i data-lucide="layout-grid"></i> Dashboard</div>
-            <div class="p-3 hover:bg-white/5 rounded-xl flex items-center gap-3 cursor-pointer"><i data-lucide="folder"></i> Projects</div>
-            <div class="p-3 hover:bg-white/5 rounded-xl flex items-center gap-3 cursor-pointer"><i data-lucide="message-square"></i> Messages</div>
+        <nav class="space-y-2 flex-grow text-sm">
+            <div class="flex items-center gap-3 p-3 glass rounded-xl text-cyan-400 cursor-pointer font-bold"><i data-lucide="layout-grid" size="18"></i> Dashboard</div>
+            <div class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-xl cursor-pointer text-slate-400 transition"><i data-lucide="folder" size="18"></i> Active Projects</div>
+            <div class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-xl cursor-pointer text-slate-400 transition"><i data-lucide="message-circle" size="18"></i> Messages</div>
         </nav>
-        <div class="border-t border-white/10 pt-4 text-center">
-            <p id="displayEmail" class="text-xs text-slate-500">naimur582582@gmail.com</p>
+        <div class="pt-6 border-t border-white/5">
+            <p id="userEmailTag" class="text-[10px] text-slate-500 italic truncate font-bold">Naimur Rahman</p>
         </div>
     </aside>
 
-    <main class="ml-64 flex-grow p-10">
+    <main class="ml-64 p-10 w-full">
         <header class="flex justify-between items-center mb-10">
             <div>
-                <h2 class="text-3xl font-bold">Production Hub</h2>
-                <p class="text-slate-400">Manage video workflows and revisions.</p>
+                <h2 class="text-3xl font-bold tracking-tight italic text-white">Production Hub</h2>
+                <p class="text-slate-500 text-sm mt-1">Automated workflow for professional video editing.</p>
             </div>
-            <button onclick="openModal('projectModal')" class="neo-btn bg-cyan-500 text-black px-6 py-3 rounded-2xl font-bold flex items-center gap-2">
-                <i data-lucide="plus-circle"></i> New Project
+            <button onclick="toggleModal('pModal', true)" class="neo-btn bg-cyan-500 text-black px-6 py-3 rounded-2xl font-bold flex items-center gap-2">
+                <i data-lucide="plus-circle"></i> Create Project
             </button>
         </header>
 
-        <div class="grid grid-cols-4 gap-6 mb-10">
-            <div class="glass p-6 rounded-2xl"><h3>Active</h3><p class="text-2xl font-bold" id="statActive">0</p></div>
-            <div class="glass p-6 rounded-2xl"><h3>Pending</h3><p class="text-2xl font-bold" id="statPending">0</p></div>
-            <div class="glass p-6 rounded-2xl"><h3>Total Budget</h3><p class="text-2xl font-bold" id="statBudget">৳ 0</p></div>
-            <div class="glass p-6 rounded-2xl"><h3>Completed</h3><p class="text-2xl font-bold" id="statDone">0</p></div>
+        <div class="grid grid-cols-4 gap-6 mb-12">
+            <div class="glass p-6 rounded-3xl border-l-4 border-cyan-500">
+                <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Live Projects</p>
+                <h3 id="stat-active" class="text-2xl font-bold italic">0</h3>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Completed</p>
+                <h3 id="stat-done" class="text-2xl font-bold text-green-400 italic">0</h3>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Total Revision</p>
+                <h3 id="stat-rev" class="text-2xl font-bold text-orange-400 italic">0</h3>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Status</p>
+                <h3 id="stat-status" class="text-xl font-bold text-slate-400 italic font-bold">Synced</h3>
+            </div>
         </div>
 
-        <div id="projectGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            </div>
+        <div id="loader" class="flex flex-col items-center justify-center py-20 hidden">
+            <div class="loading-spinner"></div>
+            <p class="text-slate-500 text-xs mt-4 italic">Loading from Google Sheet...</p>
+        </div>
+        <div id="projectGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
     </main>
 
-    <div id="projectModal" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4">
-        <div class="glass w-full max-w-2xl p-8 rounded-[32px] relative">
-            <button onclick="closeModal('projectModal')" class="absolute right-6 top-6"><i data-lucide="x"></i></button>
-            <h3 class="text-2xl font-bold mb-6 text-cyan-400">Create Project</h3>
-            <form id="pForm" class="grid grid-cols-2 gap-4">
-                <div class="col-span-2">
-                    <label class="text-[10px] uppercase font-bold text-slate-500">Project Name</label>
-                    <input type="text" id="projectName" required class="w-full p-4 rounded-xl mt-1">
-                </div>
+    <div id="pModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-[100] items-center justify-center p-4">
+        <div class="glass w-full max-w-xl p-8 rounded-[40px] border border-white/10 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold italic text-cyan-400">Launch Production</h3>
+                <button onclick="toggleModal('pModal', false)" class="text-slate-500 hover:text-white"><i data-lucide="x"></i></button>
+            </div>
+            <form id="projectForm" class="space-y-5">
                 <div>
-                    <label class="text-[10px] uppercase font-bold text-slate-500">Deadline</label>
-                    <input type="date" id="deadline" class="w-full p-4 rounded-xl mt-1">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 tracking-widest">Project Name</label>
+                    <input type="text" id="pName" required placeholder="Ex: Documentary V1 - Client X" class="w-full mt-2 p-4 rounded-2xl">
                 </div>
-                <div>
-                    <label class="text-[10px] uppercase font-bold text-slate-500">Type</label>
-                    <select id="projectType" class="w-full p-4 rounded-xl mt-1">
-                        <option>Video Editing</option>
-                        <option>Motion Graphics</option>
-                        <option>YouTube/Shorts</option>
-                    </select>
-                </div>
-                <div class="col-span-2 glass p-4 rounded-xl flex items-center justify-between">
-                    <label class="text-xs font-bold uppercase">Budget (BDT)</label>
-                    <div class="flex items-center gap-4">
-                        <button type="button" onclick="adj('budget', -500)" class="w-10 h-10 bg-white/10 rounded-lg">-</button>
-                        <input type="number" id="budget" value="0" class="w-20 text-center bg-transparent border-none font-bold text-lg">
-                        <button type="button" onclick="adj('budget', 500)" class="w-10 h-10 bg-white/10 rounded-lg">+</button>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 tracking-widest">Type</label>
+                        <select id="pType" class="w-full mt-2 p-4 rounded-2xl">
+                            <option>Video Editing</option>
+                            <option>Motion Graphics</option>
+                            <option>Social Media Shorts</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 tracking-widest">Priority</label>
+                        <select id="pPriority" class="w-full mt-2 p-4 rounded-2xl">
+                            <option>Medium</option>
+                            <option>High</option>
+                            <option>Low</option>
+                        </select>
                     </div>
                 </div>
-                <div class="col-span-2">
-                    <textarea id="notes" placeholder="Additional Notes..." class="w-full p-4 rounded-xl h-24 mt-2"></textarea>
-                </div>
-                <button type="submit" class="col-span-2 bg-cyan-500 text-black py-4 rounded-2xl font-bold neo-btn">Launch Project</button>
+                <button type="submit" id="submitBtn" class="w-full bg-cyan-500 text-black py-5 rounded-[24px] font-bold text-lg neo-btn uppercase tracking-widest">Deploy Project</button>
             </form>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
-        const userEmail = "naimur582582@gmail.com"; // Get from Google Login
-        let allData = [];
+        const CLIENT_EMAIL = "naimur582582@gmail.com"; 
 
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function adj(id, val) { const el = document.getElementById(id); let v = parseInt(el.value); if(v+val >= 0) el.value = v+val; }
-
-        // Fetch Projects (Logic #8)
-        function loadProjects() {
-            google.script.run.withSuccessHandler(data => {
-                allData = data;
-                render(data);
-            }).getProjectsForUser(userEmail, "Admin");
+        function toggleModal(id, show) {
+            document.getElementById(id).style.display = show ? 'flex' : 'none';
         }
 
-        function render(data) {
+        // Logic #8: Sync with your getProjectsForUser(email, role)
+        function initDashboard() {
+            document.getElementById('loader').classList.remove('hidden');
+            document.getElementById('projectGrid').innerHTML = '';
+            
+            google.script.run
+                .withSuccessHandler(data => {
+                    document.getElementById('loader').classList.add('hidden');
+                    renderUI(data);
+                })
+                .getProjectsForUser(CLIENT_EMAIL, "Admin"); 
+        }
+
+        function renderUI(data) {
             const grid = document.getElementById('projectGrid');
-            grid.innerHTML = data.map(p => `
-                <div class="glass p-6 rounded-[24px] hover:border-cyan-500/50 transition cursor-pointer">
-                    <div class="flex justify-between items-start mb-4">
-                        <span class="status-badge status-${p[9]}">${p[9]}</span>
-                        <span class="text-[10px] text-slate-500 font-bold">${p[1]}</span>
+            let active = 0, done = 0, revCount = 0;
+
+            grid.innerHTML = data.map(p => {
+                // Tracking based on your backend columns: p[9]=Status, p[22]=Rev Count, p[23]=Version
+                if(p[9] === 'Completed') done++; else active++;
+                revCount += parseInt(p[22] || 0);
+
+                return `
+                <div class="glass p-8 rounded-[32px] border border-white/5 hover:border-cyan-500/30 transition-all group relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-500 tracking-widest uppercase mb-1 italic">${p[1]}</p>
+                            <h4 class="text-xl font-bold group-hover:text-cyan-400 transition-colors">${p[2]}</h4>
+                        </div>
+                        <span class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase status-${p[9]}">${p[9]}</span>
                     </div>
-                    <h4 class="text-xl font-bold mb-2">${p[2]}</h4>
-                    <div class="flex items-center gap-6 text-xs text-slate-400 mb-6">
-                        <span class="flex items-center gap-1"><i data-lucide="user" size="14"></i> ${p[7] || 'Unassigned'}</span>
-                        <span class="flex items-center gap-1"><i data-lucide="clock" size="14"></i> ${p[19]}</span>
-                        <span class="flex items-center gap-1 text-cyan-400 font-bold"><i data-lucide="layers" size="14"></i> ${p[23]}</span>
+                    
+                    <div class="flex items-center gap-6 mb-8 text-[11px] text-slate-400">
+                        <div class="flex items-center gap-2 font-bold text-cyan-400 bg-cyan-400/5 px-3 py-1 rounded-lg border border-cyan-400/10">
+                            <i data-lucide="layers" size="12"></i> ${p[23] || 'V1'}
+                        </div>
+                        <div class="flex items-center gap-2 uppercase font-bold text-slate-500 tracking-wide">
+                            <i data-lucide="calendar-days" size="12"></i> ${p[19] || 'No Deadline'}
+                        </div>
                     </div>
-                    <div class="flex gap-2">
-                        <button class="flex-1 bg-white/5 py-3 rounded-xl font-bold text-xs hover:bg-white/10">View Work</button>
-                        <button onclick="reqRevision('${p[1]}')" class="flex-1 border border-cyan-500/30 text-cyan-400 py-3 rounded-xl font-bold text-xs hover:bg-cyan-500/10">Revision</button>
+
+                    <div class="flex gap-3">
+                        <button class="flex-1 bg-white/5 py-4 rounded-2xl font-bold text-[11px] uppercase tracking-wider hover:bg-white/10 transition-all">Details</button>
+                        <button onclick="alert('Revision Logic Triggered')" class="px-6 border border-white/10 py-4 rounded-2xl font-bold text-xs hover:border-cyan-400/50 hover:text-cyan-400 transition-all"><i data-lucide="refresh-cw" size="16"></i></button>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
+
+            document.getElementById('stat-active').innerText = active;
+            document.getElementById('stat-done').innerText = done;
+            document.getElementById('stat-rev').innerText = revCount;
             lucide.createIcons();
         }
 
-        // Logic #2: Add Project (Sync with your Code.gs)
-        document.getElementById('pForm').onsubmit = (e) => {
+        // Logic #2: Minimal Input Project Creation
+        document.getElementById('projectForm').onsubmit = (e) => {
             e.preventDefault();
-            const pData = {
-                projectName: document.getElementById('projectName').value,
-                deadline: document.getElementById('deadline').value,
-                projectType: document.getElementById('projectType').value,
-                budget: document.getElementById('budget').value,
-                notes: document.getElementById('notes').value
-            };
-            google.script.run.withSuccessHandler(() => {
-                closeModal('projectModal');
-                loadProjects();
-            }).addProject(pData, userEmail);
-        }
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Processing Logic...";
+            btn.disabled = true;
 
-        window.onload = loadProjects;
+            const pData = {
+                projectName: document.getElementById('pName').value,
+                projectType: document.getElementById('pType').value,
+                priority: document.getElementById('pPriority').value
+            };
+
+            google.script.run
+                .withSuccessHandler(() => {
+                    btn.innerText = "Deploy Project";
+                    btn.disabled = false;
+                    toggleModal('pModal', false);
+                    initDashboard(); // Auto Refresh
+                })
+                .addProject(pData, CLIENT_EMAIL);
+        };
+
+        window.onload = initDashboard;
     </script>
 </body>
 </html>
