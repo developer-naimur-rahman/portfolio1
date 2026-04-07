@@ -132,43 +132,85 @@
     <div id="projectGrid" class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-8"></div>
 </main>
 
-<div id="pModal" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden z-[100] items-center justify-center p-6">
-    <div class="glass w-full max-w-2xl p-10 rounded-[40px] shadow-2xl relative">
-        <div class="flex justify-between items-center mb-10">
+<div id="pModal" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden z-[100] items-center justify-center p-4 overflow-y-auto">
+    <div class="glass w-full max-w-4xl p-10 my-10 rounded-[40px] shadow-2xl relative">
+        <div class="flex justify-between items-start mb-10">
             <div>
-                <h3 class="text-3xl font-bold italic text-white tracking-tighter">New Production Entry</h3>
-                <p class="text-slate-500 text-sm">Fill in the details to start the workflow.</p>
+                <h3 class="text-3xl font-bold italic text-white tracking-tighter">Production Asset Deployment</h3>
+                <p class="text-slate-500 text-sm mt-1">Configure full project parameters for Google Sheets sync.</p>
             </div>
             <button onclick="toggleModal('pModal', false)" class="w-12 h-12 glass rounded-full flex items-center justify-center hover:bg-red-500/20 transition-all text-slate-400">
                 <i data-lucide="x"></i>
             </button>
         </div>
-        <form id="projectForm" class="space-y-6">
-            <div class="grid grid-cols-2 gap-6">
-                <div class="col-span-2">
+
+        <form id="projectForm" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Project ID</label>
+                    <input type="text" id="pID" required placeholder="Ex: MN-101" class="w-full mt-2 p-4 rounded-2xl text-white border-white/5">
+                </div>
+                <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Project Name</label>
-                    <input type="text" id="pName" required placeholder="Project Name" class="w-full mt-2 p-5 rounded-3xl text-white">
+                    <input type="text" id="pName" required placeholder="Project Title" class="w-full mt-2 p-4 rounded-2xl text-white">
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Service Type</label>
-                    <select id="pType" class="w-full mt-2 p-5 rounded-3xl text-white appearance-none">
-                        <option>Video Editing</option>
-                        <option>Motion Graphics</option>
-                        <option>Color Grading</option>
-                        <option>YouTube Shorts</option>
-                    </select>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Footage Link (Cloud)</label>
+                    <input type="url" id="pFootage" placeholder="http://" class="w-full mt-2 p-4 rounded-2xl text-cyan-400">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Script Type</label>
+                        <input type="text" id="pScript" placeholder="VSL / Story" class="w-full mt-2 p-4 rounded-2xl text-white">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Deadline</label>
+                        <input type="date" id="pDeadline" class="w-full mt-2 p-4 rounded-2xl text-white">
+                    </div>
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Priority Level</label>
-                    <select id="pPriority" class="w-full mt-2 p-5 rounded-3xl text-white appearance-none">
-                        <option>Medium</option>
-                        <option>High (Express)</option>
-                        <option>Low</option>
-                    </select>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Script Link</label>
+                    <input type="url" id="pScriptLink" placeholder="Google Doc Link" class="w-full mt-2 p-4 rounded-2xl text-white">
                 </div>
             </div>
-            <div class="pt-4">
-                <button type="submit" id="submitBtn" class="w-full bg-cyan-500 text-black py-6 rounded-[30px] font-black text-lg neo-btn uppercase tracking-[5px]">Deploy Assets</button>
+
+            <div class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Ref Link 1</label>
+                        <input type="url" id="pRef1" placeholder="http://" class="w-full mt-2 p-4 rounded-2xl text-white">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Ref Link 2</label>
+                        <input type="url" id="pRef2" placeholder="http://" class="w-full mt-2 p-4 rounded-2xl text-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Client Website</label>
+                    <input type="url" id="pClientWeb" placeholder="http://" class="w-full mt-2 p-4 rounded-2xl text-white">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Notes / Instructions</label>
+                    <textarea id="pNotes" rows="2" placeholder="Specific requirements..." class="w-full mt-2 p-4 rounded-2xl bg-white/5 border border-white/10 text-white outline-none"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Revisions</label>
+                        <input type="number" id="pRevCount" value="0" class="w-full mt-2 p-4 rounded-2xl text-white text-center">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Budget (USD)</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500 font-bold">$</span>
+                            <input type="number" id="pBudget" placeholder="0.00" class="w-full mt-2 p-4 pl-8 rounded-2xl text-white font-bold">
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" id="submitBtn" class="w-full bg-cyan-500 text-black py-5 rounded-[24px] font-black text-lg neo-btn uppercase tracking-[4px] flex items-center justify-center gap-3">
+                        <i data-lucide="send" size="20"></i> Launch Production
+                    </button>
+                </div>
             </div>
         </form>
     </div>
