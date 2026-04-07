@@ -5,27 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Motion Of Naimur</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Libraries -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         :root { --bg: #080808; --card: #121212; --primary: #3b82f6; --text: #ffffff; }
         body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); }
         
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; background: rgba(18,18,18,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); sticky: top; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; background: rgba(18,18,18,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 100; }
         .user-profile { display: flex; align-items: center; gap: 12px; }
-        .user-profile img { width: 35px; border-radius: 50%; border: 2px solid var(--primary); }
+        .user-profile img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
         
         .container { padding: 3rem 5%; }
         .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
         
         .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
         .project-card { background: var(--card); padding: 1.5rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; position: relative; overflow: hidden; }
-        .project-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .project-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1); }
         
         .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; background: rgba(59,130,246,0.15); color: var(--primary); }
+        
+        .btn-primary { background: var(--primary); border: none; color: white; padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-primary:hover { opacity: 0.9; transform: scale(1.05); }
+
         .btn-logout { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
         .btn-logout:hover { background: #ff4757; border-color: #ff4757; }
         
         .loading-shimmer { color: #94a3b8; text-align: center; padding: 50px; font-style: italic; }
+
+        /* Custom SweetAlert Style */
+        .swal-input-custom { background: #1a1a1a !important; color: white !important; border: 1px solid #333 !important; border-radius: 8px !important; }
     </style>
 </head>
 <body>
@@ -37,15 +47,20 @@
         </div>
         <div class="user-profile">
             <span id="u-name" style="font-size:0.9rem; color:#cbd5e1;"></span>
-            <img id="u-pic" src="" alt="">
+            <img id="u-pic" src="" alt="Profile">
             <button class="btn-logout" onclick="logout()">Logout</button>
         </div>
     </nav>
 
     <div class="container">
         <div class="header-flex">
-            <h2>Your Projects</h2>
-            <div id="stats" style="color:var(--primary); font-weight:600;"></div>
+            <div>
+                <h2 style="margin:0;">Your Projects</h2>
+                <div id="stats" style="color:var(--primary); font-size:0.9rem; margin-top:5px;"></div>
+            </div>
+            <button onclick="openNewProjectForm()" class="btn-primary">
+                <i data-lucide="plus-circle" style="width:18px;"></i> New Project
+            </button>
         </div>
 
         <div id="project-list" class="project-grid">
@@ -57,11 +72,14 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
         const email = localStorage.getItem('clientEmail');
 
+        // সিকিউরিটি চেক
         if(!email) window.location.href = 'index.html';
 
-        document.getElementById('u-name').innerText = localStorage.getItem('clientName');
-        document.getElementById('u-pic').src = localStorage.getItem('clientPic');
+        // ইউজার ইনফো সেট করা
+        document.getElementById('u-name').innerText = localStorage.getItem('clientName') || "Client";
+        document.getElementById('u-pic').src = localStorage.getItem('clientPic') || "https://via.placeholder.com/35";
 
+        // ১. গুগল শিট থেকে প্রজেক্ট লোড করা
         async function fetchProjects() {
             try {
                 const res = await fetch(`${API_URL}?sheet=Projects&email=${email}`);
@@ -69,8 +87,9 @@
                 const container = document.getElementById('project-list');
                 container.innerHTML = '';
 
-                if(data.length === 0) {
-                    container.innerHTML = "<p style='color:#94a3b8'>No active projects found.</p>";
+                if(!data || data.length === 0 || data.status === "error") {
+                    container.innerHTML = "<p style='color:#94a3b8; grid-column: 1/-1; text-align:center;'>No active projects found. Start one above!</p>";
+                    document.getElementById('stats').innerText = "0 Projects Active";
                     return;
                 }
 
@@ -84,8 +103,8 @@
                             <h3 style="margin:0 0 10px 0; font-size:1.2rem;">${p['Project Name']}</h3>
                             <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:1.5rem;">Deadline: ${p['Deadline'] || 'Flexible'}</p>
                             <div style="display:flex; gap:10px; border-top:1px solid rgba(255,255,255,0.05); padding-top:1rem;">
-                                <button style="background:var(--primary); border:none; color:white; padding:8px 15px; border-radius:8px; font-size:0.8rem; cursor:pointer;">View Video</button>
-                                <button style="background:rgba(255,255,255,0.05); border:none; color:white; padding:8px 15px; border-radius:8px; font-size:0.8rem; cursor:pointer;">Revisions</button>
+                                <button onclick="viewVideo('${p['Video Link']}')" style="background:var(--primary); border:none; color:white; padding:8px 15px; border-radius:8px; font-size:0.8rem; cursor:pointer; flex:1;">View Video</button>
+                                <button onclick="requestRevision('${p['Project Name']}')" style="background:rgba(255,255,255,0.05); border:none; color:white; padding:8px 15px; border-radius:8px; font-size:0.8rem; cursor:pointer; flex:1;">Revisions</button>
                             </div>
                         </div>
                     `;
@@ -93,11 +112,96 @@
                 lucide.createIcons();
                 document.getElementById('stats').innerText = `${data.length} Projects Active`;
             } catch (e) {
-                console.error(e);
+                console.error("Fetch Error:", e);
+                document.getElementById('project-list').innerHTML = "<p style='color:red;'>Failed to load data. Please refresh.</p>";
             }
         }
 
+        // ২. নতুন প্রজেক্ট তৈরির ফর্ম (POST)
+        async function openNewProjectForm() {
+            const { value: formValues } = await Swal.fire({
+                title: 'Start New Project',
+                background: '#121212',
+                color: '#fff',
+                html:
+                    '<input id="p-name" class="swal2-input swal-input-custom" placeholder="Project Name">' +
+                    '<input id="p-deadline" type="date" class="swal2-input swal-input-custom">',
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                preConfirm: () => {
+                    const name = document.getElementById('p-name').value;
+                    const deadline = document.getElementById('p-deadline').value;
+                    if (!name || !deadline) {
+                        Swal.showValidationMessage('Please fill out both fields');
+                    }
+                    return { name, deadline };
+                }
+            });
+
+            if (formValues) {
+                Swal.fire({ title: 'Submitting...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+
+                try {
+                    const payload = {
+                        "Timestamp": new Date().toLocaleString(),
+                        "Client Email": email,
+                        "Project Name": formValues.name,
+                        "Deadline": formValues.deadline,
+                        "Status": "Pending"
+                    };
+
+                    const response = await fetch(API_URL + "?sheet=Projects", {
+                        method: "POST",
+                        mode: "no-cors", // Apps Script এর জন্য জরুরি
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+
+                    Swal.fire('Success!', 'Your project has been added to the queue.', 'success');
+                    setTimeout(fetchProjects, 2000); // ২ সেকেন্ড পর রিফ্রেশ
+                } catch (error) {
+                    Swal.fire('Error', 'Could not save project. Try again.', 'error');
+                }
+            }
+        }
+
+        // ৩. ভিডিও দেখার ফাংশন
+        function viewVideo(link) {
+            if(link && link !== "undefined" && link !== "N/A") {
+                window.open(link, '_blank');
+            } else {
+                Swal.fire({
+                    title: 'Not Ready Yet',
+                    text: 'Naimur is still working on this video. Please wait for the link.',
+                    icon: 'info',
+                    background: '#121212',
+                    color: '#fff'
+                });
+            }
+        }
+
+        // ৪. রিভিশন রিকোয়েস্ট (সিম্পল অ্যালার্ট)
+        function requestRevision(projectName) {
+            Swal.fire({
+                title: 'Request Revision',
+                text: `Send feedback for: ${projectName}`,
+                input: 'textarea',
+                inputPlaceholder: 'Describe what needs to be changed...',
+                background: '#121212',
+                color: '#fff',
+                showCancelButton: true,
+                confirmButtonText: 'Send to Naimur'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Sent!', 'Naimur will review your feedback.', 'success');
+                }
+            });
+        }
+
         function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+        
+        // পেজ লোড হলে ডাটা আনা শুরু করবে
         fetchProjects();
         lucide.createIcons();
     </script>
