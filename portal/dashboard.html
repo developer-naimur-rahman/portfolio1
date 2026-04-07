@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Motion Of Naimur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root { --bg: #080808; --card: #121212; --primary: #3b82f6; --text: #ffffff; }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); }
+        
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; background: rgba(18,18,18,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); sticky: top; }
+        .user-profile { display: flex; align-items: center; gap: 12px; }
+        .user-profile img { width: 35px; border-radius: 50%; border: 2px solid var(--primary); }
+        
+        .container { padding: 3rem 5%; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
+        
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .project-card { background: var(--card); padding: 1.5rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; position: relative; overflow: hidden; }
+        .project-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; background: rgba(59,130,246,0.15); color: var(--primary); }
+        .btn-logout { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .btn-logout:hover { background: #ff4757; border-color: #ff4757; }
+        
+        .loading-shimmer { color: #94a3b8; text-align: center; padding: 50px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <i data-lucide="monitor-play" style="color:var(--primary)"></i>
+            <span style="font-weight:600; letter-spacing:1px;">MOTION OF NAIMUR</span>
+        </div>
+        <div class="user-profile">
+            <span id="u-name" style="font-size:0.9rem; color:#cbd5e1;"></span>
+            <img id="u-pic" src="" alt="">
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-flex">
+            <h2>Your Projects</h2>
+            <div id="stats" style="color:var(--primary); font-weight:600;"></div>
+        </div>
+
+        <div id="project-list" class="project-grid">
+            <div class="loading-shimmer">Synchronizing with Google Sheets...</div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
+        const email = localStorage.getItem('clientEmail');
+
+        if(!email) window.location.href = 'index.html';
+
+        document.getElementById('u-name').innerText = localStorage.getItem('clientName');
+        document.getElementById('u-pic').src = localStorage.getItem('clientPic');
+
+        async function fetchProjects() {
+            try {
+                const res = await fetch(`${API_URL}?sheet=Projects&email=${email}`);
+                const data = await res.json();
+                const container = document.getElementById('project-list');
+                container.innerHTML = '';
+
+                if(data.length === 0) {
+                    container.innerHTML = "<p style='color:#94a3b8'>No active projects found.</p>";
+                    return;
+                }
+
+                data.forEach(p => {
+                    container.innerHTML += `
+                        <div class="project-card">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:1.5rem;">
+                                <span class="badge">${p['Status'] || 'Pending'}</span>
+                                <i data-lucide="external-link" style="width:16px; color:#64748b; cursor:pointer;"></i>
+                            </div>
+                            <h3 style="margin:0 0 10px 0; font-size:1.2rem;">${p['Project Name']}</h3>
+                            <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:1.5rem;">Deadline: ${p['Deadline'] || 'Flexible'}</p>
+                            <div style="display:flex; gap:10px; border-top:1px solid rgba(255,255,255,0.05); padding-top:1rem;">
+                                <button style="background:var(--primary); border:none; color:white; padding:8px 15px; border-radius:8px; font-size:0.8rem; cursor:pointer;">View Video</button>
+                                <button style="background:rgba(255,255,255,0.05); border:none; color:white; padding:8px 15px; border-radius:8px; font-size:0.8rem; cursor:pointer;">Revisions</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                lucide.createIcons();
+                document.getElementById('stats').innerText = `${data.length} Projects Active`;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+        fetchProjects();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
