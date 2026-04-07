@@ -20,189 +20,205 @@
 </head>
 <body class="flex">
 
-    <aside class="w-64 glass border-r border-white/5 p-6 flex flex-col fixed h-full z-50">
-        <div class="mb-10">
-            <h1 class="text-xl font-bold text-cyan-400 tracking-tighter italic">MOTION OF NAIMUR</h1>
-            <p class="text-[10px] text-slate-500 uppercase tracking-[3px]">Agency OS v2.0</p>
-        </div>
-        <nav class="space-y-2 flex-grow text-sm">
-            <div class="flex items-center gap-3 p-3 glass rounded-xl text-cyan-400 cursor-pointer font-bold"><i data-lucide="layout-grid" size="18"></i> Dashboard</div>
-            <div class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-xl cursor-pointer text-slate-400 transition"><i data-lucide="folder" size="18"></i> Active Projects</div>
-            <div class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-xl cursor-pointer text-slate-400 transition"><i data-lucide="message-circle" size="18"></i> Messages</div>
-        </nav>
-        <div class="pt-6 border-t border-white/5">
-            <p id="userEmailTag" class="text-[10px] text-slate-500 italic truncate font-bold">Naimur Rahman</p>
-        </div>
-    </aside>
+<aside class="w-64 glass border-r border-white/5 p-6 flex flex-col fixed h-full z-50">
+    <div class="mb-10">
+        <h1 class="text-xl font-bold text-cyan-400 tracking-tighter italic">MOTION OF NAIMUR</h1>
+        <p class="text-[10px] text-slate-500 uppercase tracking-[3px]">Agency OS v2.0</p>
+    </div>
+    <nav class="space-y-2 flex-grow text-sm">
+        <div class="flex items-center gap-3 p-3 glass rounded-xl text-cyan-400 cursor-pointer font-bold"><i data-lucide="layout-grid" size="18"></i> Dashboard</div>
+        <div class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-xl cursor-pointer text-slate-400 transition"><i data-lucide="folder" size="18"></i> Active Projects</div>
+        <div class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-xl cursor-pointer text-slate-400 transition"><i data-lucide="message-circle" size="18"></i> Messages</div>
+    </nav>
+    <div class="pt-6 border-t border-white/5">
+        <p id="userEmailTag" class="text-[10px] text-slate-500 italic truncate font-bold">Naimur Rahman</p>
+    </div>
+</aside>
 
-    <main class="ml-64 p-10 w-full">
-        <header class="flex justify-between items-center mb-10">
-            <div>
-                <h2 class="text-3xl font-bold tracking-tight italic text-white">Production Hub</h2>
-                <p class="text-slate-500 text-sm mt-1">Automated workflow for professional video editing.</p>
-            </div>
-            <button onclick="toggleModal('pModal', true)" class="neo-btn bg-cyan-500 text-black px-6 py-3 rounded-2xl font-bold flex items-center gap-2">
-                <i data-lucide="plus-circle"></i> Create Project
-            </button>
-        </header>
-
-        <div class="grid grid-cols-4 gap-6 mb-12">
-            <div class="glass p-6 rounded-3xl border-l-4 border-cyan-500">
-                <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Live Projects</p>
-                <h3 id="stat-active" class="text-2xl font-bold italic">0</h3>
-            </div>
-            <div class="glass p-6 rounded-3xl">
-                <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Completed</p>
-                <h3 id="stat-done" class="text-2xl font-bold text-green-400 italic">0</h3>
-            </div>
-            <div class="glass p-6 rounded-3xl">
-                <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Total Revision</p>
-                <h3 id="stat-rev" class="text-2xl font-bold text-orange-400 italic">0</h3>
-            </div>
-            <div class="glass p-6 rounded-3xl">
-                <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Status</p>
-                <h3 id="stat-status" class="text-xl font-bold text-slate-400 italic font-bold">Synced</h3>
-            </div>
+<main class="ml-64 p-10 w-full">
+    <header class="flex justify-between items-center mb-10">
+        <div>
+            <h2 class="text-3xl font-bold tracking-tight italic text-white">Production Hub</h2>
+            <p class="text-slate-500 text-sm mt-1">Automated workflow for professional video editing.</p>
         </div>
+        <button onclick="toggleModal('pModal', true)" class="neo-btn bg-cyan-500 text-black px-6 py-3 rounded-2xl font-bold flex items-center gap-2">
+            <i data-lucide="plus-circle"></i> Create Project
+        </button>
+    </header>
 
-        <div id="loader" class="flex flex-col items-center justify-center py-20 hidden">
-            <div class="loading-spinner"></div>
-            <p class="text-slate-500 text-xs mt-4 italic">Loading from Google Sheet...</p>
+    <div class="grid grid-cols-4 gap-6 mb-12">
+        <div class="glass p-6 rounded-3xl border-l-4 border-cyan-500">
+            <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Live Projects</p>
+            <h3 id="stat-active" class="text-2xl font-bold italic">0</h3>
         </div>
-        <div id="projectGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
-    </main>
-
-    <div id="pModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-[100] items-center justify-center p-4">
-        <div class="glass w-full max-w-xl p-8 rounded-[40px] border border-white/10 shadow-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold italic text-cyan-400">Launch Production</h3>
-                <button onclick="toggleModal('pModal', false)" class="text-slate-500 hover:text-white"><i data-lucide="x"></i></button>
-            </div>
-            <form id="projectForm" class="space-y-5">
-                <div>
-                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 tracking-widest">Project Name</label>
-                    <input type="text" id="pName" required placeholder="Ex: Documentary V1" class="w-full mt-2 p-4 rounded-2xl">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 tracking-widest">Type</label>
-                        <select id="pType" class="w-full mt-2 p-4 rounded-2xl">
-                            <option>Video Editing</option>
-                            <option>Motion Graphics</option>
-                            <option>Social Media Shorts</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 tracking-widest">Priority</label>
-                        <select id="pPriority" class="w-full mt-2 p-4 rounded-2xl">
-                            <option>Medium</option>
-                            <option>High</option>
-                            <option>Low</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" id="submitBtn" class="w-full bg-cyan-500 text-black py-5 rounded-[24px] font-bold text-lg neo-btn uppercase tracking-widest">Deploy Project</button>
-            </form>
+        <div class="glass p-6 rounded-3xl">
+            <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Completed</p>
+            <h3 id="stat-done" class="text-2xl font-bold text-green-400 italic">0</h3>
+        </div>
+        <div class="glass p-6 rounded-3xl">
+            <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Total Revision</p>
+            <h3 id="stat-rev" class="text-2xl font-bold text-orange-400 italic">0</h3>
+        </div>
+        <div class="glass p-6 rounded-3xl">
+            <p class="text-slate-500 text-[10px] font-bold uppercase mb-1">Status</p>
+            <h3 id="stat-status" class="text-xl font-bold text-slate-400 italic font-bold">Synced</h3>
         </div>
     </div>
 
-    <script>
-        lucide.createIcons();
+    <div id="loader" class="flex flex-col items-center justify-center py-20 hidden">
+        <div class="loading-spinner"></div>
+        <p class="text-slate-500 text-xs mt-4 italic">Loading from Google Sheet...</p>
+    </div>
+    <div id="projectGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
+</main>
+
+<div id="pModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-[100] items-center justify-center p-4">
+    <div class="glass w-full max-w-xl p-8 rounded-[40px] border border-white/10 shadow-2xl">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-bold italic text-cyan-400">Launch Production</h3>
+            <button onclick="toggleModal('pModal', false)" class="text-slate-500 hover:text-white"><i data-lucide="x"></i></button>
+        </div>
+        <form id="projectForm" class="space-y-5">
+            <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 tracking-widest">Project Name</label>
+                <input type="text" id="pName" required placeholder="Ex: Documentary V1" class="w-full mt-2 p-4 rounded-2xl">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 tracking-widest">Type</label>
+                    <select id="pType" class="w-full mt-2 p-4 rounded-2xl">
+                        <option>Video Editing</option>
+                        <option>Motion Graphics</option>
+                        <option>Social Media Shorts</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 tracking-widest">Priority</label>
+                    <select id="pPriority" class="w-full mt-2 p-4 rounded-2xl">
+                        <option>Medium</option>
+                        <option>High</option>
+                        <option>Low</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" id="submitBtn" class="w-full bg-cyan-500 text-black py-5 rounded-[24px] font-bold text-lg neo-btn uppercase tracking-widest">Deploy Project</button>
+        </form>
+    </div>
+</div>
+
+<script>
+lucide.createIcons();
+
+// আপনার দেওয়া অরিজিনাল লিঙ্ক
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
+const CLIENT_EMAIL = "naimur582582@gmail.com";
+
+document.getElementById('userEmailTag').innerText = CLIENT_EMAIL;
+
+function toggleModal(id, show) {
+    document.getElementById(id).style.display = show ? 'flex' : 'none';
+}
+
+async function initDashboard() {
+    document.getElementById('loader').classList.remove('hidden');
+    document.getElementById('projectGrid').innerHTML = '';
+
+    try {
+        const response = await fetch(WEB_APP_URL);
+        const data = await response.json();
+        document.getElementById('loader').classList.add('hidden');
+        renderUI(data);
+    } catch (err) {
+        console.error(err);
+        document.getElementById('loader').innerHTML = "<p class='text-red-500'>Error loading data!</p>";
+    }
+}
+
+function renderUI(data) {
+    const grid = document.getElementById('projectGrid');
+    if (!data || data.length === 0) {
+        grid.innerHTML = "<p class='text-slate-500 italic text-center col-span-2 py-10'>No projects found.</p>";
+        return;
+    }
+
+    let active = 0, done = 0, revCount = 0;
+
+    grid.innerHTML = data.map(p => {
+        // গুগল শিটের কলাম ইনডেক্স অনুযায়ী ম্যাপিং (ProjectID=1, Name=2, Status=9, etc.)
+        const status = p[9] || 'Pending';
+        if(status === 'Completed') done++; else active++;
+        revCount += parseInt(p[22] || 0);
+
+        return `
+        <div class="glass p-8 rounded-[32px] border border-white/5 hover:border-cyan-500/30 transition-all group relative overflow-hidden">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <p class="text-[10px] font-bold text-slate-500 tracking-widest uppercase mb-1 italic">${p[1]}</p>
+                    <h4 class="text-xl font-bold group-hover:text-cyan-400 transition-colors">${p[2]}</h4>
+                </div>
+                <span class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase status-${status}">${status}</span>
+            </div>
+            <div class="flex items-center gap-6 mb-8 text-[11px] text-slate-400">
+                <div class="flex items-center gap-2 font-bold text-cyan-400 bg-cyan-400/5 px-3 py-1 rounded-lg border border-cyan-400/10">
+                    <i data-lucide="layers" size="12"></i> ${p[23] || 'V1'}
+                </div>
+                <div class="flex items-center gap-2 uppercase font-bold text-slate-500 tracking-wide">
+                    <i data-lucide="calendar-days" size="12"></i> ${p[19] || 'No Deadline'}
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button class="flex-1 bg-white/5 py-4 rounded-2xl font-bold text-[11px] uppercase tracking-wider hover:bg-white/10 transition-all">Details</button>
+                <button onclick="initDashboard()" class="px-6 border border-white/10 py-4 rounded-2xl font-bold text-xs hover:border-cyan-400/50 hover:text-cyan-400 transition-all"><i data-lucide="refresh-cw" size="16"></i></button>
+            </div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('stat-active').innerText = active;
+    document.getElementById('stat-done').innerText = done;
+    document.getElementById('stat-rev').innerText = revCount;
+    lucide.createIcons();
+}
+
+document.getElementById('projectForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const originalText = btn.innerText;
+    btn.innerText = "Deploying...";
+    btn.disabled = true;
+
+    const pData = {
+        projectName: document.getElementById('pName').value,
+        projectType: document.getElementById('pType').value,
+        priority: document.getElementById('pPriority').value,
+        email: CLIENT_EMAIL
+    };
+
+    try {
+        await fetch(WEB_APP_URL, { 
+            method: 'POST', 
+            mode: 'no-cors', // Apps Script এর জন্য জরুরি
+            body: JSON.stringify(pData) 
+        });
         
-        // আপনার Web App URL (এখানে ডাটা আসবে)
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
-        const CLIENT_EMAIL = "naimur582582@gmail.com"; 
+        // no-cors এ রেসপন্স পড়া যায় না, তাই একটু পর রিফ্রেশ করছি
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.disabled = false;
+            toggleModal('pModal', false);
+            document.getElementById('projectForm').reset();
+            initDashboard();
+        }, 2000);
+        
+    } catch (err) {
+        console.error(err);
+        alert("Creation might have failed. Check Sheets.");
+        btn.disabled = false;
+        btn.innerText = originalText;
+    }
+};
 
-        function toggleModal(id, show) {
-            document.getElementById(id).style.display = show ? 'flex' : 'none';
-        }
+window.onload = initDashboard;
+</script>
 
-        // ফিক্সড ডাটা ফেচ মেথড (Netlify-এর জন্য)
-        async function initDashboard() {
-            document.getElementById('loader').classList.remove('hidden');
-            document.getElementById('projectGrid').innerHTML = '';
-            
-            try {
-                const response = await fetch(WEB_APP_URL);
-                const data = await response.json();
-                document.getElementById('loader').classList.add('hidden');
-                renderUI(data);
-            } catch (err) {
-                console.error(err);
-                document.getElementById('loader').innerHTML = "Error loading data!";
-            }
-        }
-
-        function renderUI(data) {
-            const grid = document.getElementById('projectGrid');
-            let active = 0, done = 0, revCount = 0;
-
-            grid.innerHTML = data.map(p => {
-                if(p[9] === 'Completed') done++; else active++;
-                revCount += parseInt(p[22] || 0);
-
-                return `
-                <div class="glass p-8 rounded-[32px] border border-white/5 hover:border-cyan-500/30 transition-all group relative overflow-hidden">
-                    <div class="flex justify-between items-start mb-6">
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-500 tracking-widest uppercase mb-1 italic">${p[1]}</p>
-                            <h4 class="text-xl font-bold group-hover:text-cyan-400 transition-colors">${p[2]}</h4>
-                        </div>
-                        <span class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase status-${p[9]}">${p[9]}</span>
-                    </div>
-                    <div class="flex items-center gap-6 mb-8 text-[11px] text-slate-400">
-                        <div class="flex items-center gap-2 font-bold text-cyan-400 bg-cyan-400/5 px-3 py-1 rounded-lg border border-cyan-400/10">
-                            <i data-lucide="layers" size="12"></i> ${p[23] || 'V1'}
-                        </div>
-                        <div class="flex items-center gap-2 uppercase font-bold text-slate-500 tracking-wide">
-                            <i data-lucide="calendar-days" size="12"></i> ${p[19] || 'No Deadline'}
-                        </div>
-                    </div>
-                    <div class="flex gap-3">
-                        <button class="flex-1 bg-white/5 py-4 rounded-2xl font-bold text-[11px] uppercase tracking-wider hover:bg-white/10 transition-all">Details</button>
-                        <button class="px-6 border border-white/10 py-4 rounded-2xl font-bold text-xs hover:border-cyan-400/50 hover:text-cyan-400 transition-all"><i data-lucide="refresh-cw" size="16"></i></button>
-                    </div>
-                </div>`;
-            }).join('');
-
-            document.getElementById('stat-active').innerText = active;
-            document.getElementById('stat-done').innerText = done;
-            document.getElementById('stat-rev').innerText = revCount;
-            lucide.createIcons();
-        }
-
-        // প্রজেক্ট অ্যাড করার লজিক (Keep it working via Web App)
-        document.getElementById('projectForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Deploying...";
-            btn.disabled = true;
-
-            const pData = {
-                projectName: document.getElementById('pName').value,
-                projectType: document.getElementById('pType').value,
-                priority: document.getElementById('pPriority').value,
-                email: CLIENT_EMAIL,
-                action: 'addProject'
-            };
-
-            // বাইরের ওয়েবসাইট থেকে প্রজেক্ট অ্যাড করতে হলে আপনার Code.gs-এ doPost থাকা ভালো।
-            // সাময়িকভাবে এই কোডটি দিয়ে চেষ্টা করুন।
-            fetch(WEB_APP_URL, {
-                method: 'POST',
-                body: JSON.stringify(pData)
-            }).then(() => {
-                btn.innerText = "Deploy Project";
-                btn.disabled = false;
-                toggleModal('pModal', false);
-                initDashboard();
-            }).catch(() => {
-                alert("Creation failed. Ensure doPost is set in GAS.");
-                btn.disabled = false;
-            });
-        };
-
-        window.onload = initDashboard;
-    </script>
 </body>
 </html>
