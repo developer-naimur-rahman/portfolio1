@@ -273,31 +273,161 @@
         <!-- ============================= -->
         <!-- Project Form -->
         <!-- ============================= -->
-        <form id="projectForm" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Left Column -->
-            <div class="space-y-6">
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Project ID</label><input type="text" id="pID" required placeholder="Ex: MN-101" class="w-full mt-2 p-4 rounded-2xl"></div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Project Name</label><input type="text" id="pName" required placeholder="Project Title" class="w-full mt-2 p-4 rounded-2xl"></div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Footage Link</label><input type="url" id="pFootage" placeholder="http://" class="w-full mt-2 p-4 rounded-2xl text-cyan-400"></div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Script Type</label><input type="text" id="pScript" placeholder="VSL" class="w-full mt-2 p-4 rounded-2xl"></div>
-                    <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Deadline</label><input type="date" id="pDeadline" class="w-full mt-2 p-4 rounded-2xl"></div>
-                </div>
-            </div>
+       <form id="projectForm" class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-            <!-- Right Column -->
-            <div class="space-y-6">
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Ref Link 1</label><input type="url" id="pRef1" placeholder="http://" class="w-full mt-2 p-4 rounded-2xl"></div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Notes</label><textarea id="pNotes" rows="2" placeholder="Specific requirements..." class="w-full mt-2 p-4 rounded-2xl"></textarea></div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Revisions</label><input type="number" id="pRevCount" value="0" class="w-full mt-2 p-4 rounded-2xl text-center"></div>
-                    <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Budget (USD)</label><input type="number" id="pBudget" placeholder="0.00" class="w-full mt-2 p-4 rounded-2xl font-bold"></div>
-                </div>
-                <button type="submit" id="submitBtn" class="w-full bg-cyan-500 text-black py-5 rounded-[24px] font-black text-lg uppercase tracking-[4px] flex items-center justify-center gap-3 hover:bg-cyan-400 transition-all active:scale-95">
-                    <i data-lucide="send" size="20"></i> Launch Production
-                </button>
-            </div>
-        </form>
+    <!-- Left Column -->
+    <div class="space-y-6">
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Timestamp</label>
+            <input type="datetime-local" id="pTimestamp" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Project ID</label>
+            <input type="text" id="pID" required placeholder="Ex: MN-101" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Client Email</label>
+            <input type="email" id="pClientEmail" required placeholder="client@example.com" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Project Name</label>
+            <input type="text" id="pName" required placeholder="Project Title" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Category</label>
+            <input type="text" id="pCategory" placeholder="Ex: Promo, VSL" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Project Type</label>
+            <input type="text" id="pType" placeholder="Ex: Animation, Editing" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Client Website</label>
+            <input type="url" id="pClientWebsite" placeholder="https://example.com" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Assigned Editor</label>
+            <input type="text" id="pEditor" placeholder="Editor Name" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Editor Email</label>
+            <input type="email" id="pEditorEmail" placeholder="editor@example.com" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Status</label>
+            <select id="pStatus" class="w-full mt-2 p-4 rounded-2xl">
+                <option>Pending</option>
+                <option>In Progress</option>
+                <option>Completed</option>
+            </select>
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Priority</label>
+            <select id="pPriority" class="w-full mt-2 p-4 rounded-2xl">
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+            </select>
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Approval Status</label>
+            <select id="pApproval" class="w-full mt-2 p-4 rounded-2xl">
+                <option>Pending</option>
+                <option>Approved</option>
+                <option>Rejected</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="space-y-6">
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Footage Link</label>
+            <input type="url" id="pFootage" placeholder="http://" class="w-full mt-2 p-4 rounded-2xl text-cyan-400">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Script</label>
+            <textarea id="pScript" rows="2" placeholder="Script content..." class="w-full mt-2 p-4 rounded-2xl"></textarea>
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Script Link</label>
+            <input type="url" id="pScriptLink" placeholder="http://" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Reference Link 1</label>
+            <input type="url" id="pRef1" placeholder="http://" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Reference Link 2</label>
+            <input type="url" id="pRef2" placeholder="http://" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Delivery Link</label>
+            <input type="url" id="pDeliveryLink" placeholder="http://" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Delivery Type</label>
+            <input type="text" id="pDeliveryType" placeholder="Ex: MP4, Drive Link" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Deadline</label>
+            <input type="date" id="pDeadline" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Start Date</label>
+            <input type="date" id="pStartDate" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Completed Date</label>
+            <input type="date" id="pCompletedDate" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Revision Count</label>
+            <input type="number" id="pRevCount" value="0" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Version</label>
+            <input type="text" id="pVersion" placeholder="V1.0" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Notes</label>
+            <textarea id="pNotes" rows="2" placeholder="Additional notes..." class="w-full mt-2 p-4 rounded-2xl"></textarea>
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Payment Status</label>
+            <select id="pPaymentStatus" class="w-full mt-2 p-4 rounded-2xl">
+                <option>Pending</option>
+                <option>Paid</option>
+                <option>Partial</option>
+            </select>
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Budget (BDT)</label>
+            <input type="number" id="pBudget" placeholder="0" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Created By</label>
+            <input type="text" id="pCreatedBy" placeholder="Your Name" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Last Updated</label>
+            <input type="datetime-local" id="pLastUpdated" class="w-full mt-2 p-4 rounded-2xl">
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Archive</label>
+            <select id="pArchive" class="w-full mt-2 p-4 rounded-2xl">
+                <option>No</option>
+                <option>Yes</option>
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submitBtn" class="w-full bg-cyan-500 text-black py-5 rounded-[24px] font-black text-lg uppercase tracking-[4px] flex items-center justify-center gap-3 hover:bg-cyan-400 transition-all active:scale-95">
+            <i data-lucide="send" size="20"></i> Launch Production
+        </button>
+    </div>
+</form>
+
     </div>
 </div>
 
