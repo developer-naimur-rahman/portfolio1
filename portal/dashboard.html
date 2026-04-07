@@ -9,15 +9,11 @@
         :root { --bg: #05060b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #00f2ff; }
         body { background: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
         .glass { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid var(--border); }
-        
-        /* Status Logic - Logic #6 & #10 */
         .status-Pending { color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
         .status-Completed { color: #10b981; background: rgba(16, 185, 129, 0.1); }
-        
         input, select, textarea { background: rgba(255,255,255,0.05) !important; border: 1px solid var(--border) !important; color: white !important; outline: none !important; }
         .neo-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .neo-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -10px var(--accent); }
-        
         .loading-spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -85,7 +81,7 @@
             <form id="projectForm" class="space-y-5">
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 tracking-widest">Project Name</label>
-                    <input type="text" id="pName" required placeholder="Ex: Documentary V1 - Client X" class="w-full mt-2 p-4 rounded-2xl">
+                    <input type="text" id="pName" required placeholder="Ex: Documentary V1" class="w-full mt-2 p-4 rounded-2xl">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -112,23 +108,29 @@
 
     <script>
         lucide.createIcons();
+        
+        // আপনার Web App URL (এখানে ডাটা আসবে)
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
         const CLIENT_EMAIL = "naimur582582@gmail.com"; 
 
         function toggleModal(id, show) {
             document.getElementById(id).style.display = show ? 'flex' : 'none';
         }
 
-        // Logic #8: Sync with your getProjectsForUser(email, role)
-        function initDashboard() {
+        // ফিক্সড ডাটা ফেচ মেথড (Netlify-এর জন্য)
+        async function initDashboard() {
             document.getElementById('loader').classList.remove('hidden');
             document.getElementById('projectGrid').innerHTML = '';
             
-            google.script.run
-                .withSuccessHandler(data => {
-                    document.getElementById('loader').classList.add('hidden');
-                    renderUI(data);
-                })
-                .getProjectsForUser(CLIENT_EMAIL, "Admin"); 
+            try {
+                const response = await fetch(WEB_APP_URL);
+                const data = await response.json();
+                document.getElementById('loader').classList.add('hidden');
+                renderUI(data);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loader').innerHTML = "Error loading data!";
+            }
         }
 
         function renderUI(data) {
@@ -136,7 +138,6 @@
             let active = 0, done = 0, revCount = 0;
 
             grid.innerHTML = data.map(p => {
-                // Tracking based on your backend columns: p[9]=Status, p[22]=Rev Count, p[23]=Version
                 if(p[9] === 'Completed') done++; else active++;
                 revCount += parseInt(p[22] || 0);
 
@@ -149,7 +150,6 @@
                         </div>
                         <span class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase status-${p[9]}">${p[9]}</span>
                     </div>
-                    
                     <div class="flex items-center gap-6 mb-8 text-[11px] text-slate-400">
                         <div class="flex items-center gap-2 font-bold text-cyan-400 bg-cyan-400/5 px-3 py-1 rounded-lg border border-cyan-400/10">
                             <i data-lucide="layers" size="12"></i> ${p[23] || 'V1'}
@@ -158,10 +158,9 @@
                             <i data-lucide="calendar-days" size="12"></i> ${p[19] || 'No Deadline'}
                         </div>
                     </div>
-
                     <div class="flex gap-3">
                         <button class="flex-1 bg-white/5 py-4 rounded-2xl font-bold text-[11px] uppercase tracking-wider hover:bg-white/10 transition-all">Details</button>
-                        <button onclick="alert('Revision Logic Triggered')" class="px-6 border border-white/10 py-4 rounded-2xl font-bold text-xs hover:border-cyan-400/50 hover:text-cyan-400 transition-all"><i data-lucide="refresh-cw" size="16"></i></button>
+                        <button class="px-6 border border-white/10 py-4 rounded-2xl font-bold text-xs hover:border-cyan-400/50 hover:text-cyan-400 transition-all"><i data-lucide="refresh-cw" size="16"></i></button>
                     </div>
                 </div>`;
             }).join('');
@@ -172,27 +171,35 @@
             lucide.createIcons();
         }
 
-        // Logic #2: Minimal Input Project Creation
-        document.getElementById('projectForm').onsubmit = (e) => {
+        // প্রজেক্ট অ্যাড করার লজিক (Keep it working via Web App)
+        document.getElementById('projectForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            btn.innerText = "Processing Logic...";
+            btn.innerText = "Deploying...";
             btn.disabled = true;
 
             const pData = {
                 projectName: document.getElementById('pName').value,
                 projectType: document.getElementById('pType').value,
-                priority: document.getElementById('pPriority').value
+                priority: document.getElementById('pPriority').value,
+                email: CLIENT_EMAIL,
+                action: 'addProject'
             };
 
-            google.script.run
-                .withSuccessHandler(() => {
-                    btn.innerText = "Deploy Project";
-                    btn.disabled = false;
-                    toggleModal('pModal', false);
-                    initDashboard(); // Auto Refresh
-                })
-                .addProject(pData, CLIENT_EMAIL);
+            // বাইরের ওয়েবসাইট থেকে প্রজেক্ট অ্যাড করতে হলে আপনার Code.gs-এ doPost থাকা ভালো।
+            // সাময়িকভাবে এই কোডটি দিয়ে চেষ্টা করুন।
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                body: JSON.stringify(pData)
+            }).then(() => {
+                btn.innerText = "Deploy Project";
+                btn.disabled = false;
+                toggleModal('pModal', false);
+                initDashboard();
+            }).catch(() => {
+                alert("Creation failed. Ensure doPost is set in GAS.");
+                btn.disabled = false;
+            });
         };
 
         window.onload = initDashboard;
