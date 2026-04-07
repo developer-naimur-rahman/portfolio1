@@ -1,8 +1,3 @@
-I've rewritten the code to make the UI feel more like a modern "Operating System" while ensuring it perfectly maps to the columns in your Google Sheet (Category, Client Website, Priority, etc.).
-
-I have also added a **Status Color Map** and refined the **Admin/Editor/Client** logic to make the dashboard more functional.
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,339 +8,262 @@ I have also added a **Status Color Map** and refined the **Admin/Editor/Client**
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { 
-            --bg: #030305; 
-            --card: #0c0c12; 
-            --primary: #3b82f6; 
-            --border: rgba(255,255,255,0.08); 
-            --text: #f8fafc; 
-            --text-sec: #64748b; 
-            --success: #10b981; 
-            --danger: #ef4444; 
-            --warning: #f59e0b;
-        }
+        :root { --bg: #050508; --card: #0f0f16; --primary: #3b82f6; --border: rgba(255,255,255,0.06); --text: #ffffff; --text-sec: #94a3b8; --success: #059669; --danger: #ef4444; }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; border-bottom: 1px solid var(--border); background: rgba(5,5,8,0.8); backdrop-filter: blur(10px); position: sticky; top:0; z-index: 100; }
+        .container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .p-card { background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .p-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(59,130,246,0.1); }
         
-        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+        #project-view { display: none; background: var(--bg); min-height: 100vh; width: 100%; position: fixed; top: 0; left: 0; z-index: 200; padding: 2rem 5%; box-sizing: border-box; overflow-y: auto; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full { grid-column: span 2; }
         
-        /* Glassmorphism Sidebar/Nav */
-        nav { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 1rem 5%; background: rgba(3, 3, 5, 0.8); 
-            backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; z-index: 100;
-        }
-
-        .container { padding: 2.5rem 5%; max-width: 1400px; margin: 0 auto; }
-
-        /* Project Cards */
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
-        .p-card { 
-            background: var(--card); border-radius: 20px; padding: 24px; 
-            border: 1px solid var(--border); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative; cursor: pointer;
-        }
-        .p-card:hover { 
-            border-color: var(--primary); transform: translateY(-8px); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(59,130,246,0.1); 
-        }
-
-        .badge { 
-            font-size: 0.65rem; font-weight: 800; padding: 4px 12px; 
-            border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-
-        /* Modal Overlay */
-        #project-view { 
-            display: none; background: var(--bg); position: fixed; 
-            inset: 0; z-index: 200; padding: 2rem 5%; overflow-y: auto; 
-            animation: slideUp 0.4s ease-out;
-        }
-
-        .details-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .full-col { grid-column: span 2; }
-
-        /* Custom Inputs */
-        .field-group { margin-bottom: 15px; }
-        .c-label { font-size: 0.75rem; color: var(--text-sec); margin-bottom: 8px; display: block; font-weight: 600; }
-        .c-input { 
-            width: 100%; padding: 14px; background: #11111a; border: 1px solid var(--border); 
-            color: #fff; border-radius: 12px; font-family: inherit; transition: 0.2s;
-        }
-        .c-input:focus { border-color: var(--primary); outline: none; background: #161625; }
-
-        /* Buttons */
-        .btn { 
-            background: var(--primary); color: white; border: none; padding: 12px 24px; 
-            border-radius: 12px; cursor: pointer; font-weight: 600; display: inline-flex; 
-            align-items: center; gap: 10px; transition: 0.2s;
-        }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-sec); }
-        .btn-outline:hover { background: rgba(255,255,255,0.05); color: #fff; }
-
-        /* Chat */
-        .chat-box { 
-            height: 500px; overflow-y: auto; background: rgba(255,255,255,0.02); 
-            border-radius: 20px; padding: 25px; border: 1px solid var(--border);
-            margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px;
-        }
-        .bubble { padding: 12px 18px; border-radius: 18px; max-width: 70%; font-size: 0.95rem; line-height: 1.4; }
-        .b-admin { background: #1e1e2d; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border); }
-        .b-client { background: var(--primary); align-self: flex-end; border-bottom-right-radius: 4px; }
-
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .c-input { width: 100%; padding: 12px; background: #15151e; border: 1px solid #333; color: #fff; border-radius: 10px; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; transition: 0.2s; }
+        .c-input:focus { border-color: var(--primary); outline: none; background: #1a1a26; }
+        .c-label { font-size: 0.7rem; color: var(--text-sec); margin-bottom: 6px; display: block; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .chat-box { height: 450px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .bubble { padding: 10px 15px; border-radius: 15px; max-width: 75%; font-size: 0.9rem; position: relative; animation: fadeIn 0.3s ease; }
+        .b-admin { background: #222; align-self: flex-start; }
+        .b-client { background: var(--primary); align-self: flex-end; }
+        
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; justify-content: center; transition: 0.2s; }
+        .back-btn { background: #1a1a1a; border: 1px solid #333; color: var(--text-sec); padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <nav>
-        <div style="font-weight:900; font-size:1.5rem; letter-spacing:-1px;">
-            <span style="color:var(--primary)">INFINITY</span> OS
-        </div>
-        <div style="display:flex; align-items:center; gap:20px;">
-            <div style="text-align: right; line-height: 1;">
-                <div id="u-name" style="font-size: 0.85rem; font-weight: 700;">Naimur Rahman</div>
-                <div id="u-role" style="font-size: 0.65rem; color: var(--text-sec);">Account Owner</div>
-            </div>
-            <img id="u-pic" style="width:40px; height:40px; border-radius:12px; object-fit: cover; border: 1px solid var(--border);">
-            <button onclick="logout()" class="btn btn-outline" style="padding: 8px 15px;">Logout</button>
+        <div style="font-weight:800; font-size:1.4rem; letter-spacing:-1px; color:var(--primary);">MOTION OF NAIMUR</div>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <img id="u-pic" style="width:35px; height:35px; border-radius:50%; border:2px solid var(--primary);">
+            <button onclick="logout()" class="back-btn" style="margin:0;">Logout</button>
         </div>
     </nav>
 
     <div id="main-dashboard" class="container">
-        <header style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:50px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
             <div>
-                <h1 id="welcome-title" style="font-size: 2.5rem; margin:0; letter-spacing: -1px;">Studio Workspace</h1>
-                <p style="color:var(--text-sec); margin: 5px 0 0 0;">Visualizing project flow and production status.</p>
+                <h1 id="welcome-title" style="margin:0;">Loading...</h1>
+                <p style="color:var(--text-sec); margin-top:5px;">Manage your video production projects.</p>
             </div>
-            <button onclick="createProject()" class="btn"><i data-lucide="plus-circle"></i> New Production</button>
-        </header>
-
-        <div id="project-list" class="project-grid">
-            <!-- Skeleton Loading -->
-            <div style="color:var(--text-sec)">Initializing encrypted sync...</div>
+            <button id="client-add-btn" onclick="createProject()" class="btn"><i data-lucide="plus"></i> New Project</button>
         </div>
+        <div id="project-list" class="project-grid">Syncing data...</div>
     </div>
 
-    <!-- Expanded Project View -->
     <div id="project-view">
-        <div style="max-width: 1100px; margin: 0 auto;">
-            <button class="btn btn-outline" onclick="closeView()" style="margin-bottom:30px;">
-                <i data-lucide="chevron-left"></i> Back to Fleet
-            </button>
-            
-            <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom:40px;">
-                <div>
-                    <div id="v-category" class="badge" style="background:rgba(59,130,246,0.1); color:var(--primary); margin-bottom:10px; display:inline-block;">Category</div>
-                    <h1 id="v-title" style="font-size: 2.5rem; margin:0;">Project Title</h1>
-                    <div style="display:flex; gap:15px; margin-top:10px;">
-                        <span id="v-id" style="color:var(--text-sec); font-size:0.9rem; font-weight:600;"></span>
-                        <span id="v-priority" class="badge"></span>
+        <button class="back-btn" onclick="closeView()"><i data-lucide="arrow-left"></i> Back to Dashboard</button>
+        
+        <div style="display:flex; justify-content:space-between; align-items: flex-start; margin-bottom:30px; border-bottom: 1px solid var(--border); padding-bottom: 20px;">
+            <div>
+                <h1 id="v-title" style="margin:0 0 5px 0;">Project Name</h1>
+                <span id="v-id" style="color:var(--text-sec); font-size:0.8rem;">ID: #0000</span>
+            </div>
+            <div id="v-status" style="background:var(--primary); color:white; padding:8px 20px; border-radius:30px; font-weight:800; font-size:0.75rem; text-transform:uppercase;">STATUS</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:30px;">
+            <div id="sec-det">
+                <div class="form-grid">
+                    <div class="full">
+                        <label class="c-label">Project Name</label>
+                        <input id="edit-name" class="c-input">
+                    </div>
+                    <div class="full">
+                        <label class="c-label">Footage Link (Click to open)</label>
+                        <input id="edit-footage" class="c-input" style="color:var(--primary); text-decoration:underline; cursor:pointer;" onclick="if(this.value) window.open(this.value)">
+                    </div>
+                    <div>
+                        <label class="c-label">Script Topic</label>
+                        <input id="edit-script-topic" class="c-input">
+                    </div>
+                    <div>
+                        <label class="c-label">Script Link</label>
+                        <input id="edit-script-link" class="c-input" onclick="if(this.value) window.open(this.value)">
+                    </div>
+                    
+                    <div>
+                        <label class="c-label">Thumbnail Concept</label>
+                        <input id="edit-thumb" class="c-input" placeholder="e.g. Minimalist/Clickbaity">
+                    </div>
+                    <div>
+                        <label class="c-label">Music Type</label>
+                        <input id="edit-music" class="c-input" placeholder="e.g. Cinematic/Lo-fi">
+                    </div>
+                    <div>
+                        <label class="c-label">Hook Duration (Sec)</label>
+                        <input id="edit-hook" class="c-input" placeholder="e.g. First 5-10 seconds">
+                    </div>
+                    <div>
+                        <label class="c-label">Deadline</label>
+                        <input id="edit-deadline" type="date" class="c-input">
+                    </div>
+
+                    <div class="full">
+                        <label class="c-label">Reference Links (1 & 2)</label>
+                        <div style="display:flex; gap:10px;">
+                            <input id="edit-ref1" class="c-input" placeholder="Link 1">
+                            <input id="edit-ref2" class="c-input" placeholder="Link 2">
+                        </div>
+                    </div>
+
+                    <div class="full">
+                        <label class="c-label">Project Status</label>
+                        <select id="edit-status" class="c-input">
+                            <option value="Review">Review</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="full">
+                        <label class="c-label">Delivery Link</label>
+                        <input id="edit-delivery" class="c-input" placeholder="Final video link">
+                    </div>
+
+                    <div class="full">
+                        <label class="c-label">Internal Notes</label>
+                        <textarea id="edit-notes" class="c-input" style="height:80px;"></textarea>
                     </div>
                 </div>
-                <div id="v-status" style="font-size:1.2rem; font-weight:900; padding:15px 35px; border-radius:15px; background:var(--card); border:1px solid var(--border);">STATUS</div>
+
+                <button id="update-btn" class="btn" style="width:100%; margin-top:20px; background:var(--success);">
+                    <i data-lucide="save"></i> Update & Sync Project
+                </button>
             </div>
 
-            <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:40px;">
-                <!-- Left: Details -->
-                <section>
-                    <div class="details-grid">
-                        <div class="field-group full-col">
-                            <label class="c-label">Master Footage</label>
-                            <button class="btn btn-outline" style="width:100%; justify-content:space-between;" id="v-foot-btn">
-                                <span>Access Source Files</span> <i data-lucide="external-link"></i>
-                            </button>
-                        </div>
-                        <div class="field-group">
-                            <label class="c-label">Script Topic</label>
-                            <input class="c-input" id="v-script" readonly>
-                        </div>
-                        <div class="field-group">
-                            <label class="c-label">Production Deadline</label>
-                            <input class="c-input" id="v-deadline" readonly>
-                        </div>
-                        <div class="field-group">
-                            <label class="c-label">Client Website</label>
-                            <input class="c-input" id="v-web" readonly>
-                        </div>
-                        <div class="field-group">
-                            <label class="c-label">Contract Budget</label>
-                            <input class="c-input" id="v-budget" style="color:var(--success); font-weight:bold;" readonly>
-                        </div>
-                        <div class="field-group full-col">
-                            <label class="c-label">Strategic Notes</label>
-                            <textarea class="c-input" id="v-notes" style="height:120px; resize:none;" readonly></textarea>
-                        </div>
-                    </div>
-
-                    <div id="delivery-area" style="margin-top:30px;"></div>
-                </section>
-
-                <!-- Right: Communication -->
-                <section>
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-                        <i data-lucide="message-square" size="18"></i>
-                        <span style="font-weight:700; text-transform:uppercase; font-size:0.8rem; letter-spacing:1px;">Production Log</span>
-                    </div>
-                    <div class="chat-box" id="chat-container"></div>
-                    <div style="display:flex; gap:10px;">
-                        <input id="chat-input" placeholder="Update the team..." class="c-input">
-                        <button id="send-btn" class="btn"><i data-lucide="send"></i></button>
-                    </div>
-                </section>
+            <div id="sec-msg">
+                <div class="chat-box" id="chat-container"></div>
+                <div style="display:flex; gap:10px;">
+                    <input id="chat-input" placeholder="Type message..." class="c-input">
+                    <button id="send-btn" class="btn"><i data-lucide="send"></i></button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         const API = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec"; 
-        const userEmail = localStorage.getItem('clientEmail') || "naimur582582@gmail.com";
+        const userEmail = localStorage.getItem('clientEmail');
         const ADMIN_EMAIL = "naimur582582@gmail.com";
-        const EDITORS = ["mahabur1in4@gmail.com", "juel@gmail.com"];
-        
         let cache = [];
-
-        const STATUS_COLORS = {
-            'Review': { bg: 'rgba(245, 158, 11, 0.1)', text: '#f59e0b' },
-            'In Progress': { bg: 'rgba(59, 130, 246, 0.1)', text: '#3b82f6' },
-            'Delivered': { bg: 'rgba(16, 185, 129, 0.1)', text: '#10b981' },
-            'Revision': { bg: 'rgba(239, 68, 68, 0.1)', text: '#ef4444' }
-        };
 
         async function sync() {
             try {
                 const res = await fetch(`${API}?sheet=Projects&email=${userEmail}`);
                 cache = await res.json();
                 renderDashboard();
-            } catch(e) { console.error("Sync Error:", e); }
+            } catch(e) { console.error(e); }
         }
 
         function renderDashboard() {
-            const list = document.getElementById('project-list');
-            if(!cache.length) { list.innerHTML = "No active projects."; return; }
-
-            list.innerHTML = cache.map(p => {
-                const st = STATUS_COLORS[p.Status] || STATUS_COLORS['Review'];
-                return `
-                    <div class="p-card" onclick="openView('${p['Project ID']}')">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                            <span class="badge" style="background:${st.bg}; color:${st.text}">${p.Status || 'Review'}</span>
-                            <span style="font-size:0.7rem; color:var(--text-sec); font-weight:700;">#${p['Project ID']}</span>
-                        </div>
-                        <h3 style="margin:0 0 10px 0; font-size:1.2rem; min-height:50px;">${p['Project Name']}</h3>
-                        <div style="font-size:0.8rem; color:var(--text-sec); display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--border); padding-top:15px;">
-                            <div style="display:flex; justify-content:space-between;">
-                                <span><i data-lucide="clock" size="12"></i> ${p.Deadline || 'TBD'}</span>
-                                <span style="color:var(--success); font-weight:800;">৳ ${p['Budget (BDT)'] || '0'}</span>
-                            </div>
-                            <div style="font-size:0.7rem; opacity:0.8;">Priority: ${p.Priority || 'Normal'}</div>
-                        </div>
+            const isAdmin = (userEmail === ADMIN_EMAIL);
+            document.getElementById('welcome-title').innerText = isAdmin ? "Admin OS" : "Client Workspace";
+            if(!cache.length) { document.getElementById('project-list').innerHTML = "<p>No active projects.</p>"; return; }
+            
+            document.getElementById('project-list').innerHTML = cache.map(p => `
+                <div class="p-card" onclick="openView('${p['Project ID']}')">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+                        <span style="color:var(--primary); font-weight:800; font-size:0.65rem; background:rgba(59,130,246,0.1); padding:4px 10px; border-radius:5px;">${p.Status || 'REVIEW'}</span>
+                        <span style="color:var(--text-sec); font-size:0.7rem;">#${p['Project ID']}</span>
                     </div>
-                `;
-            }).join('');
+                    <h3 style="margin:0 0 15px 0; font-size:1.1rem;">${p['Project Name']}</h3>
+                    <div style="font-size:0.8rem; color:var(--text-sec); border-top:1px solid var(--border); padding-top:10px;">
+                        <span>৳ ${p['Budget (BDT)'] || '0'}</span>
+                    </div>
+                </div>
+            `).join('');
             lucide.createIcons();
         }
 
         function openView(id) {
             const p = cache.find(x => x['Project ID'].toString() === id.toString());
-            const st = STATUS_COLORS[p.Status] || STATUS_COLORS['Review'];
-
             document.getElementById('v-title').innerText = p['Project Name'];
-            document.getElementById('v-id').innerText = `SYSTEM_ID: ${p['Project ID']}`;
-            document.getElementById('v-category').innerText = p.Category || 'Video Production';
+            document.getElementById('v-id').innerText = `ID: #${p['Project ID']}`;
             document.getElementById('v-status').innerText = p.Status;
-            document.getElementById('v-status').style.color = st.text;
-            document.getElementById('v-priority').innerText = `Priority: ${p.Priority || 'Normal'}`;
-            document.getElementById('v-priority').style.background = p.Priority === 'High' ? 'var(--danger)' : 'var(--card)';
 
-            document.getElementById('v-script').value = p.Script || 'N/A';
-            document.getElementById('v-deadline').value = p.Deadline || 'No date set';
-            document.getElementById('v-web').value = p['Client Website'] || 'N/A';
-            document.getElementById('v-budget').value = `৳ ${p['Budget (BDT)'] || '0'}`;
-            document.getElementById('v-notes').value = p.Notes || 'No additional instructions provided.';
+            // Mapping Data to Inputs
+            document.getElementById('edit-name').value = p['Project Name'] || '';
+            document.getElementById('edit-footage').value = p['Footage Link'] || '';
+            document.getElementById('edit-script-topic').value = p.Script || '';
+            document.getElementById('edit-script-link').value = p['Script Link'] || '';
+            document.getElementById('edit-deadline').value = p.Deadline || '';
+            document.getElementById('edit-status').value = p.Status || 'Review';
+            document.getElementById('edit-delivery').value = p['Delivery Link'] || '';
+            document.getElementById('edit-notes').value = p.Notes || '';
             
-            document.getElementById('v-foot-btn').onclick = () => window.open(p['Footage Link']);
+            // Reference Links
+            document.getElementById('edit-ref1').value = p['Reference Link-1'] || '';
+            document.getElementById('edit-ref2').value = p['Reference Link-2'] || '';
 
-            // Handling Delivery
-            const deliveryArea = document.getElementById('delivery-area');
-            if(p['Delivery Link']) {
-                deliveryArea.innerHTML = `
-                    <a href="${p['Delivery Link']}" target="_blank" class="btn" style="width:100%; background:var(--success); padding:20px;">
-                        <i data-lucide="download-cloud"></i> Download Final Assets
-                    </a>`;
-            } else {
-                deliveryArea.innerHTML = `<div style="text-align:center; color:var(--text-sec); padding:20px; border:2px dashed var(--border); border-radius:15px;">Waiting for production files...</div>`;
-            }
+            // Dynamic Fields (Mapping based on your extra headers)
+            document.getElementById('edit-thumb').value = p['Thumbnail Concept'] || '';
+            document.getElementById('edit-music').value = p['Music Type'] || '';
+            document.getElementById('edit-hook').value = p['Hook Duration'] || '';
+
+            document.getElementById('update-btn').onclick = () => updateProject(id);
+            document.getElementById('send-btn').onclick = () => sendMsg(id);
 
             document.getElementById('main-dashboard').style.display = 'none';
             document.getElementById('project-view').style.display = 'block';
             loadMessages(id);
-            lucide.createIcons();
         }
 
-        async function createProject() {
-            const { value: formValues } = await Swal.fire({
-                title: 'Initialize Production',
-                background: '#0c0c12', color: '#fff',
-                html: `
-                    <div style="text-align:left; display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-                        <div style="grid-column:span 2"><label class="c-label">Project Name</label><input id="sw-name" class="c-input"></div>
-                        <div style="grid-column:span 2"><label class="c-label">Footage Link</label><input id="sw-foot" class="c-input"></div>
-                        <div><label class="c-label">Category</label><select id="sw-cat" class="c-input"><option>Vlog</option><option>Ad</option><option>Shorts</option></select></div>
-                        <div><label class="c-label">Budget (BDT)</label><input id="sw-bud" type="number" class="c-input"></div>
-                        <div style="grid-column:span 2"><label class="c-label">Website/Social Link</label><input id="sw-web" class="c-input"></div>
-                    </div>
-                `,
-                preConfirm: () => ({
-                    name: document.getElementById('sw-name').value,
-                    foot: document.getElementById('sw-foot').value,
-                    cat: document.getElementById('sw-cat').value,
-                    bud: document.getElementById('sw-bud').value,
-                    web: document.getElementById('sw-web').value
-                })
-            });
+        async function updateProject(id) {
+            const data = {
+                action: "update",
+                sheet: "Projects",
+                "Project ID": id,
+                "Project Name": document.getElementById('edit-name').value,
+                "Footage Link": document.getElementById('edit-footage').value,
+                "Script": document.getElementById('edit-script-topic').value,
+                "Script Link": document.getElementById('edit-script-link').value,
+                "Deadline": document.getElementById('edit-deadline').value,
+                "Status": document.getElementById('edit-status').value,
+                "Delivery Link": document.getElementById('edit-delivery').value,
+                "Notes": document.getElementById('edit-notes').value,
+                "Reference Link-1": document.getElementById('edit-ref1').value,
+                "Reference Link-2": document.getElementById('edit-ref2').value,
+                "Thumbnail Concept": document.getElementById('edit-thumb').value,
+                "Music Type": document.getElementById('edit-music').value,
+                "Hook Duration": document.getElementById('edit-hook').value
+            };
 
-            if (formValues) {
-                Swal.fire({title: 'Uploading...', didOpen: () => Swal.showLoading()});
-                await fetch(API, { method: 'POST', body: JSON.stringify({
-                    action: "add", sheet: "Projects",
-                    "Project Name": formValues.name,
-                    "Footage Link": formValues.foot,
-                    "Category": formValues.cat,
-                    "Budget (BDT)": formValues.bud,
-                    "Client Website": formValues.web,
-                    "Client Email": userEmail,
-                    "Status": "Review"
-                })});
-                Swal.fire('Deployed', 'Project is now in review.', 'success');
-                sync();
-            }
+            Swal.fire({title: 'Updating...', didOpen: () => Swal.showLoading()});
+            await fetch(API, { method: 'POST', body: JSON.stringify(data)});
+            Swal.fire('Success', 'Data synced with Google Sheets!', 'success');
+            sync();
         }
 
         async function loadMessages(id) {
-            const container = document.getElementById('chat-container');
-            container.innerHTML = "Syncing logs...";
             const res = await fetch(`${API}?sheet=Messages&email=${userEmail}`);
             const all = await res.json();
             const msgs = all.filter(m => m['Project ID'].toString() === id.toString());
-            
-            container.innerHTML = msgs.map(m => `
+            document.getElementById('chat-container').innerHTML = msgs.map(m => `
                 <div class="bubble ${m.From === userEmail ? 'b-client' : 'b-admin'}">
-                    <div style="font-size:0.6rem; font-weight:800; opacity:0.6; margin-bottom:5px;">${m.From === ADMIN_EMAIL ? 'SYSTEM' : 'USER'}</div>
+                    <div style="font-size:0.6rem; font-weight:800; opacity:0.7;">${m.From === ADMIN_EMAIL ? 'ADMIN' : 'CLIENT'}</div>
                     ${m['Message Text']}
                 </div>
-            `).join('') || "No logs found.";
-            container.scrollTop = container.scrollHeight;
+            `).join('');
         }
 
-        function closeView() { 
-            document.getElementById('main-dashboard').style.display = 'block'; 
-            document.getElementById('project-view').style.display = 'none'; 
+        async function sendMsg(id) {
+            const text = document.getElementById('chat-input').value;
+            if(!text) return;
+            await fetch(API, { method: 'POST', body: JSON.stringify({ action: "add", sheet: "Messages", "Project ID": id, "From": userEmail, "Message Text": text })});
+            document.getElementById('chat-input').value = ''; loadMessages(id);
         }
 
+        function closeView() { document.getElementById('main-dashboard').style.display = 'block'; document.getElementById('project-view').style.display = 'none'; }
         function logout() { localStorage.clear(); location.reload(); }
-
-        // Bootstrap
-        document.getElementById('u-pic').src = localStorage.getItem('clientPic') || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Naimur';
+        
+        document.getElementById('u-pic').src = localStorage.getItem('clientPic') || '';
         sync();
     </script>
 </body>
