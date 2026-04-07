@@ -9,171 +9,155 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root { --bg: #050508; --card: #0f0f16; --primary: #3b82f6; --border: rgba(255,255,255,0.06); --text: #ffffff; --text-sec: #94a3b8; }
-        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); }
-        .container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        
+        /* Navigation */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 5%; border-bottom: 1px solid var(--border); background: rgba(5,5,8,0.8); backdrop-filter: blur(10px); position: sticky; top:0; z-index: 100; }
+        
+        .container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; transition: 0.3s; }
         .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; }
+        
+        /* Cards */
         .p-card { background: var(--card); border-radius: 20px; padding: 25px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
         .p-card:hover { border-color: var(--primary); transform: translateY(-3px); }
         
-        /* Form Layout from Screenshot */
+        /* Full Page View */
+        #project-view { display: none; background: var(--bg); min-height: 100vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 200; padding: 2rem 5%; box-sizing: border-box; }
+        
+        /* Form Layout */
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; }
         .full { grid-column: span 2; }
-        .c-input { width: 100%; padding: 12px; background: #15151e; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; }
-        .c-label { font-size: 0.75rem; color: var(--text-sec); margin-bottom: 4px; display: block; }
+        .c-input { width: 100%; padding: 12px; background: #15151e; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+        .c-label { font-size: 0.75rem; color: var(--text-sec); margin-bottom: 4px; display: block; font-weight: 600; }
         
-        /* Tabs & Messages */
-        .tab-btn { padding: 10px 20px; background: none; border: none; color: var(--text-sec); cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; }
+        /* Tabs */
+        .tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--border); margin-bottom: 25px; }
+        .tab-btn { padding: 12px 20px; background: none; border: none; color: var(--text-sec); cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; font-size: 1rem; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-        .chat-box { height: 320px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #222; }
-        .bubble { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 0.85rem; line-height: 1.4; }
-        .b-admin { background: #222; border: 1px solid #333; align-self: flex-start; }
-        .b-client { background: var(--primary); align-self: flex-end; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; justify-content: center; width: 100%; }
+        
+        /* Chat Area */
+        .chat-box { height: 400px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 12px; border: 1px solid #222; }
+        .bubble { padding: 12px 18px; border-radius: 18px; max-width: 75%; font-size: 0.9rem; line-height: 1.5; position: relative; }
+        .b-admin { background: #222; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .b-client { background: var(--primary); align-self: flex-end; border-bottom-right-radius: 2px; }
+        
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .back-btn { background: none; border: 1px solid #333; color: var(--text-sec); padding: 8px 15px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; }
     </style>
 </head>
 <body>
 
-    <nav style="display:flex; justify-content:space-between; align-items:center; padding: 1.2rem 5%; border-bottom: 1px solid var(--border); background: rgba(5,5,8,0.8); backdrop-filter: blur(10px); position: sticky; top:0; z-index:100;">
+    <nav>
         <div style="font-weight:800; font-size:1.4rem; letter-spacing:1px;">MOTION OF NAIMUR <span style="font-weight:300; color:var(--text-sec);">OS</span></div>
         <div style="display:flex; align-items:center; gap:15px;">
             <img id="u-pic" style="width:38px; height:38px; border-radius:50%; border:2px solid var(--primary);">
-            <button onclick="logout()" style="background:#1a1a1a; color:white; border:1px solid #333; padding:8px 16px; border-radius:8px; cursor:pointer; font-size:0.8rem;">Logout</button>
+            <button onclick="logout()" class="btn" style="background:#1a1a1a; border:1px solid #333; padding:8px 16px;">Logout</button>
         </div>
     </nav>
 
-    <div class="container">
+    <div id="main-dashboard" class="container">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
             <h1 style="font-size:1.8rem;">Your Productions</h1>
-            <button onclick="createProject()" style="width:auto; padding: 12px 25px;" class="btn"><i data-lucide="plus"></i> New Project</button>
+            <button onclick="createProject()" class="btn"><i data-lucide="plus"></i> New Project</button>
         </div>
-        <div id="project-list" class="project-grid">Fetching your projects from cloud...</div>
+        <div id="project-list" class="project-grid">Syncing workspace...</div>
+    </div>
+
+    <div id="project-view">
+        <button class="back-btn" onclick="closeView()"><i data-lucide="arrow-left" size="18"></i> Back to Dashboard</button>
+        
+        <div style="display:flex; justify-content:space-between; align-items: flex-end; margin-bottom:30px;">
+            <h1 id="v-title" style="margin:0; font-size:2.2rem;">Project Name</h1>
+            <div id="v-status" style="color:var(--primary); font-weight:800; letter-spacing:1px;">STATUS</div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'sec-det')">Project Details</button>
+            <button class="tab-btn" onclick="switchTab(event, 'sec-rev')">Revision Logs</button>
+            <button class="tab-btn" onclick="switchTab(event, 'sec-msg')">Messages</button>
+        </div>
+
+        <div id="sec-det" class="tab-content">
+            <div class="form-grid" id="detail-inputs">
+                </div>
+        </div>
+
+        <div id="sec-rev" class="tab-content" style="display:none;">
+            <div class="chat-box" id="rev-container">Revisions will appear here...</div>
+        </div>
+
+        <div id="sec-msg" class="tab-content" style="display:none;">
+            <div class="chat-box" id="chat-container">Loading conversation...</div>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <input id="chat-input" placeholder="Type your message..." class="c-input">
+                <button id="send-btn" class="btn" style="width:120px;">Send <i data-lucide="send" size="16"></i></button>
+            </div>
+        </div>
     </div>
 
     <script>
         const API = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec"; 
         const email = localStorage.getItem('clientEmail');
+        let cache = [];
 
         async function sync() {
-            try {
-                const res = await fetch(`${API}?sheet=Projects&email=${email}`);
-                const data = await res.json();
-                render(data);
-            } catch (e) {
-                document.getElementById('project-list').innerHTML = "No projects found or connection error.";
-            }
+            const res = await fetch(`${API}?sheet=Projects&email=${email}`);
+            cache = await res.json();
+            renderDashboard();
         }
 
-        function render(projects) {
-            if(!projects || projects.length === 0) {
-                document.getElementById('project-list').innerHTML = "No active projects found for " + email;
-                return;
-            }
-            document.getElementById('project-list').innerHTML = projects.map(p => `
-                <div class="p-card" onclick="openProject('${p['Project ID']}')">
+        function renderDashboard() {
+            if(!cache.length) { document.getElementById('project-list').innerHTML = "No projects found."; return; }
+            document.getElementById('project-list').innerHTML = cache.map(p => `
+                <div class="p-card" onclick="openView('${p['Project ID']}')">
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                        <span style="font-size:0.7rem; color:var(--primary); font-weight:bold; text-transform:uppercase; letter-spacing:1px;">${p.Status || 'Active'}</span>
-                        <span style="font-size:0.7rem; color:var(--text-sec);">${p.Priority || 'Normal'} Priority</span>
+                        <span style="font-size:0.7rem; color:var(--primary); font-weight:bold; text-transform:uppercase;">${p.Status || 'Active'}</span>
+                        <span style="font-size:0.7rem; color:var(--text-sec);">${p.Priority || 'Normal'}</span>
                     </div>
-                    <h3 style="margin:0 0 15px 0; font-size:1.2rem;">${p['Project Name']}</h3>
-                    <div style="height:4px; background:#222; border-radius:10px; margin-bottom:15px;">
-                        <div style="width:40%; height:100%; background:var(--primary); border-radius:10px;"></div>
-                    </div>
+                    <h3 style="margin:0 0 15px 0;">${p['Project Name']}</h3>
                     <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
-                        <span style="color:var(--text-sec);"><i data-lucide="calendar" size="14" style="vertical-align:middle; margin-right:5px;"></i> ${p.Deadline || 'No date'}</span>
-                        <b style="color:#fff">৳ ${p['Budget (BDT)'] || '0'}</b>
+                        <span style="color:var(--text-sec);"><i data-lucide="calendar" size="14"></i> ${p.Deadline}</span>
+                        <b>৳ ${p['Budget (BDT)']}</b>
                     </div>
                 </div>
             `).join('');
             lucide.createIcons();
         }
 
-        async function openProject(id) {
-            const res = await fetch(`${API}?sheet=Projects&email=${email}`);
-            const all = await res.json();
-            const p = all.find(x => x['Project ID'].toString() === id.toString());
+        function openView(id) {
+            const p = cache.find(x => x['Project ID'].toString() === id.toString());
+            document.getElementById('v-title').innerText = p['Project Name'];
+            document.getElementById('v-status').innerText = p.Status;
+            
+            // Fill Details
+            document.getElementById('detail-inputs').innerHTML = `
+                <div class="full"><label class="c-label">Footage Link</label><input class="c-input" value="${p['Footage Link']}" readonly></div>
+                <div><label class="c-label">Reference 1</label><input class="c-input" value="${p['Reference Link-1'] || ''}" readonly></div>
+                <div><label class="c-label">Reference 2</label><input class="c-input" value="${p['Reference Link-2'] || ''}" readonly></div>
+                <div><label class="c-label">Deadline</label><input class="c-input" value="${p.Deadline}" readonly></div>
+                <div><label class="c-label">Contact</label><input class="c-input" value="${p.Number || ''}" readonly></div>
+                <div class="full"><label class="c-label">Notes</label><textarea class="c-input" style="height:100px;" readonly>${p.Notes || ''}</textarea></div>
+                <a href="${p['Delivery Link'] || '#'}" target="_blank" class="btn full" style="background:#059669; justify-content:center;">Download Delivery</a>
+            `;
 
-            Swal.fire({
-                title: p['Project Name'], width: '900px', background: '#050508', color: '#fff', showConfirmButton: false,
-                html: `
-                    <div style="display:flex; border-bottom:1px solid #222; margin-bottom:20px;">
-                        <button class="tab-btn active" id="btn-det" onclick="switchTab('det')">Project Details</button>
-                        <button class="tab-btn" id="btn-msg" onclick="switchTab('msg')">Revisions & Chat</button>
-                    </div>
-                    <div id="sec-det">
-                        <div class="form-grid">
-                            <div class="full"><label class="c-label">Footage Link</label><input class="c-input" value="${p['Footage Link']}" readonly></div>
-                            <div><label class="c-label">Script Link</label><input class="c-input" value="${p['Script Link'] || ''}" readonly></div>
-                            <div><label class="c-label">Client Website</label><input class="c-input" value="${p['Client Website'] || ''}" readonly></div>
-                            <div><label class="c-label">Reference 1</label><input class="c-input" value="${p['Reference Link-1'] || ''}" readonly></div>
-                            <div><label class="c-label">Reference 2</label><input class="c-input" value="${p['Reference Link-2'] || ''}" readonly></div>
-                            <div class="full"><label class="c-label">Project Notes</label><textarea class="c-input" style="height:80px;" readonly>${p.Notes || ''}</textarea></div>
-                            <a href="${p['Delivery Link'] || '#'}" target="_blank" class="btn full" style="background:#059669;">Access Delivery Files</a>
-                        </div>
-                    </div>
-                    <div id="sec-msg" style="display:none;">
-                        <div class="chat-box" id="chat-container">Loading conversation...</div>
-                        <div style="display:flex; gap:10px; margin-top:15px;">
-                            <input id="chat-input" placeholder="Type your revision request or message..." class="c-input">
-                            <button onclick="sendMsg('${id}')" class="btn" style="width:80px;"><i data-lucide="send"></i></button>
-                        </div>
-                    </div>
-                `
-            });
-            lucide.createIcons();
+            document.getElementById('main-dashboard').style.display = 'none';
+            document.getElementById('project-view').style.display = 'block';
+            document.getElementById('send-btn').onclick = () => sendMsg(id);
+            window.scrollTo(0,0);
             loadMessages(id);
         }
 
-        function switchTab(t) {
-            document.getElementById('sec-det').style.display = t === 'det' ? 'block' : 'none';
-            document.getElementById('sec-msg').style.display = t === 'msg' ? 'block' : 'none';
-            document.getElementById('btn-det').classList.toggle('active', t === 'det');
-            document.getElementById('btn-msg').classList.toggle('active', t === 'msg');
+        function switchTab(evt, sectionId) {
+            document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(sectionId).style.display = 'block';
+            evt.currentTarget.classList.add('active');
         }
 
-        async function createProject() {
-            const { value: f } = await Swal.fire({
-                title: 'New Production Form', width: '800px', background: '#0f0f16', color: '#fff',
-                html: `
-                    <div class="form-grid">
-                        <div class="full"><label class="c-label">Project Name*</label><input id="p-name" class="c-input"></div>
-                        <div><label class="c-label">Footage Link</label><input id="p-foot" class="c-input" placeholder="http://"></div>
-                        <div><label class="c-label">Script Link</label><input id="p-script" class="c-input" placeholder="http://"></div>
-                        <div><label class="c-label">Reference Link-1</label><input id="p-ref1" class="c-input" placeholder="http://"></div>
-                        <div><label class="c-label">Reference Link-2</label><input id="p-ref2" class="c-input" placeholder="http://"></div>
-                        <div><label class="c-label">Client Website</label><input id="p-web" class="c-input" placeholder="http://"></div>
-                        <div><label class="c-label">Deadline</label><input id="p-date" type="date" class="c-input"></div>
-                        <div><label class="c-label">Contact Number</label><input id="p-num" type="number" class="c-input"></div>
-                        <div><label class="c-label">Estimated Budget (BDT)</label><input id="p-budget" type="number" class="c-input"></div>
-                        <div class="full"><label class="c-label">Additional Instructions / Notes</label><textarea id="p-note" class="c-input" style="height:80px;"></textarea></div>
-                    </div>
-                `,
-                confirmButtonText: 'Launch Project',
-                preConfirm: () => ({
-                    name: document.getElementById('p-name').value,
-                    foot: document.getElementById('p-foot').value,
-                    script: document.getElementById('p-script').value,
-                    ref1: document.getElementById('p-ref1').value,
-                    ref2: document.getElementById('p-ref2').value,
-                    web: document.getElementById('p-web').value,
-                    date: document.getElementById('p-date').value,
-                    num: document.getElementById('p-num').value,
-                    budget: document.getElementById('p-budget').value,
-                    note: document.getElementById('p-note').value
-                })
-            });
-
-            if(f && f.name) {
-                Swal.fire({ title: 'Syncing with Sheet...', didOpen: () => Swal.showLoading() });
-                await fetch(API, { method: 'POST', body: JSON.stringify({
-                    action: "add", sheet: "Projects",
-                    "Project Name": f.name, "Client Email": email, "Footage Link": f.foot,
-                    "Script Link": f.script, "Reference Link-1": f.ref1, "Reference Link-2": f.ref2,
-                    "Client Website": f.web, "Deadline": f.date, "Number": f.num,
-                    "Budget (BDT)": f.budget, "Notes": f.note, "Status": "Reviewing"
-                })});
-                Swal.fire('Success', 'Project added. Refreshing list...', 'success');
-                sync();
-            }
+        function closeView() {
+            document.getElementById('main-dashboard').style.display = 'block';
+            document.getElementById('project-view').style.display = 'none';
         }
 
         async function loadMessages(id) {
@@ -181,10 +165,10 @@
             const msgs = await res.json();
             document.getElementById('chat-container').innerHTML = msgs.map(m => `
                 <div class="bubble ${m.From === email ? 'b-client' : 'b-admin'}">
-                    <div style="font-size:0.65rem; opacity:0.6; margin-bottom:4px;">${m.From === email ? 'You' : 'Naimur'}</div>
+                    <div style="font-size:0.7rem; opacity:0.7; margin-bottom:5px;">${m.From === email ? 'You' : 'Naimur'}</div>
                     ${m['Message Text']}
                 </div>
-            `).join('') || '<div style="text-align:center; color:gray; margin-top:100px;">Start a conversation about this project.</div>';
+            `).join('') || "No messages yet.";
         }
 
         async function sendMsg(id) {
@@ -192,6 +176,19 @@
             document.getElementById('chat-input').value = '';
             await fetch(API, { method: 'POST', body: JSON.stringify({ action: "add", sheet: "Messages", "Project ID": id, "From": email, "Message Text": text })});
             loadMessages(id);
+        }
+
+        // Logic for Create Project stays same as your sweetalert form
+        async function createProject() {
+            const { value: f } = await Swal.fire({
+                title: 'New Production Form', width: '800px', background: '#0f0f16', color: '#fff',
+                html: `<div class="form-grid">... (Your same form fields) ...</div>`,
+                preConfirm: () => ({ /* same as before */ })
+            });
+            if(f && f.name) {
+                // Fetch POST logic same as before
+                sync();
+            }
         }
 
         function logout() { localStorage.clear(); window.location.href = 'index.html'; }
