@@ -8,37 +8,38 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { --bg: #050508; --card: #0f0f16; --primary: #3b82f6; --border: rgba(255,255,255,0.06); --text: #ffffff; --text-sec: #94a3b8; --success: #059669; --danger: #ef4444; }
+        :root { --bg: #050508; --card: #0f0f16; --primary: #3b82f6; --border: rgba(255,255,255,0.06); --text: #ffffff; --text-sec: #94a3b8; --success: #059669; --danger: #ef4444; --warning: #f59e0b; }
         body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
         nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; border-bottom: 1px solid var(--border); background: rgba(5,5,8,0.8); backdrop-filter: blur(10px); position: sticky; top:0; z-index: 100; }
         .container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        .p-card { background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
-        .p-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(59,130,246,0.1); }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
         
+        /* Dashboard Card Enhanced */
+        .p-card { background: var(--card); border-radius: 16px; padding: 22px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; position: relative; }
+        .p-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(59,130,246,0.1); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .badge { font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; }
+        .card-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-sec); }
+        .del-btn { position: absolute; top: 15px; right: 15px; color: var(--danger); opacity: 0; transition: 0.2s; background: rgba(239, 68, 68, 0.1); border: none; border-radius: 6px; padding: 5px; cursor: pointer; }
+        .p-card:hover .del-btn { opacity: 1; }
+
         #project-view { display: none; background: var(--bg); min-height: 100vh; width: 100%; position: fixed; top: 0; left: 0; z-index: 200; padding: 2rem 5%; box-sizing: border-box; overflow-y: auto; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full { grid-column: span 2; }
-        
-        .c-input { width: 100%; padding: 12px; background: #15151e; border: 1px solid #333; color: #fff; border-radius: 10px; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; transition: 0.2s; }
-        .c-input:focus { border-color: var(--primary); outline: none; background: #1a1a26; }
-        .c-label { font-size: 0.7rem; color: var(--text-sec); margin-bottom: 6px; display: block; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        .chat-box { height: 450px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .bubble { padding: 10px 15px; border-radius: 15px; max-width: 75%; font-size: 0.9rem; position: relative; animation: fadeIn 0.3s ease; }
+        .c-input { width: 100%; padding: 12px; background: #15151e; border: 1px solid #333; color: #fff; border-radius: 10px; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; }
+        .c-label { font-size: 0.7rem; color: var(--text-sec); margin-bottom: 6px; display: block; font-weight: 700; text-transform: uppercase; }
+        .chat-box { height: 400px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .bubble { padding: 10px 14px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; }
         .b-admin { background: #222; align-self: flex-start; }
         .b-client { background: var(--primary); align-self: flex-end; }
-        
         .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; justify-content: center; transition: 0.2s; }
         .back-btn { background: #1a1a1a; border: 1px solid #333; color: var(--text-sec); padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <nav>
-        <div style="font-weight:800; font-size:1.4rem; letter-spacing:-1px; color:var(--primary);">MOTION OF NAIMUR</div>
+        <div style="font-weight:800; font-size:1.4rem; color:var(--primary);">MOTION OF NAIMUR</div>
         <div style="display:flex; align-items:center; gap:15px;">
             <img id="u-pic" style="width:35px; height:35px; border-radius:50%; border:2px solid var(--primary);">
             <button onclick="logout()" class="back-btn" style="margin:0;">Logout</button>
@@ -48,48 +49,53 @@
     <div id="main-dashboard" class="container">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
             <div>
-                <h1 id="welcome-title" style="margin:0;">Loading...</h1>
-                <p style="color:var(--text-sec); margin-top:5px;">Manage your video production projects.</p>
+                <h1 id="welcome-title">Loading...</h1>
+                <p style="color:var(--text-sec);">Manage and track your production pipeline.</p>
             </div>
-            <button id="client-add-btn" onclick="createProject()" class="btn"><i data-lucide="plus"></i> New Project</button>
+            <button id="admin-add-btn" onclick="createProject()" class="btn" style="display:none;"><i data-lucide="plus"></i> Create New Project</button>
         </div>
-        <div id="project-list" class="project-grid">Syncing data...</div>
+        <div id="project-list" class="project-grid">Syncing Projects...</div>
     </div>
 
+    <!-- Project Details View -->
     <div id="project-view">
-        <button class="back-btn" onclick="closeView()"><i data-lucide="arrow-left"></i> Back to Dashboard</button>
-        
-        <div style="display:flex; justify-content:space-between; align-items: flex-start; margin-bottom:30px; border-bottom: 1px solid var(--border); padding-bottom: 20px;">
-            <div>
-                <h1 id="v-title" style="margin:0 0 5px 0;">Project Name</h1>
-                <span id="v-id" style="color:var(--text-sec); font-size:0.8rem;">ID: #0000</span>
-            </div>
-            <div id="v-status" style="background:var(--primary); color:white; padding:8px 20px; border-radius:30px; font-weight:800; font-size:0.75rem; text-transform:uppercase;">STATUS</div>
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:30px;">
-            <div id="sec-det">
+        <button class="back-btn" onclick="closeView()"><i data-lucide="arrow-left"></i> Dashboard</button>
+        <div style="display:grid; grid-template-columns: 1.6fr 1fr; gap:30px;">
+            <div class="details-panel">
                 <div class="form-grid">
                     <div class="full"><label class="c-label">Project Name</label><input id="edit-name" class="c-input"></div>
-                    <div class="full"><label class="c-label">Footage Link (Click to open)</label><input id="edit-footage" class="c-input" style="color:var(--primary); text-decoration:underline; cursor:pointer;" onclick="if(this.value) window.open(this.value)"></div>
+                    <div class="full"><label class="c-label">Footage Link</label><input id="edit-footage" class="c-input" style="color:var(--primary); cursor:pointer;"></div>
+                    <div><label class="c-label">Client Email</label><input id="edit-email" class="c-input" readonly opacity="0.5"></div>
+                    <div><label class="c-label">Priority</label>
+                        <select id="edit-priority" class="c-input">
+                            <option value="Normal">Normal</option>
+                            <option value="High">High 🔥</option>
+                            <option value="Urgent">Urgent ⚡</option>
+                        </select>
+                    </div>
                     <div><label class="c-label">Script Topic</label><input id="edit-script-topic" class="c-input"></div>
-                    <div><label class="c-label">Script Link</label><input id="edit-script-link" class="c-input" onclick="if(this.value) window.open(this.value)"></div>
+                    <div><label class="c-label">Budget (BDT)</label><input id="edit-budget" class="c-input"></div>
                     <div><label class="c-label">Thumbnail Concept</label><input id="edit-thumb" class="c-input"></div>
                     <div><label class="c-label">Music Type</label><input id="edit-music" class="c-input"></div>
-                    <div><label class="c-label">Hook Duration (Sec)</label><input id="edit-hook" class="c-input"></div>
+                    <div><label class="c-label">Hook Duration</label><input id="edit-hook" class="c-input"></div>
                     <div><label class="c-label">Deadline</label><input id="edit-deadline" type="date" class="c-input"></div>
-                    <div class="full"><label class="c-label">Reference Links (1 & 2)</label><div style="display:flex; gap:10px;"><input id="edit-ref1" class="c-input" placeholder="Link 1"><input id="edit-ref2" class="c-input" placeholder="Link 2"></div></div>
-                    <div class="full"><label class="c-label">Project Status</label><select id="edit-status" class="c-input"><option value="Review">Review</option><option value="In Progress">In Progress</option><option value="Delivered">Delivered</option><option value="Completed">Completed</option></select></div>
-                    <div class="full"><label class="c-label">Delivery Link</label><input id="edit-delivery" class="c-input" placeholder="Final video link"></div>
+                    <div class="full"><label class="c-label">Project Status</label>
+                        <select id="edit-status" class="c-input">
+                            <option value="Review">Review</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
                     <div class="full"><label class="c-label">Internal Notes</label><textarea id="edit-notes" class="c-input" style="height:80px;"></textarea></div>
                 </div>
-                <button id="update-btn" class="btn" style="width:100%; margin-top:20px; background:var(--success);"><i data-lucide="save"></i> Update & Sync Project</button>
+                <button id="update-btn" class="btn" style="width:100%; margin-top:20px; background:var(--success); font-size:1.1rem;">Update & Sync Project</button>
             </div>
 
-            <div id="sec-msg">
+            <div class="chat-panel">
                 <div class="chat-box" id="chat-container"></div>
                 <div style="display:flex; gap:10px;">
-                    <input id="chat-input" placeholder="Type message..." class="c-input">
+                    <input id="chat-input" placeholder="Write a message..." class="c-input">
                     <button id="send-btn" class="btn"><i data-lucide="send"></i></button>
                 </div>
             </div>
@@ -103,6 +109,9 @@
         let cache = [];
 
         async function sync() {
+            const isAdmin = (userEmail === ADMIN_EMAIL);
+            if(isAdmin) document.getElementById('admin-add-btn').style.display = 'flex';
+            
             try {
                 const res = await fetch(`${API}?sheet=Projects&email=${userEmail}`);
                 cache = await res.json();
@@ -112,51 +121,100 @@
 
         function renderDashboard() {
             const isAdmin = (userEmail === ADMIN_EMAIL);
-            document.getElementById('welcome-title').innerText = isAdmin ? "Admin OS" : "Client Workspace";
-            if(!cache.length) { document.getElementById('project-list').innerHTML = "<p>No active projects.</p>"; return; }
+            document.getElementById('welcome-title').innerText = isAdmin ? "Admin Control Center" : "My Projects";
+            
             document.getElementById('project-list').innerHTML = cache.map(p => `
                 <div class="p-card" onclick="openView('${p['Project ID']}')">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
-                        <span style="color:var(--primary); font-weight:800; font-size:0.65rem; background:rgba(59,130,246,0.1); padding:4px 10px; border-radius:5px;">${p.Status || 'REVIEW'}</span>
-                        <span style="color:var(--text-sec); font-size:0.7rem;">#${p['Project ID']}</span>
+                    ${isAdmin ? `<button class="del-btn" onclick="event.stopPropagation(); deleteProject('${p['Project ID']}')"><i data-lucide="trash-2"></i></button>` : ''}
+                    <div class="card-header">
+                        <span class="badge" style="background:rgba(59,130,246,0.1); color:var(--primary); border:1px solid var(--primary);">${p.Status || 'Review'}</span>
+                        <span style="font-size:0.7rem; color:var(--text-sec);">#${p['Project ID']}</span>
                     </div>
-                    <h3 style="margin:0 0 15px 0; font-size:1.1rem;">${p['Project Name']}</h3>
-                    <div style="font-size:0.8rem; color:var(--text-sec); border-top:1px solid var(--border); padding-top:10px;">
-                        <span>৳ ${p['Budget (BDT)'] || '0'}</span>
+                    <h3 style="margin:0 0 5px 0;">${p['Project Name']}</h3>
+                    <p style="font-size:0.75rem; color:var(--text-sec); margin:0;">Client: ${p['Client Email']}</p>
+                    
+                    <div class="card-meta">
+                        <div><i data-lucide="zap" style="width:12px; vertical-align:middle;"></i> ${p.Priority || 'Normal'}</div>
+                        <div style="text-align:right; color:var(--success); font-weight:700;">৳ ${p['Budget (BDT)'] || '0'}</div>
+                        <div><i data-lucide="calendar" style="width:12px; vertical-align:middle;"></i> ${p.Deadline || 'No Date'}</div>
+                        <div style="text-align:right;">${p['Music Type'] || 'General'}</div>
                     </div>
                 </div>
             `).join('');
             lucide.createIcons();
         }
 
+        // --- NEW PROJECT LOGIC ---
+        async function createProject() {
+            const { value: formValues } = await Swal.fire({
+                title: 'New Project Detail',
+                background: '#0f0f16', color: '#fff',
+                html:
+                    `<input id="swal-name" class="swal2-input" placeholder="Project Name" style="background:#15151e; color:#fff; border:1px solid #333;">` +
+                    `<input id="swal-client" class="swal2-input" placeholder="Client Email" style="background:#15151e; color:#fff; border:1px solid #333;">` +
+                    `<input id="swal-budget" class="swal2-input" placeholder="Budget (BDT)" style="background:#15151e; color:#fff; border:1px solid #333;">`,
+                focusConfirm: false,
+                preConfirm: () => {
+                    return [
+                        document.getElementById('swal-name').value,
+                        document.getElementById('swal-client').value,
+                        document.getElementById('swal-budget').value
+                    ]
+                }
+            });
+
+            if (formValues && formValues[0]) {
+                Swal.fire({ title: 'Creating...', didOpen: () => Swal.showLoading() });
+                const newID = Math.floor(1000 + Math.random() * 9000);
+                const data = {
+                    action: "add", sheet: "Projects",
+                    "Project ID": newID, "Project Name": formValues[0],
+                    "Client Email": formValues[1], "Budget (BDT)": formValues[2],
+                    "Status": "Review", "Priority": "Normal"
+                };
+                await fetch(API, { method: 'POST', body: JSON.stringify(data)});
+                Swal.fire('Success', 'Project Created!', 'success');
+                sync();
+            }
+        }
+
+        async function deleteProject(id) {
+            const confirm = await Swal.fire({
+                title: 'Are you sure?',
+                text: "This project will be deleted forever!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Yes, Delete'
+            });
+
+            if(confirm.isConfirmed) {
+                Swal.fire({ title: 'Deleting...', didOpen: () => Swal.showLoading() });
+                await fetch(API, { method: 'POST', body: JSON.stringify({ action: "delete", sheet: "Projects", "Project ID": id })});
+                Swal.fire('Deleted!', '', 'success');
+                sync();
+            }
+        }
+
         function openView(id) {
             const p = cache.find(x => x['Project ID'].toString() === id.toString());
-            document.getElementById('v-title').innerText = p['Project Name'];
-            document.getElementById('v-id').innerText = `ID: #${p['Project ID']}`;
-            document.getElementById('v-status').innerText = p.Status;
+            const isAdmin = (userEmail === ADMIN_EMAIL);
 
-            // Mapping Inputs
             document.getElementById('edit-name').value = p['Project Name'] || '';
             document.getElementById('edit-footage').value = p['Footage Link'] || '';
-            document.getElementById('edit-script-topic').value = p.Script || '';
-            document.getElementById('edit-script-link').value = p['Script Link'] || '';
-            document.getElementById('edit-deadline').value = p.Deadline || '';
+            document.getElementById('edit-email').value = p['Client Email'] || '';
+            document.getElementById('edit-budget').value = p['Budget (BDT)'] || '';
+            document.getElementById('edit-priority').value = p.Priority || 'Normal';
             document.getElementById('edit-status').value = p.Status || 'Review';
-            document.getElementById('edit-delivery').value = p['Delivery Link'] || '';
-            document.getElementById('edit-notes').value = p.Notes || '';
-            document.getElementById('edit-ref1').value = p['Reference Link-1'] || '';
-            document.getElementById('edit-ref2').value = p['Reference Link-2'] || '';
+            document.getElementById('edit-deadline').value = p.Deadline || '';
             document.getElementById('edit-thumb').value = p['Thumbnail Concept'] || '';
             document.getElementById('edit-music').value = p['Music Type'] || '';
             document.getElementById('edit-hook').value = p['Hook Duration'] || '';
 
             document.getElementById('update-btn').onclick = () => updateProject(id);
             document.getElementById('send-btn').onclick = () => sendMsg(id);
-
             document.getElementById('main-dashboard').style.display = 'none';
             document.getElementById('project-view').style.display = 'block';
-            
-            // 🔥 শুধুমাত্র এই ID-র মেসেজ লোড হবে
             loadMessages(id);
         }
 
@@ -165,53 +223,38 @@
                 action: "update", sheet: "Projects", "Project ID": id,
                 "Project Name": document.getElementById('edit-name').value,
                 "Footage Link": document.getElementById('edit-footage').value,
-                "Script": document.getElementById('edit-script-topic').value,
-                "Script Link": document.getElementById('edit-script-link').value,
-                "Deadline": document.getElementById('edit-deadline').value,
+                "Budget (BDT)": document.getElementById('edit-budget').value,
+                "Priority": document.getElementById('edit-priority').value,
                 "Status": document.getElementById('edit-status').value,
-                "Delivery Link": document.getElementById('edit-delivery').value,
-                "Notes": document.getElementById('edit-notes').value,
-                "Reference Link-1": document.getElementById('edit-ref1').value,
-                "Reference Link-2": document.getElementById('edit-ref2').value,
+                "Deadline": document.getElementById('edit-deadline').value,
                 "Thumbnail Concept": document.getElementById('edit-thumb').value,
                 "Music Type": document.getElementById('edit-music').value,
-                "Hook Duration": document.getElementById('edit-hook').value
+                "Hook Duration": document.getElementById('edit-hook').value,
+                "Notes": document.getElementById('edit-notes').value
             };
             Swal.fire({title: 'Updating...', didOpen: () => Swal.showLoading()});
             await fetch(API, { method: 'POST', body: JSON.stringify(data)});
-            Swal.fire('Success', 'Project updated!', 'success');
+            Swal.fire('Updated!', 'Sheet data synced.', 'success');
             sync();
         }
 
         async function loadMessages(projectId) {
-            const container = document.getElementById('chat-container');
-            container.innerHTML = "<p style='text-align:center; opacity:0.5;'>Loading chat...</p>";
-            
-            try {
-                const res = await fetch(`${API}?sheet=Messages&email=${userEmail}`);
-                const all = await res.json();
-                
-                // 🔥 ফিল্টার: শুধুমাত্র বর্তমান প্রজেক্টের মেসেজগুলো দেখাবে
-                const msgs = all.filter(m => m['Project ID'].toString() === projectId.toString());
-                
-                container.innerHTML = msgs.map(m => `
-                    <div class="bubble ${m.From === userEmail ? 'b-client' : 'b-admin'}">
-                        <div style="font-size:0.6rem; font-weight:800; opacity:0.7;">${m.From === ADMIN_EMAIL ? 'ADMIN' : 'CLIENT'}</div>
-                        ${m['Message Text']}
-                    </div>
-                `).join('') || "<p style='text-align:center; opacity:0.5;'>No messages for this project.</p>";
-                container.scrollTop = container.scrollHeight;
-            } catch(e) { container.innerHTML = "Error loading messages."; }
+            const res = await fetch(`${API}?sheet=Messages&email=${userEmail}`);
+            const all = await res.json();
+            const filtered = all.filter(m => m['Project ID'].toString() === projectId.toString());
+            document.getElementById('chat-container').innerHTML = filtered.map(m => `
+                <div class="bubble ${m.From === ADMIN_EMAIL ? 'b-admin' : 'b-client'}">
+                    <span style="font-size:0.6rem; display:block; opacity:0.6;">${m.From === ADMIN_EMAIL ? 'ADMIN' : 'CLIENT'}</span>
+                    ${m['Message Text']}
+                </div>
+            `).join('');
+            document.getElementById('chat-container').scrollTop = 9999;
         }
 
-        async function sendMsg(id) {
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if(!text) return;
-            input.value = 'Sending...';
-            await fetch(API, { method: 'POST', body: JSON.stringify({ action: "add", sheet: "Messages", "Project ID": id, "From": userEmail, "Message Text": text })});
-            input.value = ''; 
-            loadMessages(id);
+        async function sendMsg(projectId) {
+            const txt = document.getElementById('chat-input').value; if(!txt) return;
+            await fetch(API, { method: 'POST', body: JSON.stringify({ action:"add", sheet:"Messages", "Project ID":projectId, "From":userEmail, "Message Text":txt })});
+            document.getElementById('chat-input').value = ''; loadMessages(projectId);
         }
 
         function closeView() { document.getElementById('main-dashboard').style.display = 'block'; document.getElementById('project-view').style.display = 'none'; }
