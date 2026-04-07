@@ -1,86 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login | Motion Of Naimur</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<style>
-    :root {
-        --bg: #050505;
-        --card: rgba(20, 20, 20, 0.85);
-        --primary: #3b82f6;
-        --text: #ffffff;
-    }
-    body {
-        margin: 0; font-family: 'Outfit', sans-serif;
-        background: var(--bg); color: var(--text);
-        height: 100vh; display: flex; justify-content: center; align-items: center;
-        background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 100%);
-    }
-    .login-card {
-        background: var(--card); backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 3rem; border-radius: 30px; width: 380px; text-align: center;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-    }
-    .logo-icon { color: var(--primary); width: 50px; height: 50px; margin-bottom: 1rem; }
-    h1 { font-size: 1.5rem; letter-spacing: 3px; text-transform: uppercase; margin: 0 0 2rem; }
-    p { color: #94a3b8; margin-bottom: 2.5rem; font-size: 0.95rem; }
-    .g-btn { display: flex; justify-content: center; margin-top: 20px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Motion Of Naimur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        :root {
+            --bg: #050505;
+            --card: rgba(20, 20, 20, 0.85);
+            --primary: #3b82f6;
+            --text: #ffffff;
+        }
+        body {
+            margin: 0; font-family: 'Outfit', sans-serif;
+            background: var(--bg); color: var(--text);
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 100%);
+        }
+        .login-card {
+            background: var(--card); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem; border-radius: 30px; width: 380px; text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .logo-icon { color: var(--primary); width: 50px; height: 50px; margin-bottom: 1rem; }
+        h1 { font-size: 1.5rem; letter-spacing: 3px; text-transform: uppercase; margin: 0 0 2rem; }
+        p { color: #94a3b8; margin-bottom: 2.5rem; font-size: 0.95rem; }
+        
+        /* Google Button Centering */
+        .g-btn { display: flex; justify-content: center; margin-top: 20px; }
+    </style>
 </head>
 <body>
 
-<div class="login-card">
-    <i data-lucide="monitor-play" class="logo-icon"></i>
-    <h1>Motion Of Naimur</h1>
-    <h3>Client Portal</h3>
-    <p>Sign in with your Google account to manage your projects and revisions.</p>
+    <div class="login-card">
+        <i data-lucide="monitor-play" class="logo-icon"></i>
+        <h1>Motion Of Naimur</h1>
+        <h3>Client Portal</h3>
+        <p>Sign in with your Google account to manage your projects and revisions.</p>
 
-    <!-- Google Login Button -->
-    <div id="g_id_onload"
-         data-client_id="388867750902-263hniv7d8v31m3l5pkphokg0scb9tos.apps.googleusercontent.com"
-         data-callback="handleCredentialResponse"
-         data-auto_prompt="false">
+        <!-- Google Login Button -->
+        <div id="g_id_onload"
+             data-client_id="388867750902-263hniv7d8v31m3l5pkphokg0scb9tos.apps.googleusercontent.com" 
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+        <div class="g-btn">
+            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue" data-text="signin_with" data-size="large"></div>
+        </div>
     </div>
-    <div class="g-btn">
-        <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue" data-text="signin_with" data-size="large"></div>
-    </div>
-</div>
 
-<script>
-lucide.createIcons();
+    <script>
+        lucide.createIcons();
 
-function parseJwt(token) {
-    try {
-        return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) { return null; }
-}
+        function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) { return null; }
+        }
 
-function handleCredentialResponse(response) {
-    const data = parseJwt(response.credential);
-    if(data) {
-        const email = data.email;
-        const name = data.name;
-        const pic = data.picture;
-
-        // Save to localStorage
-        localStorage.setItem('clientEmail', email);
-        localStorage.setItem('clientName', name);
-        localStorage.setItem('clientPic', pic);
-
-        // Determine role: Admin or Client
-        let role = (email === "naimur582582@gmail.com") ? "Admin" : "Client";
-        localStorage.setItem('clientRole', role);
-
-        // Redirect to Dashboard
-        window.location.href = 'dashboard.html';
-    }
-}
-</script>
-
+        function handleCredentialResponse(response) {
+            const data = parseJwt(response.credential);
+            if(data) {
+                localStorage.setItem('clientEmail', data.email);
+                localStorage.setItem('clientName', data.name);
+                localStorage.setItem('clientPic', data.picture);
+                window.location.href = 'dashboard.html';
+            }
+        }
+    </script>
 </body>
 </html>
