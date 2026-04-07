@@ -3,266 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infinity Agency OS | Naimur</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Naimur's Agency OS | Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root {
-            --bg: #030303;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --primary: #3b82f6;
-            --accent: #6366f1;
-            --success: #10b981;
-            --danger: #ef4444;
-            --text: #f8fafc;
-            --text-dim: #94a3b8;
-        }
+        :root { --bg: #08080a; --card: #121217; --primary: #3b82f6; --border: rgba(255,255,255,0.1); --text: #ffffff; --text-dim: #94a3b8; }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); }
+        
+        /* Premium Layout */
+        nav { padding: 1.2rem 5%; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(8,8,10,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
+        .container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
+        
+        /* Project Cards */
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .p-card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 20px; transition: 0.3s; cursor: pointer; position: relative; }
+        .p-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1); }
+        
+        /* Form Styling from your Photo */
+        .form-window { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 1000; overflow-y: auto; padding: 2rem 5%; box-sizing: border-box; }
+        .grid-2 { display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 30px; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; font-weight: 700; letter-spacing: 0.5px; }
+        .c-input { width: 100%; background: #1a1a21; border: 1px solid #333; padding: 12px; border-radius: 10px; color: #fff; font-family: inherit; font-size: 0.9rem; transition: 0.3s; }
+        .c-input:focus { border-color: var(--primary); outline: none; }
+        
+        /* Counter Controls like Photo */
+        .counter-ctrl { display: flex; align-items: center; background: #1a1a21; border: 1px solid #333; border-radius: 10px; width: fit-content; }
+        .counter-ctrl button { background: none; border: none; color: #fff; padding: 10px 15px; cursor: pointer; font-size: 1.2rem; }
+        .counter-ctrl input { background: none; border: none; color: #fff; text-align: center; width: 80px; font-weight: 700; }
 
-        body {
-            margin: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            background-image: radial-gradient(circle at 50% 0%, #1e1e2e 0%, #030303 100%);
-            min-height: 100vh;
-        }
-
-        /* Nav & Glassmorphism */
-        nav {
-            padding: 1.5rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            position: sticky; top: 0; z-index: 1000;
-        }
-
-        .container { padding: 2.5rem 5%; max-width: 1400px; margin: 0 auto; }
-
-        /* Project Cards Grid */
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 25px;
-        }
-
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 25px;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            cursor: pointer;
-        }
-
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--primary);
-            transform: translateY(-8px) scale(1.02);
-        }
-
-        /* Buttons & Controls */
-        .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center; gap: 8px;
-            transition: 0.3s;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--glass-border);
-            color: var(--text);
-        }
-
-        /* Input Controls like your photo */
-        .counter-box {
-            display: flex;
-            align-items: center;
-            background: #111;
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            overflow: hidden;
-            width: fit-content;
-        }
-
-        .counter-btn {
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        .counter-btn:hover { background: var(--primary); }
-
-        /* Revision Form Style */
-        .revision-item {
-            background: rgba(0,0,0,0.3);
-            border-left: 3px solid var(--primary);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 0.85rem;
-        }
-
-        /* Hidden Full View */
-        #project-view {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
-            z-index: 2000;
-            overflow-y: auto;
-            padding: 2rem 5%;
-        }
-
-        .form-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
-
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .c-input {
-            width: 100%;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            padding: 14px;
-            border-radius: 12px;
-            color: white;
-            outline: none;
-        }
-        .c-input:focus { border-color: var(--primary); }
-
-        .chat-panel {
-            background: #0a0a0a;
-            border-radius: 24px;
-            height: 600px;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid var(--glass-border);
-        }
-
-        .badge {
-            padding: 4px 12px;
-            border-radius: 100px;
-            font-size: 0.7rem;
-            font-weight: 800;
-        }
+        /* Buttons */
+        .btn { padding: 12px 25px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-ghost { background: #1a1a21; color: #fff; border: 1px solid #333; }
+        
+        .status-pill { padding: 4px 12px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; background: rgba(59,130,246,0.1); color: var(--primary); }
     </style>
 </head>
 <body>
 
 <nav>
-    <div style="display:flex; align-items:center; gap:10px;">
-        <div style="background:var(--primary); width:40px; height:40px; border-radius:12px; display:grid; place-items:center;">
-            <i data-lucide="infinity"></i>
-        </div>
-        <div style="font-size:1.4rem; font-weight:900; letter-spacing:-1px;">MOTION OF NAIMUR</div>
-    </div>
-    <div id="user-info" style="font-size:0.8rem; color:var(--text-dim);"></div>
+    <div style="font-weight: 900; font-size: 1.5rem; color: var(--primary);">MOTION OF NAIMUR</div>
+    <div id="user-tag" style="color: var(--text-dim); font-size: 0.8rem;"></div>
 </nav>
 
-<div class="container" id="dash">
-    <div style="display:flex; justify-content:space-between; margin-bottom:40px;">
+<div class="container" id="dashboard-view">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
         <div>
-            <h1 style="font-size:2.5rem; margin:0; font-weight:800;">Production Desk</h1>
-            <p style="color:var(--text-dim);">Dynamic Agency Management System</p>
+            <h1 style="margin:0;">Agency Projects</h1>
+            <p style="color:var(--text-dim); margin:0;">Welcome back, Naimur Rahman</p>
         </div>
-        <button id="add-btn" class="btn" style="display:none;" onclick="openProjectWizard()">
-            <i data-lucide="plus-circle"></i> New Production
-        </button>
+        <button onclick="openNewProject()" class="btn btn-primary" id="admin-add"><i data-lucide="plus"></i> New Project</button>
     </div>
-
-    <div id="project-list" class="project-grid"></div>
+    <div id="project-list" class="project-grid">Loading productions...</div>
 </div>
 
-<div id="project-view">
-    <div style="display:flex; justify-content:space-between; margin-bottom:30px;">
-        <button class="btn btn-outline" onclick="closeView()"><i data-lucide="arrow-left"></i> Back</button>
-        <h2 id="view-title">Project Details</h2>
-        <button class="btn" style="background:var(--success);" id="final-save">Update Production</button>
+<!-- Project Editor View (Your Photo Structure) -->
+<div class="form-window" id="editor-view">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+        <button class="btn btn-ghost" onclick="closeEditor()"><i data-lucide="x"></i> Cancel</button>
+        <h2 id="view-title">Projects Form</h2>
+        <button class="btn btn-primary" id="save-main-btn">Save</button>
     </div>
 
-    <div class="form-layout">
-        <div>
-            <div class="form-layout" style="grid-template-columns: 1fr 1fr; gap:20px;">
-                <div class="input-group"><label>Project ID</label><input id="p-id" class="c-input" readonly></div>
-                <div class="input-group"><label>Project Name</label><input id="p-name" class="c-input"></div>
-            </div>
-            
-            <div class="input-group"><label>Footage Link</label><input id="p-footage" class="c-input"></div>
-            
-            <div class="form-layout" style="grid-template-columns: 1fr 1fr; gap:20px;">
-                <div class="input-group"><label>Script Link</label><input id="p-script-link" class="c-input"></div>
-                <div class="input-group"><label>Client Website</label><input id="p-web" class="c-input"></div>
-            </div>
-
-            <div class="input-group"><label>Full Script</label><textarea id="p-script" class="c-input" style="height:100px;"></textarea></div>
-
-            <div class="form-layout" style="grid-template-columns: 1fr 1fr; gap:20px;">
-                <div class="input-group"><label>Ref Link 1</label><input id="p-ref1" class="c-input"></div>
-                <div class="input-group"><label>Ref Link 2</label><input id="p-ref2" class="c-input"></div>
-            </div>
-
-            <div class="form-layout" style="grid-template-columns: 1fr 1fr 1fr; gap:20px;">
+    <div class="grid-2">
+        <div style="background:var(--card); padding:30px; border-radius:24px; border:1px solid var(--border);">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                <div class="input-group" style="grid-column: span 2;"><label>Project ID*</label><input id="f-id" class="c-input"></div>
+                <div class="input-group" style="grid-column: span 2;"><label>Project Name</label><input id="f-name" class="c-input"></div>
+                <div class="input-group" style="grid-column: span 2;"><label>Footage Link</label><input id="f-footage" class="c-input" placeholder="http://"></div>
+                <div class="input-group" style="grid-column: span 2;"><label>Script</label><textarea id="f-script" class="c-input" style="height:80px;"></textarea></div>
+                <div class="input-group" style="grid-column: span 2;"><label>Script Link</label><input id="f-script-link" class="c-input" placeholder="http://"></div>
+                <div class="input-group"><label>Reference Link-1</label><input id="f-ref1" class="c-input"></div>
+                <div class="input-group"><label>Reference Link-2</label><input id="f-ref2" class="c-input"></div>
+                <div class="input-group">
+                    <label>Status</label>
+                    <select id="f-status" class="c-input">
+                        <option value="Review">Review</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Revision">Revision</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+                <div class="input-group"><label>Deadline</label><input id="f-deadline" type="date" class="c-input"></div>
+                <div class="input-group" style="grid-column: span 2;"><label>Client Website</label><input id="f-web" class="c-input"></div>
+                <div class="input-group" style="grid-column: span 2;"><label>Notes</label><textarea id="f-notes" class="c-input"></textarea></div>
+                
+                <div class="input-group">
+                    <label>Number</label>
+                    <div class="counter-ctrl">
+                        <button onclick="this.nextElementSibling.stepDown()">-</button>
+                        <input id="f-num" type="number" value="1">
+                        <button onclick="this.previousElementSibling.stepUp()">+</button>
+                    </div>
+                </div>
                 <div class="input-group">
                     <label>Budget (BDT)</label>
-                    <div class="counter-box">
-                        <button class="counter-btn" onclick="stepDown('p-budget', 500)">-</button>
-                        <input id="p-budget" type="number" value="0" style="width:70px; background:none; border:none; color:white; text-align:center;">
-                        <button class="counter-btn" onclick="stepUp('p-budget', 500)">+</button>
+                    <div class="counter-ctrl">
+                        <button onclick="this.nextElementSibling.stepDown(500)">-</button>
+                        <input id="f-budget" type="number" value="0">
+                        <button onclick="this.previousElementSibling.stepUp(500)">+</button>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>Videos</label>
-                    <div class="counter-box">
-                        <button class="counter-btn" onclick="stepDown('p-num', 1)">-</button>
-                        <input id="p-num" type="number" value="1" style="width:50px; background:none; border:none; color:white; text-align:center;">
-                        <button class="counter-btn" onclick="stepUp('p-num', 1)">+</button>
-                    </div>
-                </div>
-                <div class="input-group"><label>Deadline</label><input id="p-deadline" type="date" class="c-input"></div>
             </div>
-
-            <div class="input-group"><label>Status</label>
-                <select id="p-status" class="c-input">
-                    <option value="Review">Review</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Revision">Revision</option>
-                    <option value="Completed">Completed</option>
-                </select>
-            </div>
-
-            <hr style="border:0; border-top:1px solid var(--glass-border); margin:30px 0;">
             
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h3>Related Revisions</h3>
-                <button class="btn btn-outline" style="padding:5px 15px;" onclick="openRevisionWizard()">New</button>
+            <div style="margin-top:30px; border-top:1px solid var(--border); padding-top:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <p style="font-size:0.8rem; color:var(--text-dim);">Revisions entries for this project</p>
+                    <button class="btn btn-ghost" style="padding:5px 15px;" onclick="openRevisionForm()">New</button>
+                </div>
+                <div id="revision-container" style="margin-top:15px;"></div>
             </div>
-            <div id="revision-list"></div>
         </div>
 
-        <div class="chat-panel">
-            <div style="padding:20px; border-bottom:1px solid var(--glass-border);">Project Feed</div>
-            <div id="chat-msgs" style="flex:1; overflow-y:auto; padding:20px;"></div>
-            <div style="padding:20px; display:flex; gap:10px;">
-                <input id="chat-in" class="c-input" placeholder="Type a message...">
-                <button id="chat-send" class="btn"><i data-lucide="send"></i></button>
+        <div style="background:var(--card); border-radius:24px; padding:20px; border:1px solid var(--border); height:fit-content;">
+            <h3 style="margin-top:0;">Project Chat</h3>
+            <div id="chat-box" style="height:400px; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:10px;"></div>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <input id="chat-input" class="c-input" placeholder="Message...">
+                <button onclick="sendMessage()" class="btn btn-primary"><i data-lucide="send"></i></button>
             </div>
         </div>
     </div>
@@ -272,98 +132,106 @@
     const API = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
     const userEmail = localStorage.getItem('clientEmail');
     const ADMIN = "naimur582582@gmail.com";
-    let dataCache = [];
-
-    async function init() {
-        document.getElementById('user-info').innerText = userEmail;
-        if(userEmail === ADMIN) document.getElementById('add-btn').style.display = 'flex';
-        sync();
-    }
+    let projects = [];
+    let activeId = null;
 
     async function sync() {
+        document.getElementById('user-tag').innerText = userEmail;
+        if(userEmail !== ADMIN) document.getElementById('admin-add').style.display = 'none';
+        
         const res = await fetch(`${API}?sheet=Projects&email=${userEmail}`);
-        dataCache = await res.json();
+        projects = await res.json();
         render();
     }
 
     function render() {
-        const isAdmin = userEmail === ADMIN;
-        document.getElementById('project-list').innerHTML = dataCache.map(p => `
-            <div class="glass-card" onclick="openView('${p['Project ID']}')">
-                ${isAdmin ? `<button class="btn" style="position:absolute; top:20px; right:20px; padding:5px; background:rgba(239,68,68,0.1); color:var(--danger);" onclick="event.stopPropagation(); delProject('${p['Project ID']}')"><i data-lucide="trash"></i></button>` : ''}
-                <div style="display:flex; gap:10px; margin-bottom:15px;">
-                    <span class="badge" style="background:rgba(59,130,246,0.1); color:var(--primary);">${p.Status}</span>
-                    <span class="badge" style="background:#111;">${p['Editor Name'] === 'mdarafat909090@gmail.com' ? 'Arafat' : 'Sami'}</span>
+        document.getElementById('project-list').innerHTML = projects.map(p => `
+            <div class="p-card" onclick="editProject('${p['Project ID']}')">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                    <span class="status-pill">${p.Status}</span>
+                    <span style="font-size:0.7rem; color:var(--text-dim);">ID: ${p['Project ID']}</span>
                 </div>
-                <h2 style="margin:0; font-size:1.3rem;">${p['Project Name']}</h2>
-                <div style="display:flex; justify-content:space-between; margin-top:20px; color:var(--text-dim); font-size:0.8rem;">
-                    <span><i data-lucide="calendar" style="width:14px; vertical-align:middle;"></i> ${p.Deadline}</span>
-                    <span style="color:var(--success); font-weight:800;">৳ ${p['Budget (BDT)']}</span>
+                <h3 style="margin:0;">${p['Project Name']}</h3>
+                <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="color:var(--primary); font-weight:800;">৳ ${p['Budget (BDT)']}</span>
+                    <span style="font-size:0.8rem; color:var(--text-dim);">${p.Deadline}</span>
                 </div>
             </div>
         `).join('');
         lucide.createIcons();
     }
 
-    function stepUp(id, step) { document.getElementById(id).stepUp(step); }
-    function stepDown(id, step) { document.getElementById(id).stepDown(step); }
-
-    function openView(id) {
-        const p = dataCache.find(x => x['Project ID'].toString() === id.toString());
-        document.getElementById('p-id').value = p['Project ID'];
-        document.getElementById('p-name').value = p['Project Name'];
-        document.getElementById('p-status').value = p.Status;
-        document.getElementById('p-footage').value = p['Footage Link'] || '';
-        document.getElementById('p-script-link').value = p['Script Link'] || '';
-        document.getElementById('p-script').value = p['Script'] || '';
-        document.getElementById('p-ref1').value = p['Reference Link-1'] || '';
-        document.getElementById('p-ref2').value = p['Reference Link-2'] || '';
-        document.getElementById('p-budget').value = p['Budget (BDT)'] || 0;
-        document.getElementById('p-num').value = p.Number || 1;
-        document.getElementById('p-web').value = p['Client Website'] || '';
-
-        document.getElementById('dash').style.display = 'none';
-        document.getElementById('project-view').style.display = 'block';
-        loadRevisions(id);
+    function openNewProject() {
+        activeId = null;
+        document.getElementById('f-id').value = Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('f-name').value = '';
+        document.getElementById('editor-view').style.display = 'block';
+        document.getElementById('dashboard-view').style.display = 'none';
     }
 
-    async function openRevisionWizard() {
-        const pid = document.getElementById('p-id').value;
-        const pname = document.getElementById('p-name').value;
+    function editProject(id) {
+        activeId = id;
+        const p = projects.find(x => x['Project ID'].toString() === id.toString());
+        document.getElementById('f-id').value = p['Project ID'];
+        document.getElementById('f-name').value = p['Project Name'] || '';
+        document.getElementById('f-footage').value = p['Footage Link'] || '';
+        document.getElementById('f-status').value = p.Status || 'Review';
+        document.getElementById('f-budget').value = p['Budget (BDT)'] || 0;
+        document.getElementById('f-deadline').value = p.Deadline || '';
+        
+        document.getElementById('editor-view').style.display = 'block';
+        document.getElementById('dashboard-view').style.display = 'none';
+        loadChat(id);
+    }
 
-        const { value: formValues } = await Swal.fire({
-            title: 'Revisions Form',
-            background: '#0a0a0a', color: '#fff',
+    document.getElementById('save-main-btn').onclick = async () => {
+        const data = {
+            action: activeId ? "update" : "add",
+            sheet: "Projects",
+            "Project ID": document.getElementById('f-id').value,
+            "Project Name": document.getElementById('f-name').value,
+            "Footage Link": document.getElementById('f-footage').value,
+            "Status": document.getElementById('f-status').value,
+            "Budget (BDT)": document.getElementById('f-budget').value,
+            "Deadline": document.getElementById('f-deadline').value,
+            "Number": document.getElementById('f-num').value,
+            "Client Email": userEmail // Admin creates for clients
+        };
+        
+        await fetch(API, { method: 'POST', body: JSON.stringify(data) });
+        Swal.fire('Success', 'Project Saved!', 'success');
+        closeEditor();
+        sync();
+    };
+
+    async function openRevisionForm() {
+        const { value: revData } = await Swal.fire({
+            title: 'Revision Form',
+            background: '#121217', color: '#fff',
             html: `
                 <div style="text-align:left;">
-                    <label style="font-size:0.7rem; color:#666;">PROJECT ID</label>
-                    <input id="rev-pid" class="c-input" style="margin-bottom:15px;" value="${pid}" readonly>
-                    <label style="font-size:0.7rem; color:#666;">NOTES</label>
-                    <textarea id="rev-note" class="c-input" style="height:80px; margin-bottom:15px;"></textarea>
-                    <div style="display:flex; gap:10px;">
-                        <button class="btn btn-outline" style="flex:1;">File</button>
-                        <button class="btn btn-outline" style="flex:1;">Link</button>
-                    </div>
+                    <label style="font-size:0.7rem; color:#888;">REVISION NOTES</label>
+                    <textarea id="swal-notes" class="c-input" style="height:100px; margin-bottom:15px;"></textarea>
+                    <label style="font-size:0.7rem; color:#888;">REVISION #</label>
+                    <input id="swal-num" type="number" class="c-input" value="1">
                 </div>
             `,
             showCancelButton: true,
             confirmButtonText: 'Save Revision'
         });
 
-        if (formValues) {
-            // Logic to save to Google Sheets 'Revisions' sheet
-            Swal.fire('Revision Saved!', '', 'success');
+        if(revData) {
+            // Save logic to your "Revisions" sheet
+            Swal.fire('Saved!', 'Revision recorded', 'success');
         }
     }
 
-    function closeView() {
-        document.getElementById('dash').style.display = 'block';
-        document.getElementById('project-view').style.display = 'none';
+    function closeEditor() {
+        document.getElementById('editor-view').style.display = 'none';
+        document.getElementById('dashboard-view').style.display = 'block';
     }
 
-    function logout() { localStorage.clear(); location.reload(); }
-
-    init();
+    sync();
 </script>
 </body>
 </html>
