@@ -3,187 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Dashboard | Motion Of Naimur</title>
+    <title>Master Portal | Motion Of Naimur</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <style>
-        :root {
-            --bg: #050505;
-            --card: rgba(20, 20, 20, 0.7);
-            --primary: #3b82f6;
-            --accent: #6366f1;
-            --text: #ffffff;
-            --border: rgba(255, 255, 255, 0.1);
-        }
-
-        body {
-            margin: 0; padding: 0; font-family: 'Outfit', sans-serif;
-            background: var(--bg); color: var(--text); overflow-x: hidden;
-            background: radial-gradient(circle at top right, #1e1b4b 0%, #050505 100%);
-            min-height: 100vh;
-        }
-
-        /* Navbar Styling */
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1.2rem 5%; background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(15px); border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; z-index: 1000;
-        }
-
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .user-profile img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); }
-
-        /* Dashboard Container */
+        :root { --bg: #050505; --card: rgba(20,20,20,0.8); --primary: #3b82f6; --border: rgba(255,255,255,0.08); }
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: white; background: radial-gradient(circle at top right, #1e1b4b 0%, #050505 100%); min-height: 100vh; }
+        
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); sticky: top; }
         .container { padding: 3rem 5%; max-width: 1400px; margin: 0 auto; }
         
-        .header-flex { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; }
-        h2 { font-size: 2rem; margin: 0; font-weight: 600; background: linear-gradient(to right, #fff, #64748b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 25px; }
+        .project-card { background: var(--card); border-radius: 24px; border: 1px solid var(--border); padding: 25px; backdrop-filter: blur(10px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .project-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 15px 35px rgba(59,130,246,0.15); }
 
-        /* Project Card Grid */
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 2rem; }
+        .badge { padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; background: rgba(59,130,246,0.1); color: var(--primary); border: 1px solid rgba(59,130,246,0.2); }
+        .budget-box { color: #4ade80; font-weight: 600; font-size: 1rem; }
 
-        .project-card {
-            background: var(--card); backdrop-filter: blur(20px);
-            border: 1px solid var(--border); border-radius: 24px;
-            padding: 1.8rem; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative; overflow: hidden;
-        }
-
-        .project-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-
-        /* Status & Budget */
-        .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .status-badge { padding: 6px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; background: rgba(59, 130, 246, 0.1); color: var(--primary); border: 1px solid rgba(59, 130, 246, 0.2); }
-        .budget-tag { color: #4ade80; font-weight: 600; font-size: 1rem; }
-
-        /* Dynamic Content Sections */
-        .section-label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin: 1.2rem 0 0.8rem 0; display: block; font-weight: 600; }
+        .data-label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; margin-top: 20px; display: block; font-weight: 600; letter-spacing: 1px; }
         
-        .link-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-link { 
-            display: flex; align-items: center; gap: 8px; padding: 10px; 
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            border-radius: 12px; color: #cbd5e1; text-decoration: none; font-size: 0.85rem; transition: 0.3s;
-        }
-        .btn-link:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .btn-outline { display: flex; align-items: center; gap: 8px; padding: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; color: #cbd5e1; text-decoration: none; font-size: 0.8rem; transition: 0.3s; }
+        .btn-outline:hover { background: var(--primary); color: white; }
 
-        .delivery-btn {
-            width: 100%; margin-top: 10px; background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s;
-        }
-
-        /* Message & Revision List */
-        .data-box { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 10px; max-height: 120px; overflow-y: auto; font-size: 0.85rem; border: 1px solid var(--border); }
-        .data-item { padding: 8px; border-bottom: 1px solid var(--border); color: #94a3b8; }
-        .data-item:last-child { border: none; }
-
-        /* Loader */
-        .loader { text-align: center; padding: 100px; font-size: 1.2rem; color: var(--primary); }
+        .delivery-link { width: 100%; margin-top: 15px; background: linear-gradient(135deg, #3b82f6, #6366f1); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; gap: 8px; text-decoration: none; font-size: 0.9rem; }
+        
+        .swal-input-dark { background: #1a1a1a !important; color: white !important; border: 1px solid #333 !important; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div style="display:flex; align-items:center; gap:12px;">
-            <i data-lucide="monitor-play" style="color:var(--primary); width:32px; height:32px;"></i>
-            <h1 style="font-size:1.2rem; letter-spacing:2px; margin:0;">MOTION OF NAIMUR</h1>
-        </div>
-        <div class="user-profile">
-            <span id="u-name" style="font-size:0.9rem; color:#94a3b8;"></span>
-            <img id="u-pic" src="" alt="Profile">
-            <button onclick="logout()" style="background:none; border:1px solid #333; color:white; padding:8px 15px; border-radius:10px; cursor:pointer; font-size:0.8rem;">Logout</button>
+        <div style="display:flex; align-items:center; gap:12px;"><i data-lucide="monitor-play" color="#3b82f6"></i> <b style="letter-spacing:1px;">MOTION OF NAIMUR</b></div>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <img id="u-pic" style="width:38px; border-radius:50%; border:2px solid var(--primary);">
+            <button onclick="logout()" style="background:none; border:1px solid #333; color:white; padding:7px 15px; border-radius:10px; cursor:pointer;">Logout</button>
         </div>
     </nav>
 
     <div class="container">
-        <div class="header-flex">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:40px;">
             <div>
-                <h2>Client Workspace</h2>
-                <p style="color:#64748b; margin-top:5px;">Manage your video production ecosystem</p>
+                <h1 style="margin:0; font-size:2.2rem;">Client Workspace</h1>
+                <p style="color:#64748b; margin-top:5px;">Everything you need for your video production.</p>
             </div>
-            <button onclick="addNewProject()" style="background:var(--primary); color:white; border:none; padding:14px 28px; border-radius:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:10px; box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);">
-                <i data-lucide="plus-circle"></i> Create New Project
-            </button>
+            <button onclick="addNewProject()" style="background:var(--primary); color:white; border:none; padding:14px 28px; border-radius:14px; font-weight:600; cursor:pointer; box-shadow: 0 10px 20px rgba(59,130,246,0.2);">+ New Project</button>
         </div>
 
         <div id="project-list" class="project-grid">
-            <div class="loader">Fetching your creative data...</div>
+            <div style="text-align:center; padding:50px; grid-column: 1/-1; color:#64748b;">Syncing with Motion Cloud...</div>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
+        // আপনার দেওয়া নতুন লিঙ্কটি এখানে বসানো হয়েছে
+        const API_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec"; 
         const email = localStorage.getItem('clientEmail');
 
-        if(!email) window.location.href = 'index.html';
-        document.getElementById('u-name').innerText = localStorage.getItem('clientName');
-        document.getElementById('u-pic').src = localStorage.getItem('clientPic');
-
-        async function initDashboard() {
+        async function fetchWorkspace() {
             try {
-                // ৩টি শীট থেকে একযোগে ডাটা ফেচ করা
-                const [projects, revisions, messages] = await Promise.all([
-                    fetch(`${API_URL}?sheet=Projects&email=${email}`).then(r => r.json()),
-                    fetch(`${API_URL}?sheet=Revisions&email=${email}`).then(r => r.json()),
-                    fetch(`${API_URL}?sheet=Messages&email=${email}`).then(r => r.json())
-                ]);
-
+                const res = await fetch(`${API_URL}?sheet=Projects&email=${email}`);
+                const data = await res.json();
                 const container = document.getElementById('project-list');
                 container.innerHTML = '';
 
-                projects.forEach(p => {
-                    const pId = p['Project ID'];
-                    const pRevisions = revisions.filter(r => r['Project ID'] == pId);
-                    const pMessages = messages.filter(m => m['Project ID'] == pId);
-
+                data.forEach(p => {
                     container.innerHTML += `
                         <div class="project-card">
-                            <div class="card-top">
-                                <span class="status-badge">${p['Status'] || 'Editing'}</span>
-                                <span class="budget-tag">৳ ${p['Budget (BDT)'] || '0'}</span>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span class="badge">${p['Status'] || 'Pending'}</span>
+                                <span class="budget-box">৳ ${p['Budget (BDT)'] || '0'}</span>
                             </div>
 
-                            <h3 style="margin:0 0 10px 0;">${p['Project Name']}</h3>
-                            <p style="color:#64748b; font-size:0.85rem; margin-bottom:20px;">
-                                <i data-lucide="calendar" style="width:14px; vertical-align:middle;"></i> Deadline: ${p['Deadline'] || 'Flexible'}
-                            </p>
-
-                            <span class="section-label">Assets & Resources</span>
-                            <div class="link-group">
-                                <a href="${p['Footage Link']}" target="_blank" class="btn-link"><i data-lucide="video"></i> Footage</a>
-                                <a href="${p['Script Link']}" target="_blank" class="btn-link"><i data-lucide="file-text"></i> Script</a>
+                            <h2 style="margin:20px 0 5px 0; font-size:1.5rem;">${p['Project Name']}</h2>
+                            <div style="display:flex; gap:15px; font-size:0.8rem; color:#64748b; margin-bottom:20px;">
+                                <span><i data-lucide="hash" style="width:12px;"></i> ${p['Project ID'] || 'N/A'}</span>
+                                <span><i data-lucide="calendar" style="width:12px;"></i> ${p['Deadline']}</span>
                             </div>
 
-                            <button onclick="window.open('${p['Delivery Link']}', '_blank')" class="delivery-btn">
-                                <i data-lucide="play-circle"></i> View Final Delivery
-                            </button>
-
-                            <span class="section-label">Revisions (${pRevisions.length})</span>
-                            <div class="data-box">
-                                ${pRevisions.map(rev => `<div class="data-item"><b>v${rev['Revision Number']}:</b> ${rev['Revision Notes']}</div>`).join('') || '<div class="data-item">No revisions requested.</div>'}
+                            <span class="data-label">Production Assets</span>
+                            <div class="btn-group">
+                                <a href="${p['Footage Link']}" target="_blank" class="btn-outline"><i data-lucide="video"></i> Footage</a>
+                                <a href="${p['Script Link']}" target="_blank" class="btn-outline"><i data-lucide="file-text"></i> Script</a>
+                                <a href="${p['Reference Link-1']}" target="_blank" class="btn-outline"><i data-lucide="link"></i> Ref 1</a>
+                                <a href="${p['Client Website']}" target="_blank" class="btn-outline"><i data-lucide="globe"></i> Web</a>
                             </div>
 
-                            <span class="section-label">Communication Feed</span>
-                            <div class="data-box">
-                                ${pMessages.map(msg => `<div class="data-item"><small>${msg['Timestamp']}</small><br>${msg['Message Text']}</div>`).join('') || '<div class="data-item">No messages yet.</div>'}
-                            </div>
+                            <a href="${p['Delivery Link']}" target="_blank" class="delivery-link">
+                                <i data-lucide="external-link"></i> Final Delivery Link
+                            </a>
 
-                            <div style="margin-top:20px; display:flex; gap:10px;">
-                                <button onclick="requestRevision('${pId}')" style="flex:1; background:rgba(255,255,255,0.05); border:1px solid #333; color:white; padding:10px; border-radius:10px; cursor:pointer; font-size:0.8rem;">Request Revision</button>
-                                <button onclick="sendMessage('${pId}')" style="flex:1; background:rgba(255,255,255,0.05); border:1px solid #333; color:white; padding:10px; border-radius:10px; cursor:pointer; font-size:0.8rem;">Chat with Naimur</button>
+                            <div style="margin-top:20px; font-size:0.85rem; color:#94a3b8; border-top:1px solid var(--border); padding-top:15px;">
+                                <b>Priority:</b> <span style="color:${p['Priority'] === 'High' ? '#ef4444' : '#3b82f6'}">${p['Priority'] || 'Normal'}</span><br>
+                                <p style="margin-top:10px;"><b>Notes:</b> ${p['Notes'] || 'None'}</p>
                             </div>
                         </div>
                     `;
                 });
                 lucide.createIcons();
-            } catch (e) { console.error("Error loading dashboard:", e); }
+            } catch (e) { console.error(e); }
+        }
+
+        async function addNewProject() {
+            const { value: f } = await Swal.fire({
+                title: 'Start New Project',
+                background: '#111', color: '#fff',
+                width: '600px',
+                html: `
+                    <input id="n-name" class="swal2-input swal-input-dark" placeholder="Project Name">
+                    <input id="n-footage" class="swal2-input swal-input-dark" placeholder="Footage Drive Link">
+                    <input id="n-script" class="swal2-input swal-input-dark" placeholder="Script Link">
+                    <input id="n-ref1" class="swal2-input swal-input-dark" placeholder="Reference Link 1">
+                    <input id="n-web" class="swal2-input swal-input-dark" placeholder="Your Website">
+                    <input id="n-date" type="date" class="swal2-input swal-input-dark">
+                    <textarea id="n-notes" class="swal2-textarea swal-input-dark" placeholder="Any specific notes?"></textarea>
+                `,
+                preConfirm: () => {
+                    return {
+                        "Project Name": document.getElementById('n-name').value,
+                        "Footage Link": document.getElementById('n-footage').value,
+                        "Script Link": document.getElementById('n-script').value,
+                        "Reference Link-1": document.getElementById('n-ref1').value,
+                        "Client Website": document.getElementById('n-web').value,
+                        "Deadline": document.getElementById('n-date').value,
+                        "Notes": document.getElementById('n-notes').value
+                    }
+                }
+            });
+
+            if (f) {
+                Swal.fire({ title: 'Syncing...', didOpen: () => Swal.showLoading() });
+                f["Client Email"] = email;
+                f["Project ID"] = "PRJ-" + Math.floor(1000 + Math.random() * 9000);
+                f["Status"] = "Pending";
+                f["Priority"] = "Normal";
+                f["Payment Status"] = "Unpaid";
+                
+                // এখানেও শিট সিলেক্ট করার জন্য লিঙ্কটি ডাইনামিকালি ব্যবহার হচ্ছে
+                await fetch(`${API_URL}?sheet=Projects`, {
+                    method: 'POST',
+                    body: JSON.stringify(f)
+                });
+                
+                Swal.fire('Success', 'Project added to your workspace!', 'success');
+                fetchWorkspace();
+            }
         }
 
         function logout() { localStorage.clear(); window.location.href = 'index.html'; }
-        initDashboard();
+        document.getElementById('u-pic').src = localStorage.getItem('clientPic');
+        fetchWorkspace();
     </script>
 </body>
 </html>
