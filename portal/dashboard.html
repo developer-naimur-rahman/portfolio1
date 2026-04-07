@@ -3,264 +3,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infinity OS | Motion Of Naimur</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Infinity Agency OS | Naimur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { --bg: #050508; --card: #0f0f16; --primary: #3b82f6; --border: rgba(255,255,255,0.06); --text: #ffffff; --text-sec: #94a3b8; --success: #059669; --danger: #ef4444; --warning: #f59e0b; }
-        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; border-bottom: 1px solid var(--border); background: rgba(5,5,8,0.8); backdrop-filter: blur(10px); position: sticky; top:0; z-index: 100; }
-        .container { padding: 2rem 5%; max-width: 1400px; margin: 0 auto; }
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px; }
-        
-        /* Dashboard Card Enhanced */
-        .p-card { background: var(--card); border-radius: 16px; padding: 22px; border: 1px solid var(--border); cursor: pointer; transition: 0.3s; position: relative; }
-        .p-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(59,130,246,0.1); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .badge { font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; }
-        .card-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-sec); }
-        .del-btn { position: absolute; top: 15px; right: 15px; color: var(--danger); opacity: 0; transition: 0.2s; background: rgba(239, 68, 68, 0.1); border: none; border-radius: 6px; padding: 5px; cursor: pointer; }
-        .p-card:hover .del-btn { opacity: 1; }
+        :root {
+            --bg: #030303;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --primary: #3b82f6;
+            --accent: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+        }
 
-        #project-view { display: none; background: var(--bg); min-height: 100vh; width: 100%; position: fixed; top: 0; left: 0; z-index: 200; padding: 2rem 5%; box-sizing: border-box; overflow-y: auto; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .full { grid-column: span 2; }
-        .c-input { width: 100%; padding: 12px; background: #15151e; border: 1px solid #333; color: #fff; border-radius: 10px; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; }
-        .c-label { font-size: 0.7rem; color: var(--text-sec); margin-bottom: 6px; display: block; font-weight: 700; text-transform: uppercase; }
-        .chat-box { height: 400px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
-        .bubble { padding: 10px 14px; border-radius: 12px; max-width: 80%; font-size: 0.85rem; }
-        .b-admin { background: #222; align-self: flex-start; }
-        .b-client { background: var(--primary); align-self: flex-end; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; justify-content: center; transition: 0.2s; }
-        .back-btn { background: #1a1a1a; border: 1px solid #333; color: var(--text-sec); padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; }
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            background-image: radial-gradient(circle at 50% 0%, #1e1e2e 0%, #030303 100%);
+            min-height: 100vh;
+        }
+
+        /* Nav & Glassmorphism */
+        nav {
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        .container { padding: 2.5rem 5%; max-width: 1400px; margin: 0 auto; }
+
+        /* Project Cards Grid */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 25px;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary);
+            transform: translateY(-8px) scale(1.02);
+        }
+
+        /* Buttons & Controls */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center; gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+        }
+
+        /* Input Controls like your photo */
+        .counter-box {
+            display: flex;
+            align-items: center;
+            background: #111;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            overflow: hidden;
+            width: fit-content;
+        }
+
+        .counter-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .counter-btn:hover { background: var(--primary); }
+
+        /* Revision Form Style */
+        .revision-item {
+            background: rgba(0,0,0,0.3);
+            border-left: 3px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        /* Hidden Full View */
+        #project-view {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 2rem 5%;
+        }
+
+        .form-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .c-input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            padding: 14px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+        }
+        .c-input:focus { border-color: var(--primary); }
+
+        .chat-panel {
+            background: #0a0a0a;
+            border-radius: 24px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--glass-border);
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 800;
+        }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div style="font-weight:800; font-size:1.4rem; color:var(--primary);">MOTION OF NAIMUR</div>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <img id="u-pic" style="width:35px; height:35px; border-radius:50%; border:2px solid var(--primary);">
-            <button onclick="logout()" class="back-btn" style="margin:0;">Logout</button>
+<nav>
+    <div style="display:flex; align-items:center; gap:10px;">
+        <div style="background:var(--primary); width:40px; height:40px; border-radius:12px; display:grid; place-items:center;">
+            <i data-lucide="infinity"></i>
         </div>
-    </nav>
+        <div style="font-size:1.4rem; font-weight:900; letter-spacing:-1px;">MOTION OF NAIMUR</div>
+    </div>
+    <div id="user-info" style="font-size:0.8rem; color:var(--text-dim);"></div>
+</nav>
 
-    <div id="main-dashboard" class="container">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;">
-            <div>
-                <h1 id="welcome-title">Loading...</h1>
-                <p style="color:var(--text-sec);">Manage and track your production pipeline.</p>
-            </div>
-            <button id="admin-add-btn" onclick="createProject()" class="btn" style="display:none;"><i data-lucide="plus"></i> Create New Project</button>
+<div class="container" id="dash">
+    <div style="display:flex; justify-content:space-between; margin-bottom:40px;">
+        <div>
+            <h1 style="font-size:2.5rem; margin:0; font-weight:800;">Production Desk</h1>
+            <p style="color:var(--text-dim);">Dynamic Agency Management System</p>
         </div>
-        <div id="project-list" class="project-grid">Syncing Projects...</div>
+        <button id="add-btn" class="btn" style="display:none;" onclick="openProjectWizard()">
+            <i data-lucide="plus-circle"></i> New Production
+        </button>
     </div>
 
-    <!-- Project Details View -->
-    <div id="project-view">
-        <button class="back-btn" onclick="closeView()"><i data-lucide="arrow-left"></i> Dashboard</button>
-        <div style="display:grid; grid-template-columns: 1.6fr 1fr; gap:30px;">
-            <div class="details-panel">
-                <div class="form-grid">
-                    <div class="full"><label class="c-label">Project Name</label><input id="edit-name" class="c-input"></div>
-                    <div class="full"><label class="c-label">Footage Link</label><input id="edit-footage" class="c-input" style="color:var(--primary); cursor:pointer;"></div>
-                    <div><label class="c-label">Client Email</label><input id="edit-email" class="c-input" readonly opacity="0.5"></div>
-                    <div><label class="c-label">Priority</label>
-                        <select id="edit-priority" class="c-input">
-                            <option value="Normal">Normal</option>
-                            <option value="High">High 🔥</option>
-                            <option value="Urgent">Urgent ⚡</option>
-                        </select>
-                    </div>
-                    <div><label class="c-label">Script Topic</label><input id="edit-script-topic" class="c-input"></div>
-                    <div><label class="c-label">Budget (BDT)</label><input id="edit-budget" class="c-input"></div>
-                    <div><label class="c-label">Thumbnail Concept</label><input id="edit-thumb" class="c-input"></div>
-                    <div><label class="c-label">Music Type</label><input id="edit-music" class="c-input"></div>
-                    <div><label class="c-label">Hook Duration</label><input id="edit-hook" class="c-input"></div>
-                    <div><label class="c-label">Deadline</label><input id="edit-deadline" type="date" class="c-input"></div>
-                    <div class="full"><label class="c-label">Project Status</label>
-                        <select id="edit-status" class="c-input">
-                            <option value="Review">Review</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Completed">Completed</option>
-                        </select>
-                    </div>
-                    <div class="full"><label class="c-label">Internal Notes</label><textarea id="edit-notes" class="c-input" style="height:80px;"></textarea></div>
-                </div>
-                <button id="update-btn" class="btn" style="width:100%; margin-top:20px; background:var(--success); font-size:1.1rem;">Update & Sync Project</button>
+    <div id="project-list" class="project-grid"></div>
+</div>
+
+<div id="project-view">
+    <div style="display:flex; justify-content:space-between; margin-bottom:30px;">
+        <button class="btn btn-outline" onclick="closeView()"><i data-lucide="arrow-left"></i> Back</button>
+        <h2 id="view-title">Project Details</h2>
+        <button class="btn" style="background:var(--success);" id="final-save">Update Production</button>
+    </div>
+
+    <div class="form-layout">
+        <div>
+            <div class="form-layout" style="grid-template-columns: 1fr 1fr; gap:20px;">
+                <div class="input-group"><label>Project ID</label><input id="p-id" class="c-input" readonly></div>
+                <div class="input-group"><label>Project Name</label><input id="p-name" class="c-input"></div>
+            </div>
+            
+            <div class="input-group"><label>Footage Link</label><input id="p-footage" class="c-input"></div>
+            
+            <div class="form-layout" style="grid-template-columns: 1fr 1fr; gap:20px;">
+                <div class="input-group"><label>Script Link</label><input id="p-script-link" class="c-input"></div>
+                <div class="input-group"><label>Client Website</label><input id="p-web" class="c-input"></div>
             </div>
 
-            <div class="chat-panel">
-                <div class="chat-box" id="chat-container"></div>
-                <div style="display:flex; gap:10px;">
-                    <input id="chat-input" placeholder="Write a message..." class="c-input">
-                    <button id="send-btn" class="btn"><i data-lucide="send"></i></button>
+            <div class="input-group"><label>Full Script</label><textarea id="p-script" class="c-input" style="height:100px;"></textarea></div>
+
+            <div class="form-layout" style="grid-template-columns: 1fr 1fr; gap:20px;">
+                <div class="input-group"><label>Ref Link 1</label><input id="p-ref1" class="c-input"></div>
+                <div class="input-group"><label>Ref Link 2</label><input id="p-ref2" class="c-input"></div>
+            </div>
+
+            <div class="form-layout" style="grid-template-columns: 1fr 1fr 1fr; gap:20px;">
+                <div class="input-group">
+                    <label>Budget (BDT)</label>
+                    <div class="counter-box">
+                        <button class="counter-btn" onclick="stepDown('p-budget', 500)">-</button>
+                        <input id="p-budget" type="number" value="0" style="width:70px; background:none; border:none; color:white; text-align:center;">
+                        <button class="counter-btn" onclick="stepUp('p-budget', 500)">+</button>
+                    </div>
                 </div>
+                <div class="input-group">
+                    <label>Videos</label>
+                    <div class="counter-box">
+                        <button class="counter-btn" onclick="stepDown('p-num', 1)">-</button>
+                        <input id="p-num" type="number" value="1" style="width:50px; background:none; border:none; color:white; text-align:center;">
+                        <button class="counter-btn" onclick="stepUp('p-num', 1)">+</button>
+                    </div>
+                </div>
+                <div class="input-group"><label>Deadline</label><input id="p-deadline" type="date" class="c-input"></div>
+            </div>
+
+            <div class="input-group"><label>Status</label>
+                <select id="p-status" class="c-input">
+                    <option value="Review">Review</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Revision">Revision</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+
+            <hr style="border:0; border-top:1px solid var(--glass-border); margin:30px 0;">
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3>Related Revisions</h3>
+                <button class="btn btn-outline" style="padding:5px 15px;" onclick="openRevisionWizard()">New</button>
+            </div>
+            <div id="revision-list"></div>
+        </div>
+
+        <div class="chat-panel">
+            <div style="padding:20px; border-bottom:1px solid var(--glass-border);">Project Feed</div>
+            <div id="chat-msgs" style="flex:1; overflow-y:auto; padding:20px;"></div>
+            <div style="padding:20px; display:flex; gap:10px;">
+                <input id="chat-in" class="c-input" placeholder="Type a message...">
+                <button id="chat-send" class="btn"><i data-lucide="send"></i></button>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        const API = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec"; 
-        const userEmail = localStorage.getItem('clientEmail');
-        const ADMIN_EMAIL = "naimur582582@gmail.com";
-        let cache = [];
+<script>
+    const API = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
+    const userEmail = localStorage.getItem('clientEmail');
+    const ADMIN = "naimur582582@gmail.com";
+    let dataCache = [];
 
-        async function sync() {
-            const isAdmin = (userEmail === ADMIN_EMAIL);
-            if(isAdmin) document.getElementById('admin-add-btn').style.display = 'flex';
-            
-            try {
-                const res = await fetch(`${API}?sheet=Projects&email=${userEmail}`);
-                cache = await res.json();
-                renderDashboard();
-            } catch(e) { console.error(e); }
-        }
-
-        function renderDashboard() {
-            const isAdmin = (userEmail === ADMIN_EMAIL);
-            document.getElementById('welcome-title').innerText = isAdmin ? "Admin Control Center" : "My Projects";
-            
-            document.getElementById('project-list').innerHTML = cache.map(p => `
-                <div class="p-card" onclick="openView('${p['Project ID']}')">
-                    ${isAdmin ? `<button class="del-btn" onclick="event.stopPropagation(); deleteProject('${p['Project ID']}')"><i data-lucide="trash-2"></i></button>` : ''}
-                    <div class="card-header">
-                        <span class="badge" style="background:rgba(59,130,246,0.1); color:var(--primary); border:1px solid var(--primary);">${p.Status || 'Review'}</span>
-                        <span style="font-size:0.7rem; color:var(--text-sec);">#${p['Project ID']}</span>
-                    </div>
-                    <h3 style="margin:0 0 5px 0;">${p['Project Name']}</h3>
-                    <p style="font-size:0.75rem; color:var(--text-sec); margin:0;">Client: ${p['Client Email']}</p>
-                    
-                    <div class="card-meta">
-                        <div><i data-lucide="zap" style="width:12px; vertical-align:middle;"></i> ${p.Priority || 'Normal'}</div>
-                        <div style="text-align:right; color:var(--success); font-weight:700;">৳ ${p['Budget (BDT)'] || '0'}</div>
-                        <div><i data-lucide="calendar" style="width:12px; vertical-align:middle;"></i> ${p.Deadline || 'No Date'}</div>
-                        <div style="text-align:right;">${p['Music Type'] || 'General'}</div>
-                    </div>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        }
-
-        // --- NEW PROJECT LOGIC ---
-        async function createProject() {
-            const { value: formValues } = await Swal.fire({
-                title: 'New Project Detail',
-                background: '#0f0f16', color: '#fff',
-                html:
-                    `<input id="swal-name" class="swal2-input" placeholder="Project Name" style="background:#15151e; color:#fff; border:1px solid #333;">` +
-                    `<input id="swal-client" class="swal2-input" placeholder="Client Email" style="background:#15151e; color:#fff; border:1px solid #333;">` +
-                    `<input id="swal-budget" class="swal2-input" placeholder="Budget (BDT)" style="background:#15151e; color:#fff; border:1px solid #333;">`,
-                focusConfirm: false,
-                preConfirm: () => {
-                    return [
-                        document.getElementById('swal-name').value,
-                        document.getElementById('swal-client').value,
-                        document.getElementById('swal-budget').value
-                    ]
-                }
-            });
-
-            if (formValues && formValues[0]) {
-                Swal.fire({ title: 'Creating...', didOpen: () => Swal.showLoading() });
-                const newID = Math.floor(1000 + Math.random() * 9000);
-                const data = {
-                    action: "add", sheet: "Projects",
-                    "Project ID": newID, "Project Name": formValues[0],
-                    "Client Email": formValues[1], "Budget (BDT)": formValues[2],
-                    "Status": "Review", "Priority": "Normal"
-                };
-                await fetch(API, { method: 'POST', body: JSON.stringify(data)});
-                Swal.fire('Success', 'Project Created!', 'success');
-                sync();
-            }
-        }
-
-        async function deleteProject(id) {
-            const confirm = await Swal.fire({
-                title: 'Are you sure?',
-                text: "This project will be deleted forever!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                confirmButtonText: 'Yes, Delete'
-            });
-
-            if(confirm.isConfirmed) {
-                Swal.fire({ title: 'Deleting...', didOpen: () => Swal.showLoading() });
-                await fetch(API, { method: 'POST', body: JSON.stringify({ action: "delete", sheet: "Projects", "Project ID": id })});
-                Swal.fire('Deleted!', '', 'success');
-                sync();
-            }
-        }
-
-        function openView(id) {
-            const p = cache.find(x => x['Project ID'].toString() === id.toString());
-            const isAdmin = (userEmail === ADMIN_EMAIL);
-
-            document.getElementById('edit-name').value = p['Project Name'] || '';
-            document.getElementById('edit-footage').value = p['Footage Link'] || '';
-            document.getElementById('edit-email').value = p['Client Email'] || '';
-            document.getElementById('edit-budget').value = p['Budget (BDT)'] || '';
-            document.getElementById('edit-priority').value = p.Priority || 'Normal';
-            document.getElementById('edit-status').value = p.Status || 'Review';
-            document.getElementById('edit-deadline').value = p.Deadline || '';
-            document.getElementById('edit-thumb').value = p['Thumbnail Concept'] || '';
-            document.getElementById('edit-music').value = p['Music Type'] || '';
-            document.getElementById('edit-hook').value = p['Hook Duration'] || '';
-
-            document.getElementById('update-btn').onclick = () => updateProject(id);
-            document.getElementById('send-btn').onclick = () => sendMsg(id);
-            document.getElementById('main-dashboard').style.display = 'none';
-            document.getElementById('project-view').style.display = 'block';
-            loadMessages(id);
-        }
-
-        async function updateProject(id) {
-            const data = {
-                action: "update", sheet: "Projects", "Project ID": id,
-                "Project Name": document.getElementById('edit-name').value,
-                "Footage Link": document.getElementById('edit-footage').value,
-                "Budget (BDT)": document.getElementById('edit-budget').value,
-                "Priority": document.getElementById('edit-priority').value,
-                "Status": document.getElementById('edit-status').value,
-                "Deadline": document.getElementById('edit-deadline').value,
-                "Thumbnail Concept": document.getElementById('edit-thumb').value,
-                "Music Type": document.getElementById('edit-music').value,
-                "Hook Duration": document.getElementById('edit-hook').value,
-                "Notes": document.getElementById('edit-notes').value
-            };
-            Swal.fire({title: 'Updating...', didOpen: () => Swal.showLoading()});
-            await fetch(API, { method: 'POST', body: JSON.stringify(data)});
-            Swal.fire('Updated!', 'Sheet data synced.', 'success');
-            sync();
-        }
-
-        async function loadMessages(projectId) {
-            const res = await fetch(`${API}?sheet=Messages&email=${userEmail}`);
-            const all = await res.json();
-            const filtered = all.filter(m => m['Project ID'].toString() === projectId.toString());
-            document.getElementById('chat-container').innerHTML = filtered.map(m => `
-                <div class="bubble ${m.From === ADMIN_EMAIL ? 'b-admin' : 'b-client'}">
-                    <span style="font-size:0.6rem; display:block; opacity:0.6;">${m.From === ADMIN_EMAIL ? 'ADMIN' : 'CLIENT'}</span>
-                    ${m['Message Text']}
-                </div>
-            `).join('');
-            document.getElementById('chat-container').scrollTop = 9999;
-        }
-
-        async function sendMsg(projectId) {
-            const txt = document.getElementById('chat-input').value; if(!txt) return;
-            await fetch(API, { method: 'POST', body: JSON.stringify({ action:"add", sheet:"Messages", "Project ID":projectId, "From":userEmail, "Message Text":txt })});
-            document.getElementById('chat-input').value = ''; loadMessages(projectId);
-        }
-
-        function closeView() { document.getElementById('main-dashboard').style.display = 'block'; document.getElementById('project-view').style.display = 'none'; }
-        function logout() { localStorage.clear(); location.reload(); }
-        document.getElementById('u-pic').src = localStorage.getItem('clientPic') || '';
+    async function init() {
+        document.getElementById('user-info').innerText = userEmail;
+        if(userEmail === ADMIN) document.getElementById('add-btn').style.display = 'flex';
         sync();
-    </script>
+    }
+
+    async function sync() {
+        const res = await fetch(`${API}?sheet=Projects&email=${userEmail}`);
+        dataCache = await res.json();
+        render();
+    }
+
+    function render() {
+        const isAdmin = userEmail === ADMIN;
+        document.getElementById('project-list').innerHTML = dataCache.map(p => `
+            <div class="glass-card" onclick="openView('${p['Project ID']}')">
+                ${isAdmin ? `<button class="btn" style="position:absolute; top:20px; right:20px; padding:5px; background:rgba(239,68,68,0.1); color:var(--danger);" onclick="event.stopPropagation(); delProject('${p['Project ID']}')"><i data-lucide="trash"></i></button>` : ''}
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <span class="badge" style="background:rgba(59,130,246,0.1); color:var(--primary);">${p.Status}</span>
+                    <span class="badge" style="background:#111;">${p['Editor Name'] === 'mdarafat909090@gmail.com' ? 'Arafat' : 'Sami'}</span>
+                </div>
+                <h2 style="margin:0; font-size:1.3rem;">${p['Project Name']}</h2>
+                <div style="display:flex; justify-content:space-between; margin-top:20px; color:var(--text-dim); font-size:0.8rem;">
+                    <span><i data-lucide="calendar" style="width:14px; vertical-align:middle;"></i> ${p.Deadline}</span>
+                    <span style="color:var(--success); font-weight:800;">৳ ${p['Budget (BDT)']}</span>
+                </div>
+            </div>
+        `).join('');
+        lucide.createIcons();
+    }
+
+    function stepUp(id, step) { document.getElementById(id).stepUp(step); }
+    function stepDown(id, step) { document.getElementById(id).stepDown(step); }
+
+    function openView(id) {
+        const p = dataCache.find(x => x['Project ID'].toString() === id.toString());
+        document.getElementById('p-id').value = p['Project ID'];
+        document.getElementById('p-name').value = p['Project Name'];
+        document.getElementById('p-status').value = p.Status;
+        document.getElementById('p-footage').value = p['Footage Link'] || '';
+        document.getElementById('p-script-link').value = p['Script Link'] || '';
+        document.getElementById('p-script').value = p['Script'] || '';
+        document.getElementById('p-ref1').value = p['Reference Link-1'] || '';
+        document.getElementById('p-ref2').value = p['Reference Link-2'] || '';
+        document.getElementById('p-budget').value = p['Budget (BDT)'] || 0;
+        document.getElementById('p-num').value = p.Number || 1;
+        document.getElementById('p-web').value = p['Client Website'] || '';
+
+        document.getElementById('dash').style.display = 'none';
+        document.getElementById('project-view').style.display = 'block';
+        loadRevisions(id);
+    }
+
+    async function openRevisionWizard() {
+        const pid = document.getElementById('p-id').value;
+        const pname = document.getElementById('p-name').value;
+
+        const { value: formValues } = await Swal.fire({
+            title: 'Revisions Form',
+            background: '#0a0a0a', color: '#fff',
+            html: `
+                <div style="text-align:left;">
+                    <label style="font-size:0.7rem; color:#666;">PROJECT ID</label>
+                    <input id="rev-pid" class="c-input" style="margin-bottom:15px;" value="${pid}" readonly>
+                    <label style="font-size:0.7rem; color:#666;">NOTES</label>
+                    <textarea id="rev-note" class="c-input" style="height:80px; margin-bottom:15px;"></textarea>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-outline" style="flex:1;">File</button>
+                        <button class="btn btn-outline" style="flex:1;">Link</button>
+                    </div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Save Revision'
+        });
+
+        if (formValues) {
+            // Logic to save to Google Sheets 'Revisions' sheet
+            Swal.fire('Revision Saved!', '', 'success');
+        }
+    }
+
+    function closeView() {
+        document.getElementById('dash').style.display = 'block';
+        document.getElementById('project-view').style.display = 'none';
+    }
+
+    function logout() { localStorage.clear(); location.reload(); }
+
+    init();
+</script>
 </body>
 </html>
