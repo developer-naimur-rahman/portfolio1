@@ -70,72 +70,20 @@
         <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:30px;">
             <div id="sec-det">
                 <div class="form-grid">
-                    <div class="full">
-                        <label class="c-label">Project Name</label>
-                        <input id="edit-name" class="c-input">
-                    </div>
-                    <div class="full">
-                        <label class="c-label">Footage Link (Click to open)</label>
-                        <input id="edit-footage" class="c-input" style="color:var(--primary); text-decoration:underline; cursor:pointer;" onclick="if(this.value) window.open(this.value)">
-                    </div>
-                    <div>
-                        <label class="c-label">Script Topic</label>
-                        <input id="edit-script-topic" class="c-input">
-                    </div>
-                    <div>
-                        <label class="c-label">Script Link</label>
-                        <input id="edit-script-link" class="c-input" onclick="if(this.value) window.open(this.value)">
-                    </div>
-                    
-                    <div>
-                        <label class="c-label">Thumbnail Concept</label>
-                        <input id="edit-thumb" class="c-input" placeholder="e.g. Minimalist/Clickbaity">
-                    </div>
-                    <div>
-                        <label class="c-label">Music Type</label>
-                        <input id="edit-music" class="c-input" placeholder="e.g. Cinematic/Lo-fi">
-                    </div>
-                    <div>
-                        <label class="c-label">Hook Duration (Sec)</label>
-                        <input id="edit-hook" class="c-input" placeholder="e.g. First 5-10 seconds">
-                    </div>
-                    <div>
-                        <label class="c-label">Deadline</label>
-                        <input id="edit-deadline" type="date" class="c-input">
-                    </div>
-
-                    <div class="full">
-                        <label class="c-label">Reference Links (1 & 2)</label>
-                        <div style="display:flex; gap:10px;">
-                            <input id="edit-ref1" class="c-input" placeholder="Link 1">
-                            <input id="edit-ref2" class="c-input" placeholder="Link 2">
-                        </div>
-                    </div>
-
-                    <div class="full">
-                        <label class="c-label">Project Status</label>
-                        <select id="edit-status" class="c-input">
-                            <option value="Review">Review</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Completed">Completed</option>
-                        </select>
-                    </div>
-
-                    <div class="full">
-                        <label class="c-label">Delivery Link</label>
-                        <input id="edit-delivery" class="c-input" placeholder="Final video link">
-                    </div>
-
-                    <div class="full">
-                        <label class="c-label">Internal Notes</label>
-                        <textarea id="edit-notes" class="c-input" style="height:80px;"></textarea>
-                    </div>
+                    <div class="full"><label class="c-label">Project Name</label><input id="edit-name" class="c-input"></div>
+                    <div class="full"><label class="c-label">Footage Link (Click to open)</label><input id="edit-footage" class="c-input" style="color:var(--primary); text-decoration:underline; cursor:pointer;" onclick="if(this.value) window.open(this.value)"></div>
+                    <div><label class="c-label">Script Topic</label><input id="edit-script-topic" class="c-input"></div>
+                    <div><label class="c-label">Script Link</label><input id="edit-script-link" class="c-input" onclick="if(this.value) window.open(this.value)"></div>
+                    <div><label class="c-label">Thumbnail Concept</label><input id="edit-thumb" class="c-input"></div>
+                    <div><label class="c-label">Music Type</label><input id="edit-music" class="c-input"></div>
+                    <div><label class="c-label">Hook Duration (Sec)</label><input id="edit-hook" class="c-input"></div>
+                    <div><label class="c-label">Deadline</label><input id="edit-deadline" type="date" class="c-input"></div>
+                    <div class="full"><label class="c-label">Reference Links (1 & 2)</label><div style="display:flex; gap:10px;"><input id="edit-ref1" class="c-input" placeholder="Link 1"><input id="edit-ref2" class="c-input" placeholder="Link 2"></div></div>
+                    <div class="full"><label class="c-label">Project Status</label><select id="edit-status" class="c-input"><option value="Review">Review</option><option value="In Progress">In Progress</option><option value="Delivered">Delivered</option><option value="Completed">Completed</option></select></div>
+                    <div class="full"><label class="c-label">Delivery Link</label><input id="edit-delivery" class="c-input" placeholder="Final video link"></div>
+                    <div class="full"><label class="c-label">Internal Notes</label><textarea id="edit-notes" class="c-input" style="height:80px;"></textarea></div>
                 </div>
-
-                <button id="update-btn" class="btn" style="width:100%; margin-top:20px; background:var(--success);">
-                    <i data-lucide="save"></i> Update & Sync Project
-                </button>
+                <button id="update-btn" class="btn" style="width:100%; margin-top:20px; background:var(--success);"><i data-lucide="save"></i> Update & Sync Project</button>
             </div>
 
             <div id="sec-msg">
@@ -166,7 +114,6 @@
             const isAdmin = (userEmail === ADMIN_EMAIL);
             document.getElementById('welcome-title').innerText = isAdmin ? "Admin OS" : "Client Workspace";
             if(!cache.length) { document.getElementById('project-list').innerHTML = "<p>No active projects.</p>"; return; }
-            
             document.getElementById('project-list').innerHTML = cache.map(p => `
                 <div class="p-card" onclick="openView('${p['Project ID']}')">
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
@@ -188,7 +135,7 @@
             document.getElementById('v-id').innerText = `ID: #${p['Project ID']}`;
             document.getElementById('v-status').innerText = p.Status;
 
-            // Mapping Data to Inputs
+            // Mapping Inputs
             document.getElementById('edit-name').value = p['Project Name'] || '';
             document.getElementById('edit-footage').value = p['Footage Link'] || '';
             document.getElementById('edit-script-topic').value = p.Script || '';
@@ -197,12 +144,8 @@
             document.getElementById('edit-status').value = p.Status || 'Review';
             document.getElementById('edit-delivery').value = p['Delivery Link'] || '';
             document.getElementById('edit-notes').value = p.Notes || '';
-            
-            // Reference Links
             document.getElementById('edit-ref1').value = p['Reference Link-1'] || '';
             document.getElementById('edit-ref2').value = p['Reference Link-2'] || '';
-
-            // Dynamic Fields (Mapping based on your extra headers)
             document.getElementById('edit-thumb').value = p['Thumbnail Concept'] || '';
             document.getElementById('edit-music').value = p['Music Type'] || '';
             document.getElementById('edit-hook').value = p['Hook Duration'] || '';
@@ -212,14 +155,14 @@
 
             document.getElementById('main-dashboard').style.display = 'none';
             document.getElementById('project-view').style.display = 'block';
+            
+            // 🔥 শুধুমাত্র এই ID-র মেসেজ লোড হবে
             loadMessages(id);
         }
 
         async function updateProject(id) {
             const data = {
-                action: "update",
-                sheet: "Projects",
-                "Project ID": id,
+                action: "update", sheet: "Projects", "Project ID": id,
                 "Project Name": document.getElementById('edit-name').value,
                 "Footage Link": document.getElementById('edit-footage').value,
                 "Script": document.getElementById('edit-script-topic').value,
@@ -234,35 +177,45 @@
                 "Music Type": document.getElementById('edit-music').value,
                 "Hook Duration": document.getElementById('edit-hook').value
             };
-
             Swal.fire({title: 'Updating...', didOpen: () => Swal.showLoading()});
             await fetch(API, { method: 'POST', body: JSON.stringify(data)});
-            Swal.fire('Success', 'Data synced with Google Sheets!', 'success');
+            Swal.fire('Success', 'Project updated!', 'success');
             sync();
         }
 
-        async function loadMessages(id) {
-            const res = await fetch(`${API}?sheet=Messages&email=${userEmail}`);
-            const all = await res.json();
-            const msgs = all.filter(m => m['Project ID'].toString() === id.toString());
-            document.getElementById('chat-container').innerHTML = msgs.map(m => `
-                <div class="bubble ${m.From === userEmail ? 'b-client' : 'b-admin'}">
-                    <div style="font-size:0.6rem; font-weight:800; opacity:0.7;">${m.From === ADMIN_EMAIL ? 'ADMIN' : 'CLIENT'}</div>
-                    ${m['Message Text']}
-                </div>
-            `).join('');
+        async function loadMessages(projectId) {
+            const container = document.getElementById('chat-container');
+            container.innerHTML = "<p style='text-align:center; opacity:0.5;'>Loading chat...</p>";
+            
+            try {
+                const res = await fetch(`${API}?sheet=Messages&email=${userEmail}`);
+                const all = await res.json();
+                
+                // 🔥 ফিল্টার: শুধুমাত্র বর্তমান প্রজেক্টের মেসেজগুলো দেখাবে
+                const msgs = all.filter(m => m['Project ID'].toString() === projectId.toString());
+                
+                container.innerHTML = msgs.map(m => `
+                    <div class="bubble ${m.From === userEmail ? 'b-client' : 'b-admin'}">
+                        <div style="font-size:0.6rem; font-weight:800; opacity:0.7;">${m.From === ADMIN_EMAIL ? 'ADMIN' : 'CLIENT'}</div>
+                        ${m['Message Text']}
+                    </div>
+                `).join('') || "<p style='text-align:center; opacity:0.5;'>No messages for this project.</p>";
+                container.scrollTop = container.scrollHeight;
+            } catch(e) { container.innerHTML = "Error loading messages."; }
         }
 
         async function sendMsg(id) {
-            const text = document.getElementById('chat-input').value;
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
             if(!text) return;
+            input.value = 'Sending...';
             await fetch(API, { method: 'POST', body: JSON.stringify({ action: "add", sheet: "Messages", "Project ID": id, "From": userEmail, "Message Text": text })});
-            document.getElementById('chat-input').value = ''; loadMessages(id);
+            input.value = ''; 
+            loadMessages(id);
         }
 
         function closeView() { document.getElementById('main-dashboard').style.display = 'block'; document.getElementById('project-view').style.display = 'none'; }
         function logout() { localStorage.clear(); location.reload(); }
-        
         document.getElementById('u-pic').src = localStorage.getItem('clientPic') || '';
         sync();
     </script>
