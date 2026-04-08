@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Motion Of Naimur | Agency OS</title>
+    <!-- Google Identity Library -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -16,7 +18,6 @@
         .progress-bar { height: 6px; background: rgba(255,255,255,0.05); border-radius:3px; overflow:hidden; }
         .progress-fill { height:100%; background: linear-gradient(90deg,#00f2ff,#0066ff); transition: width 1s ease; }
         
-        /* Status Colors */
         .status-Pending { color:#f59e0b; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); }
         .status-InProgress { color:#3b82f6; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); }
         .status-Review { color:#a855f7; background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2); }
@@ -31,7 +32,6 @@
         input:focus, select:focus, textarea:focus { border-color: var(--accent); background: rgba(255,255,255,0.08); }
         label { display: block; margin-bottom: 6px; margin-left: 8px; font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Login Overlay */
         #loginOverlay { position: fixed; inset: 0; background: #05060b; z-index: 9999; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
@@ -42,17 +42,20 @@
     <div class="glass p-10 rounded-[40px] w-full max-w-md text-center shadow-2xl border-cyan-500/20">
         <div class="w-16 h-16 bg-cyan-500 rounded-2xl flex items-center justify-center font-bold text-black italic text-3xl mx-auto mb-6 shadow-[0_0_30px_rgba(6,182,212,0.4)]">M</div>
         <h2 class="text-2xl font-black italic text-white uppercase tracking-tighter mb-2">Studio Access</h2>
-        <p class="text-slate-500 text-sm mb-8 italic">Enter Master PIN to continue</p>
+        <p class="text-slate-500 text-sm mb-8 italic">Sign in with Google to manage production</p>
         
-        <div class="space-y-4">
-            <input type="password" id="masterPin" placeholder="••••" class="text-center text-2xl tracking-[10px] py-4 bg-white/5 border-white/10 rounded-2xl focus:border-cyan-500 transition-all">
-            <button onclick="attemptLogin()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-black py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-cyan-500/20 transition-all active:scale-95">Verify Identity</button>
+        <div class="flex justify-center">
+            <div id="g_id_onload"
+                 data-client_id="3BB867750902-263hniv7d8v31m3l5pkphokg0scb9tos.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
         </div>
-        <p id="loginError" class="text-red-500 text-[10px] mt-4 font-bold uppercase hidden">Access Denied: Invalid PIN</p>
+        <p id="loginError" class="text-red-500 text-[10px] mt-4 font-bold uppercase hidden">Unauthorized Access</p>
     </div>
 </div>
 
-<!-- SIDEBAR -->
 <aside class="w-72 glass border-r border-white/5 p-8 flex flex-col fixed h-full z-50">
     <div class="mb-12">
         <div class="flex items-center gap-3 mb-2">
@@ -68,13 +71,12 @@
     </nav>
     <div class="pt-8 border-t border-white/5 space-y-4">
         <div class="flex items-center gap-3 p-2">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg text-lg">N</div>
+            <div id="userAvatar" class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center font-bold text-white shadow-lg overflow-hidden">N</div>
             <div class="overflow-hidden">
-                <p class="font-bold text-white text-sm truncate">Naimur Rahman</p>
+                <p id="userNameDisplay" class="font-bold text-white text-sm truncate">Naimur Rahman</p>
                 <p class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Agency Owner</p>
             </div>
         </div>
-        <!-- LOGOUT BUTTON -->
         <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 p-3 rounded-xl border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
             <i data-lucide="log-out" size="14"></i> Sign Out
         </button>
@@ -227,22 +229,22 @@
 <script>
     lucide.createIcons();
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
-    const STUDIO_PIN = "5825"; // আপনি এই পিনটি পরিবর্তন করতে পারেন
     let ALL_PROJECTS = [];
 
-    // --- AUTH SYSTEM ---
-    function attemptLogin() {
-        const pinInput = document.getElementById('masterPin').value;
-        const errorMsg = document.getElementById('loginError');
-        
-        if (pinInput === STUDIO_PIN) {
-            localStorage.setItem('studio_logged_in', 'true');
-            checkAuth();
-        } else {
-            errorMsg.classList.remove('hidden');
-            document.getElementById('masterPin').value = '';
-        }
+    // --- GOOGLE AUTH SYSTEM ---
+    function handleCredentialResponse(response) {
+        const payload = parseJwt(response.credential);
+        localStorage.setItem('studio_logged_in', 'true');
+        localStorage.setItem('user_name', payload.name);
+        localStorage.setItem('user_pic', payload.picture);
+        checkAuth();
     }
+
+    function parseJwt (token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        return JSON.parse(window.atob(base64));
+    };
 
     function checkAuth() {
         const isLoggedIn = localStorage.getItem('studio_logged_in');
@@ -252,6 +254,9 @@
         if (isLoggedIn === 'true') {
             overlay.style.display = 'none';
             main.style.opacity = '1';
+            document.getElementById('userNameDisplay').innerText = localStorage.getItem('user_name');
+            const pic = localStorage.getItem('user_pic');
+            if(pic) document.getElementById('userAvatar').innerHTML = `<img src="${pic}" class="w-full h-full object-cover">`;
             initDashboard();
         } else {
             overlay.style.display = 'flex';
@@ -261,12 +266,12 @@
 
     function handleLogout() {
         if(confirm("Are you sure you want to log out?")) {
-            localStorage.removeItem('studio_logged_in');
-            location.reload();
+            localStorage.clear();
+            window.location.href = "portal/index.html"; 
         }
     }
 
-    // --- DASHBOARD SYSTEM ---
+    // --- DASHBOARD FUNCTIONS ---
     function toggleModal(id, show) { 
         document.getElementById(id).style.display = show ? 'flex' : 'none'; 
         if(id === 'pModal' && show) generateTempID();
@@ -317,7 +322,7 @@
                         <span class="flex items-center gap-1"><i data-lucide="calendar" size="12"></i> ${deadline}</span>
                     </div>
                     <div class="progress-bar mb-3"><div class="progress-fill" style="width: ${p[10] === 'Completed' ? '100%' : (revCount * 25 + 10) + '%'}"></div></div>
-                    <div class="flex justify-between items-center"><p class="text-[9px] uppercase font-bold text-slate-600 tracking-widest italic">View Studio Console</p><p class="text-[11px] font-bold text-white">$${p[28] || 0}</p></div>
+                    <div class="flex justify-between items-center"><p class="text-[9px] uppercase font-bold text-slate-600 tracking-widest italic font-bold">Studio Console</p><p class="text-[11px] font-bold text-white">$${p[28] || 0}</p></div>
                 </div>
             `;
         }).join('');
@@ -405,11 +410,6 @@
         const totalRev = data.reduce((acc, p) => acc + (parseFloat(p[28] || 0)), 0);
         document.getElementById('stat-revenue').innerText = "USD " + totalRev.toLocaleString();
     }
-
-    // পিন ইনপুটে Enter চাপলে লগইন হবে
-    document.getElementById('masterPin').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') attemptLogin();
-    });
 
     window.onload = checkAuth;
 </script>
