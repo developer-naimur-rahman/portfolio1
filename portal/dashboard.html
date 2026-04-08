@@ -105,9 +105,10 @@
     <div id="projectGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8"></div>
 
 
-<!-- Project Details + Revision Form -->
+
+
+
 <div id="projectDetails" class="mt-8 p-6 glass rounded-2xl hidden">
-    <!-- Project Info -->
     <h2 id="projTitle" class="text-xl font-bold mb-4">Project Title</h2>
     <p id="projDesc" class="mb-4">Project description will appear here...</p>
 
@@ -133,13 +134,20 @@
     </div>
     <!-- ✨ Client Revision Form End ✨ -->
 </div>
+
+
+
+
+
+
     
 </main>
 <script>// Example projects data
+// Example projects array
 const projects = [
-    { id: 1, name: "Project Alpha", description: "This is Project Alpha description." },
-    { id: 2, name: "Project Beta", description: "This is Project Beta description." },
-    { id: 3, name: "Project Gamma", description: "This is Project Gamma description." }
+    { id: 1, name: "Project Alpha", desc: "Description Alpha" },
+    { id: 2, name: "Project Beta", desc: "Description Beta" },
+    { id: 3, name: "Project Gamma", desc: "Description Gamma" }
 ];
 
 const projectGrid = document.getElementById("projectGrid");
@@ -151,36 +159,46 @@ const revProjectId = document.getElementById("revProjectId");
 // Populate Project Grid
 projects.forEach(proj => {
     const card = document.createElement("div");
-    card.className = "p-4 glass rounded cursor-pointer hover:shadow-lg transition";
-    card.innerHTML = `
-        <h3 class="font-semibold text-lg mb-2">${proj.name}</h3>
-        <p class="text-sm text-gray-600">${proj.description.substring(0, 50)}...</p>
-    `;
-    card.addEventListener("click", () => showProjectDetails(proj));
+    card.className = "p-4 glass rounded cursor-pointer hover:shadow-lg";
+    card.innerHTML = `<h3 class="font-bold">${proj.name}</h3><p>${proj.desc}</p>`;
+    card.addEventListener("click", () => {
+        // Show Project Details
+        projectDetails.classList.remove("hidden");
+        projTitle.textContent = proj.name;
+        projDesc.textContent = proj.desc;
+
+        // Auto assign project ID to hidden input
+        revProjectId.value = proj.id;
+    });
     projectGrid.appendChild(card);
 });
+</script>
 
-// Show Project Details + Auto Fill Hidden Input
-function showProjectDetails(proj) {
-    projectDetails.classList.remove("hidden");
-    projTitle.textContent = proj.name;
-    projDesc.textContent = proj.description;
-    revProjectId.value = proj.id; // Hidden input auto fill
-}
-
-// Handle Revision Submission
-function addRevision(event) {
+<script>function addRevision(event) {
     event.preventDefault();
-    
+
     const projectId = revProjectId.value;
     const notes = document.getElementById("revNotes").value;
-    const file = document.getElementById("revFile").files[0] || null;
+    const fileInput = document.getElementById("revFile");
+    const file = fileInput.files[0] || null;
 
-    console.log("Project ID:", projectId);
-    console.log("Notes:", notes);
-    console.log("File:", file);
+    if (!projectId || !notes) {
+        alert("Please fill in all required fields!");
+        return;
+    }
+
+    // 🔹 Prepare data for backend / Google Sheets
+    const formData = new FormData();
+    formData.append("projectId", projectId);
+    formData.append("notes", notes);
+    if (file) formData.append("file", file);
+
+    // Example: console log (Replace this with actual API call)
+    console.log("Revision Data:", projectId, notes, file);
 
     alert("Revision submitted successfully!");
+
+    // Reset form
     document.getElementById("revisionForm").reset();
 }
 </script>
