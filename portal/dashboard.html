@@ -142,20 +142,49 @@
 
     
 </main>
-<script>function showProjectDetails(index) {
+
+
+
+<script>
+function showProjectDetails(index) {
     const p = ALL_PROJECTS[index];
+    if(!p) return;
+
+    // Project Details Panel
     const projectDetails = document.getElementById("projectDetails");
-    const projTitle = document.getElementById("projTitle");
-    const projDesc = document.getElementById("projDesc");
-    const revProjectId = document.getElementById("revProjectId");
+    document.getElementById("projTitle").textContent = p[3] || "Project Title";
+    document.getElementById("projDesc").textContent = p[7] || "No description available.";
+    document.getElementById("revProjectId").value = p[1]; // Hidden input for revision
 
-    projTitle.textContent = p[3] || "Project Title";
-    projDesc.textContent = p[7] || "No description available.";
+    // Details Modal Fields
+    document.getElementById("detProjectID").innerText = p[1] || "---";
+    document.getElementById("editPName").value = p[3] || "";
+    document.getElementById("editClientEmail").value = p[2] || "";
+    document.getElementById("editEditor").value = p[9] || "";
+    document.getElementById("editStatus").value = p[10] || "Pending";
+    document.getElementById("editApproval").value = p[12] || "Pending";
+    document.getElementById("editFootage").value = p[4] || "";
+    document.getElementById("editFilesLink").value = p[5] || "";
+    document.getElementById("editRef1").value = p[6] || "";
+    document.getElementById("editPriority").value = p[11] || "Normal";
+    document.getElementById("editBudget").value = p[13] || "";
+    document.getElementById("editDeadline").value = p[14] || "";
+    document.getElementById("editRevNum").value = p[23] || 0;
+    document.getElementById("editVersion").value = p[24] || "v1.0";
+    document.getElementById("editReqType").value = p[25] || "General";
+    document.getElementById("editClientNotes").value = p[15] || "";
+    document.getElementById("editEditorNotes").value = p[16] || "";
+    document.getElementById("editVisible").value = p[26] || "Yes";
 
-    // Hidden input auto-fill
-    revProjectId.value = p[1]; // Project ID from Sheets
+    document.getElementById("dispUploadedBy").innerText = p[17] || "---";
+    document.getElementById("dispUserRole").innerText = p[18] || "---";
+    document.getElementById("dispLastUpdated").innerText = p[19] || "---";
 
+    // Show project details section
     projectDetails.classList.remove("hidden");
+
+    // Open details modal
+    toggleModal('detailsModal', true);
 }
 </script>
 
