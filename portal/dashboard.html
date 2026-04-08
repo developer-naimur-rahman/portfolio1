@@ -120,38 +120,52 @@
 
 <!-- DETAILS MODAL -->
 <div id="detailsModal" class="fixed inset-0 bg-black/95 backdrop-blur-2xl hidden z-[150] items-center justify-center p-4">
-    <div class="glass w-full max-w-4xl rounded-[40px] flex flex-col shadow-2xl overflow-hidden">
+    <div class="glass w-full max-w-5xl rounded-[40px] flex flex-col shadow-2xl overflow-hidden max-h-[90vh]">
         <div class="p-8 border-b border-white/5 flex justify-between items-center bg-white/5">
-            <div>
-                <h3 id="detProjectName" class="text-2xl font-black italic text-white uppercase">PROJECT NAME</h3>
-                <p id="detProjectID" class="text-cyan-400 font-mono text-xs tracking-widest mt-1 italic">MN-000</p>
+            <div class="flex-1">
+                <input id="editPName" class="bg-transparent border-none text-2xl font-black italic text-white uppercase focus:ring-0 p-0 w-full mb-1" placeholder="Project Name">
+                <p id="detProjectID" class="text-cyan-400 font-mono text-xs tracking-widest italic">MN-000</p>
             </div>
-            <button onclick="toggleModal('detailsModal', false)" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
+            <div class="flex gap-3">
+                <button onclick="updateProject()" id="updateBtn" class="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all active:scale-95">
+                    <i data-lucide="refresh-cw" size="14"></i> Update Project
+                </button>
+                <button onclick="deleteProject()" class="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-xl font-bold text-xs transition-all active:scale-95">
+                    <i data-lucide="trash-2" size="14"></i> Delete
+                </button>
+                <button onclick="toggleModal('detailsModal', false)" class="text-slate-400 hover:text-white p-2"><i data-lucide="x"></i></button>
+            </div>
         </div>
-        <div class="flex flex-1 p-8 gap-8">
-            <div class="w-1/2 space-y-6">
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase">Status</label><div id="detStatusBadge" class="mt-2 inline-block px-4 py-1 rounded-lg font-bold text-[10px] uppercase border">--</div></div>
-                <div class="flex gap-10">
-                    <div><label class="text-slate-500 text-[10px] uppercase font-bold">Version</label><p id="detVersion" class="text-xl font-bold text-white italic">--</p></div>
-                    <div><label class="text-slate-500 text-[10px] uppercase font-bold">Revisions</label><p id="detRevisions" class="text-xl font-bold text-orange-400 italic">--</p></div>
+
+        <div class="flex flex-1 p-8 gap-8 overflow-y-auto">
+            <div class="w-1/2 space-y-5">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Current Status</label>
+                    <select id="editStatus" class="w-full mt-2 bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-cyan-500">
+                        <option value="Pending">Pending</option>
+                        <option value="InProgress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                        <option value="URGENT">URGENT</option>
+                    </select>
                 </div>
-                <div class="space-y-3">
-                    <a id="detFootageLink" target="_blank" class="flex items-center gap-3 p-4 glass rounded-2xl hover:text-cyan-400 text-sm"><i data-lucide="video" size="18"></i> Raw Footage</a>
-                    <a id="detScriptLink" target="_blank" class="flex items-center gap-3 p-4 glass rounded-2xl hover:text-purple-400 text-sm"><i data-lucide="file-text" size="18"></i> Script / Brief</a>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Revisions</label><input type="number" id="editRev" class="w-full mt-2"></div>
+                    <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Budget (BDT)</label><input type="number" id="editBudget" class="w-full mt-2 text-cyan-400 font-bold"></div>
                 </div>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Footage Link</label><input type="url" id="editFootage" class="w-full mt-2 text-xs"></div>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Script/Brief Link</label><input type="url" id="editScript" class="w-full mt-2 text-xs"></div>
             </div>
-            <div class="w-1/2 space-y-6">
-                <div class="p-6 glass rounded-[32px] border-l-4 border-cyan-500">
-                    <label class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Client Contact</label>
-                    <p id="detClient" class="text-white font-bold mb-4 italic truncate">--</p>
-                    <!-- WHATSAPP BUTTON -->
-                    <button id="waBtn" class="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-green-500">
-                        <i data-lucide="message-circle" size="14"></i> Send WhatsApp Update
+
+            <div class="w-1/2 space-y-5">
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Client Email</label><input type="email" id="editClientEmail" class="w-full mt-2"></div>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Deadline</label><input type="date" id="editDeadline" class="w-full mt-2"></div>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Editor</label><input type="text" id="editEditor" class="w-full mt-2"></div>
+                
+                <div class="p-6 glass rounded-[32px] border border-green-500/20 bg-green-500/5 mt-4">
+                    <p class="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-3">Quick Notify</p>
+                    <button onclick="sendWhatsAppNotify()" class="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-xl text-xs font-bold hover:bg-green-500 transition-all">
+                        <i data-lucide="message-circle" size="16"></i> Send Update via WhatsApp
                     </button>
-                </div>
-                <div class="p-6 glass rounded-[32px]">
-                    <label class="text-slate-500 text-[10px] uppercase font-bold">Assigned Editor</label>
-                    <p id="detEditor" class="text-white font-bold mt-1 italic">--</p>
                 </div>
             </div>
         </div>
@@ -160,7 +174,6 @@
 
 <script>
     lucide.createIcons();
-    // এই URL টি অবশ্যই আপনার Apps Script এর নতুন Deployment URL হতে হবে
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
     let ALL_PROJECTS = [];
 
@@ -171,14 +184,13 @@
         const grid = document.getElementById('projectGrid');
         loader.classList.remove('hidden'); 
         grid.innerHTML = '';
-        
         try {
             const res = await fetch(WEB_APP_URL);
             const response = await res.json();
             ALL_PROJECTS = response.data || [];
             renderUI(ALL_PROJECTS);
         } catch (err) {
-            grid.innerHTML = `<div class="col-span-full py-20 text-center"><p class="text-red-500">Data Sync Failed. Please check the URL.</p></div>`;
+            grid.innerHTML = `<div class="col-span-full py-20 text-center"><p class="text-red-500">Data Sync Failed.</p></div>`;
         } finally { loader.classList.add('hidden'); }
     }
 
@@ -209,7 +221,7 @@
                     <div class="progress-bar mb-3">
                         <div class="progress-fill" style="width: ${p[10] === 'Completed' ? '100%' : (revCount * 33) + '%'}"></div>
                     </div>
-                    <p class="text-[10px] uppercase font-bold text-slate-500 italic">Production Underway</p>
+                    <p class="text-[10px] uppercase font-bold text-slate-500 italic">View / Edit Details</p>
                 </div>
             `;
         }).join('');
@@ -217,29 +229,90 @@
         updateStats(data);
     }
 
+    // পপআপে ডাটা এডিট করার জন্য ইনপুট ফিল্ডে পাঠানো
     function showProjectDetails(index) {
         const p = ALL_PROJECTS[index];
-        document.getElementById('detProjectName').innerText = p[3];
+        
+        // Modal UI তে ডাটা সেট (Edit করার সুবিধা সহ)
         document.getElementById('detProjectID').innerText = p[1];
-        document.getElementById('detVersion').innerText = p[24] || 'V1.0';
-        document.getElementById('detRevisions').innerText = (p[23] || 0) + "/3";
-        document.getElementById('detEditor').innerText = p[8] || '--';
-        document.getElementById('detClient').innerText = p[2] || '--';
-        document.getElementById('detFootageLink').href = p[13] || '#';
-        document.getElementById('detScriptLink').href = p[15] || '#';
         
-        const statusText = p[10] || 'Pending';
-        const badge = document.getElementById('detStatusBadge');
-        badge.innerText = statusText;
-        badge.className = `mt-2 inline-block px-4 py-1 rounded-lg font-bold text-[10px] uppercase border status-${statusText.replace(/\s+/g, '')}`;
+        // হেডিং এর ভেতর ইনপুট বানিয়ে দেওয়া
+        document.getElementById('detProjectName').innerHTML = `<input id="editPName" class="bg-transparent border-none text-white focus:ring-0 w-full" value="${p[3]}">`;
         
-        // WhatsApp Action
-        document.getElementById('waBtn').onclick = () => {
-            const msg = `Hi, This is Motion Of Naimur. Your project "${p[3]}" status is now: ${statusText}.`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        // স্ট্যাটাস ড্রপডাউন
+        const statusHTML = `
+            <select id="editStatus" class="bg-slate-800 text-white rounded-lg p-1 border-none text-[10px] uppercase font-bold">
+                <option ${p[10] === 'Pending' ? 'selected' : ''}>Pending</option>
+                <option ${p[10] === 'InProgress' ? 'selected' : ''}>InProgress</option>
+                <option ${p[10] === 'Completed' ? 'selected' : ''}>Completed</option>
+                <option ${p[10] === 'URGENT' ? 'selected' : ''}>URGENT</option>
+            </select>
+        `;
+        document.getElementById('detStatusBadge').innerHTML = statusHTML;
+        document.getElementById('detStatusBadge').className = "mt-2 inline-block";
+
+        document.getElementById('detVersion').innerHTML = `<input id="editVersion" class="bg-transparent border-none text-white w-20" value="${p[24] || 'V1.0'}">`;
+        document.getElementById('detRevisions').innerHTML = `<input id="editRev" type="number" class="bg-transparent border-none text-orange-400 w-12" value="${p[23] || 0}">/3`;
+        document.getElementById('detEditor').innerHTML = `<input id="editEditor" class="bg-transparent border-none text-white w-full" value="${p[8] || '--'}">`;
+        document.getElementById('detClient').innerHTML = `<input id="editClient" class="bg-transparent border-none text-white w-full italic" value="${p[2] || '--'}">`;
+        
+        // ফুটেজ ও স্ক্রিপ্ট ইনপুট
+        document.getElementById('detFootageLink').innerHTML = `<i data-lucide="video" size="18"></i> <input id="editFootage" class="bg-transparent border-none text-white text-xs w-full" value="${p[13] || ''}" placeholder="Footage URL">`;
+        document.getElementById('detScriptLink').innerHTML = `<i data-lucide="file-text" size="18"></i> <input id="editScript" class="bg-transparent border-none text-white text-xs w-full" value="${p[15] || ''}" placeholder="Script URL">`;
+
+        // বাটন সেকশনে Update ও Delete বাটন যোগ
+        const actionArea = document.querySelector('#detailsModal .p-6.glass.rounded-\\[32px\\]:last-child');
+        actionArea.innerHTML = `
+            <div class="flex flex-col gap-2">
+                <button onclick="saveProjectUpdate()" id="saveUpdateBtn" class="bg-cyan-500 text-black py-2 rounded-xl font-bold text-xs uppercase transition-all active:scale-95">Save Changes</button>
+                <button onclick="deleteProject()" class="bg-red-500/20 text-red-500 py-2 rounded-xl font-bold text-xs uppercase hover:bg-red-500 hover:text-white transition-all">Delete Project</button>
+            </div>
+        `;
+
+        lucide.createIcons();
+        toggleModal('detailsModal', true);
+    }
+
+    // আপডেট সেভ করার ফাংশন
+    async function saveProjectUpdate() {
+        const btn = document.getElementById('saveUpdateBtn');
+        btn.innerText = "Updating...";
+        btn.disabled = true;
+
+        const formData = {
+            action: "updateProject",
+            projectID: document.getElementById('detProjectID').innerText,
+            projectName: document.getElementById('editPName').value,
+            clientEmail: document.getElementById('editClient').value,
+            status: document.getElementById('editStatus').value,
+            revisions: document.getElementById('editRev').value,
+            version: document.getElementById('editVersion').value,
+            editor: document.getElementById('editEditor').value,
+            footage: document.getElementById('editFootage').value,
+            script: document.getElementById('editScript').value
         };
 
-        toggleModal('detailsModal', true);
+        try {
+            await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(formData) });
+            alert("Project Updated!");
+            toggleModal('detailsModal', false);
+            initDashboard();
+        } catch (err) {
+            alert("Update sent to sheet. Refreshing...");
+            location.reload();
+        }
+    }
+
+    // ডিলিট করার ফাংশন
+    async function deleteProject() {
+        if(!confirm("Are you sure? This cannot be undone!")) return;
+        const projectID = document.getElementById('detProjectID').innerText;
+        try {
+            await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({action: "deleteProject", projectID: projectID}) });
+            alert("Project Deleted.");
+            toggleModal('detailsModal', false);
+            initDashboard();
+        } catch (err) { location.reload(); }
     }
 
     function updateStats(data) {
@@ -250,14 +323,13 @@
         document.getElementById('stat-revenue').innerText = "BDT " + totalRev.toLocaleString();
     }
 
+    // নিউ প্রোজেক্ট লঞ্চ করার ইভেন্ট (আগের মতই আছে)
     document.getElementById('projectForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.innerText = "Processing...";
+        btn.innerText = "Launching...";
         btn.disabled = true;
-
         const editorData = document.getElementById('pEditor').value.split('|');
-
         const formData = {
             action: "addProject",
             projectName: document.getElementById('pName').value,
@@ -270,31 +342,12 @@
             budget: document.getElementById('pBudget').value,
             footage: document.getElementById('pFootage').value
         };
-
         try {
-            // POST Request with JSON
-            const response = await fetch(WEB_APP_URL, {
-                method: 'POST',
-                body: JSON.stringify(formData)
-            });
-            const result = await response.json();
-            
-            if(result.status === "success") {
-                alert("Project Launched Successfully!");
-                toggleModal('pModal', false);
-                initDashboard();
-            } else {
-                throw new Error(result.message);
-            }
-        } catch (err) {
-            // অনেক সময় CORS এর জন্য response.json() ফেল করে, কিন্তু ডাটা সাবমিট হয়ে যায়।
-            alert("Request sent to server. Refreshing dashboard...");
+            await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(formData) });
+            alert("Launched!");
             toggleModal('pModal', false);
             setTimeout(initDashboard, 2000);
-        } finally {
-            btn.innerText = "Launch Project";
-            btn.disabled = false;
-        }
+        } catch (err) { location.reload(); }
     });
 
     window.onload = initDashboard;
