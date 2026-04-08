@@ -32,6 +32,9 @@
         label { display: block; margin-bottom: 6px; margin-left: 8px; font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
 
         #loginOverlay { position: fixed; inset: 0; background: #05060b; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
     </style>
 </head>
 <body class="flex">
@@ -115,36 +118,21 @@
                 <div><label>Project Name</label><input type="text" id="pName" required placeholder="Project Title"></div>
                 <div><label>Client Email</label><input type="email" id="pClientEmail" readonly class="opacity-50 cursor-not-allowed"></div>
             </div>
-
             <div class="md:col-span-1 space-y-5">
-                <!-- এডিটর সিলেকশন সরিয়ে দিয়েছি, এটা আপনি ডিটেইলস থেকে সেট করবেন -->
-                <div><label>Category</label>
-                    <select id="pCategory"><option>Reels</option><option>YouTube</option><option>Real Estate</option><option>Social Media Ads</option></select>
-                </div>
+                <div><label>Category</label><select id="pCategory"><option>Reels</option><option>YouTube</option><option>Real Estate</option><option>Social Media Ads</option></select></div>
                 <div><label>Footage Link</label><input type="url" id="pFootage" placeholder="http://drive..."></div>
                 <div><label>Script Link</label><input type="url" id="pScript" placeholder="http://docs..."></div>
             </div>
-
             <div class="md:col-span-1 space-y-5">
                 <div><label>Deadline</label><input type="date" id="pDeadline" required></div>
-                <div><label>Priority</label>
-                    <select id="pPriority"><option>Normal</option><option>High</option><option value="URGENT">URGENT</option></select>
-                </div>
+                <div><label>Priority</label><select id="pPriority"><option>Normal</option><option>High</option><option value="URGENT">URGENT</option></select></div>
                 <div><label>Budget (USD)</label><input type="number" id="pBudget" placeholder="Project Rate ($)"></div>
             </div>
-
-            <div class="col-span-full grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label>Reference Video Link 1</label><input type="url" id="pRef1" placeholder="Ref 1 URL"></div>
-                <div><label>Reference Video Link 2</label><input type="url" id="pRef2" placeholder="Ref 2 URL"></div>
-                <div class="md:col-span-2">
-                    <label>Detailed Instructions (Notes)</label>
-                    <textarea id="pNotes" rows="4" placeholder="Mention everything you need from this edit..."></textarea>
-                </div>
+            <div class="col-span-full">
+                <label>Detailed Instructions</label>
+                <textarea id="pNotes" rows="3" placeholder="Explain your vision..."></textarea>
             </div>
-
-            <button type="submit" id="submitBtn" class="col-span-full bg-cyan-500 text-black py-5 rounded-[24px] font-black uppercase tracking-[4px] hover:bg-cyan-400 transition-all active:scale-95 shadow-lg shadow-cyan-500/20">
-                Launch Project
-            </button>
+            <button type="submit" id="submitBtn" class="col-span-full bg-cyan-500 text-black py-5 rounded-[24px] font-black uppercase tracking-[4px] hover:bg-cyan-400 transition-all active:scale-95 shadow-lg shadow-cyan-500/20">Launch Project</button>
         </form>
     </div>
 </div>
@@ -167,44 +155,66 @@
             </div>
         </div>
 
-        <div class="flex flex-1 p-8 gap-8 overflow-y-auto">
-            <div class="w-1/3 space-y-5">
-                <div><label>Client Email (C)</label><input type="email" id="editClientEmail"></div>
-                <div><label>Assign Editor (I)</label>
-                    <select id="editEditor">
-                        <option value="Naimur Rahman|naimur582582@gmail.com">Naimur Rahman</option>
-                        <option value="Shafin|shafin@mail.com">Shafin</option>
-                    </select>
+        <div class="flex-1 p-8 overflow-y-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="space-y-5">
+                    <h5 class="text-cyan-500 text-[10px] font-black uppercase tracking-[3px]">Production Core</h5>
+                    <div><label>Client Email</label><input type="email" id="editClientEmail"></div>
+                    <div><label>Assigned Editor</label>
+                        <select id="editEditor">
+                            <option value="Naimur Rahman|naimur582582@gmail.com">Naimur Rahman</option>
+                            <option value="Shafin|shafin@mail.com">Shafin</option>
+                        </select>
+                    </div>
+                    <div><label>Project Status</label>
+                        <select id="editStatus">
+                            <option value="Pending">Pending</option><option value="InProgress">InProgress</option><option value="Review">Review</option><option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div><label>Approval Status</label>
+                        <select id="editApproval">
+                            <option value="Pending">Pending</option><option value="Approved">Approved</option><option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
                 </div>
-                <div><label>Category (E)</label>
-                    <select id="editCategory">
-                        <option>Reels</option><option>YouTube</option><option>Real Estate</option><option>Social Media Ads</option>
-                    </select>
+
+                <div class="space-y-5">
+                    <h5 class="text-cyan-500 text-[10px] font-black uppercase tracking-[3px]">Files & Logistics</h5>
+                    <div><label>Footage Link</label><input type="url" id="editFootage"></div>
+                    <div><label>Final Files Link</label><input type="url" id="editFilesLink"></div>
+                    <div><label>Reference Link</label><input type="url" id="editRef1"></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label>Priority</label><select id="editPriority"><option>Normal</option><option>High</option><option>URGENT</option></select></div>
+                        <div><label>Budget USD</label><input type="number" id="editBudget"></div>
+                    </div>
+                    <div><label>Deadline</label><input type="date" id="editDeadline"></div>
                 </div>
-                <div><label>Status (K)</label>
-                    <select id="editStatus">
-                        <option value="Pending">Pending</option><option value="InProgress">InProgress</option><option value="Review">Review</option><option value="Completed">Completed</option>
-                    </select>
+
+                <div class="space-y-5 bg-white/5 p-6 rounded-3xl border border-white/10">
+                    <h5 class="text-orange-500 text-[10px] font-black uppercase tracking-[3px]">Revision Control</h5>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label>Rev Number</label><input type="number" id="editRevNum"></div>
+                        <div><label>Version</label><input type="text" id="editVersion" placeholder="v1.0"></div>
+                    </div>
+                    <div><label>Request Type</label>
+                        <select id="editReqType">
+                            <option value="General">General</option><option value="Visual">Visual</option><option value="Audio">Audio</option><option value="Graphics">Graphics</option>
+                        </select>
+                    </div>
+                    <div><label>Client Notes</label><textarea id="editClientNotes" rows="3"></textarea></div>
+                    <div><label>Editor Notes</label><textarea id="editEditorNotes" rows="2"></textarea></div>
                 </div>
             </div>
 
-            <div class="w-1/3 space-y-5">
-                <div><label>Footage Link (N)</label><input type="url" id="editFootage"></div>
-                <div><label>Script Link (P)</label><input type="url" id="editScript"></div>
-                <div><label>Reference 1 (Q)</label><input type="url" id="editRef1"></div>
-                <div><label>Reference 2 (R)</label><input type="url" id="editRef2"></div>
-                <div><label>Priority (L)</label>
-                    <select id="editPriority"><option>Normal</option><option>High</option><option>URGENT</option></select>
+            <div class="mt-8 pt-8 border-t border-white/5 grid grid-cols-2 md:grid-cols-4 gap-6 text-[9px] uppercase font-bold text-slate-500">
+                <div><p>Uploaded By</p><p id="dispUploadedBy" class="text-white mt-1">---</p></div>
+                <div><p>User Role</p><p id="dispUserRole" class="text-white mt-1">---</p></div>
+                <div><p>Last Updated</p><p id="dispLastUpdated" class="text-white mt-1">---</p></div>
+                <div><label class="m-0 text-[9px]">Client Visible</label>
+                    <select id="editVisible" class="h-8 py-0 px-2 mt-1 text-[9px] w-20">
+                        <option value="Yes">Yes</option><option value="No">No</option>
+                    </select>
                 </div>
-            </div>
-
-            <div class="w-1/3 space-y-5">
-                <div><label>Deadline (U)</label><input type="date" id="editDeadline"></div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label>Revisions (X)</label><input type="number" id="editRev"></div>
-                    <div><label>Budget USD (AC)</label><input type="number" id="editBudget"></div>
-                </div>
-                <div><label>Instruction Notes (W)</label><textarea id="editNotes" rows="6"></textarea></div>
             </div>
         </div>
     </div>
@@ -246,13 +256,10 @@
             
             if(userEmail === ADMIN_EMAIL.toLowerCase()) {
                 document.getElementById('userRoleDisplay').innerText = "Agency Owner";
-                document.getElementById('launchBtn').style.display = 'flex';
             } else if (EDITORS_EMAILS.includes(userEmail)) {
                 document.getElementById('userRoleDisplay').innerText = "Editor";
-                document.getElementById('launchBtn').style.display = 'none'; 
             } else {
                 document.getElementById('userRoleDisplay').innerText = "Client";
-                document.getElementById('launchBtn').style.display = 'flex'; 
             }
 
             const pic = localStorage.getItem('user_pic');
@@ -299,9 +306,9 @@
                 ALL_PROJECTS = rawData;
             } else {
                 ALL_PROJECTS = rawData.filter(p => {
-                    const clientEmail = p[2] ? p[2].toLowerCase() : "";
-                    const editorEmail = p[9] ? p[9].toLowerCase() : "";
-                    return clientEmail === userEmail || editorEmail === userEmail;
+                    const cEmail = p[2] ? p[2].toLowerCase() : "";
+                    const eEmail = p[9] ? p[9].toLowerCase() : "";
+                    return cEmail === userEmail || eEmail === userEmail;
                 });
             }
             renderUI(ALL_PROJECTS);
@@ -317,16 +324,19 @@
             return; 
         }
         grid.innerHTML = data.map((p, index) => {
-            const status = (p[10] || 'Pending').replace(/\s+/g, '');
-            const revCount = parseInt(p[23] || 0);
+            const statusClass = (p[10] || 'Pending').replace(/\s+/g, '');
+            const revNum = parseInt(p[23] || 0);
             return `
                 <div onclick="showProjectDetails(${index})" class="glass glass-card p-8 rounded-[40px] border-l-4 ${p[11] === 'URGENT' ? 'border-red-500' : 'border-transparent'}">
                     <div class="flex justify-between items-start mb-6">
                         <div><span class="text-[10px] font-mono text-cyan-400 tracking-widest">${p[1]}</span><h4 class="text-xl font-bold text-white italic mt-1 truncate w-40">${p[3]}</h4></div>
-                        <span class="status-${status} px-4 py-1.5 rounded-xl text-[10px] font-black uppercase italic">${p[10] || 'Pending'}</span>
+                        <span class="status-${statusClass} px-4 py-1.5 rounded-xl text-[10px] font-black uppercase italic">${p[10] || 'Pending'}</span>
                     </div>
-                    <div class="progress-bar mb-3"><div class="progress-fill" style="width: ${p[10] === 'Completed' ? '100%' : (revCount * 25 + 10) + '%'}"></div></div>
-                    <p class="text-[9px] uppercase font-bold text-slate-600 tracking-widest">Studio Console</p>
+                    <div class="progress-bar mb-3"><div class="progress-fill" style="width: ${p[10] === 'Completed' ? '100%' : (revNum * 20 + 10) + '%'}"></div></div>
+                    <div class="flex justify-between text-[9px] uppercase font-bold text-slate-600 tracking-widest">
+                        <span>${p[24] || 'v1.0'}</span>
+                        <span>Rev: ${revNum}</span>
+                    </div>
                 </div>
             `;
         }).join('');
@@ -339,36 +349,41 @@
         const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
         if(!p) return;
         
+        // Mapping all provided columns
         document.getElementById('detProjectID').innerText = p[1];
         document.getElementById('editPName').value = p[3] || '';
         document.getElementById('editClientEmail').value = p[2] || '';
+        document.getElementById('editEditor').value = (p[8] || 'Naimur Rahman') + "|" + (p[9] || 'naimur582582@gmail.com');
+        document.getElementById('editStatus').value = p[10] || 'Pending';
+        document.getElementById('editApproval').value = p[29] || 'Pending';
         
-        // এডিটর ভ্যালু সেট করার সময় নাম এবং ইমেইল দুটোই রাখার জন্য
-        const currentEditor = (p[8] || 'Naimur Rahman') + "|" + (p[9] || 'naimur582582@gmail.com');
-        document.getElementById('editEditor').value = currentEditor;
-        
-        document.getElementById('editStatus').value = (p[10] || 'Pending').replace(/\s+/g, '');
         document.getElementById('editFootage').value = p[13] || '';
-        document.getElementById('editScript').value = p[15] || '';
-        document.getElementById('editRev').value = p[23] || 0;
-        document.getElementById('editBudget').value = p[28] || 0;
-        document.getElementById('editNotes').value = p[22] || '';
-        document.getElementById('editCategory').value = p[4] || 'Reels';
-        document.getElementById('editPriority').value = p[11] || 'Normal';
+        document.getElementById('editFilesLink').value = p[14] || '';
         document.getElementById('editRef1').value = p[16] || '';
-        document.getElementById('editRef2').value = p[17] || '';
+        document.getElementById('editPriority').value = p[11] || 'Normal';
+        document.getElementById('editBudget').value = p[28] || 0;
         if(p[20]) document.getElementById('editDeadline').value = new Date(p[20]).toISOString().split('T')[0];
         
+        // Revision Data
+        document.getElementById('editRevNum').value = p[23] || 0;
+        document.getElementById('editVersion').value = p[24] || 'v1.0';
+        document.getElementById('editReqType').value = p[25] || 'General';
+        document.getElementById('editClientNotes').value = p[27] || '';
+        document.getElementById('editEditorNotes').value = p[26] || '';
+        
+        // Meta
+        document.getElementById('dispUploadedBy').innerText = p[30] || '---';
+        document.getElementById('dispUserRole').innerText = p[31] || '---';
+        document.getElementById('dispLastUpdated').innerText = p[34] || '---';
+        document.getElementById('editVisible').value = p[32] || 'Yes';
+
         if(userEmail !== ADMIN_EMAIL.toLowerCase()){
             document.getElementById('saveUpdateBtn').style.display = 'none';
             document.getElementById('deleteBtn').style.display = 'none';
-            document.getElementById('editEditor').disabled = true;
         } else {
             document.getElementById('saveUpdateBtn').style.display = 'flex';
             document.getElementById('deleteBtn').style.display = 'flex';
-            document.getElementById('editEditor').disabled = false;
         }
-        
         toggleModal('detailsModal', true);
     }
 
@@ -377,26 +392,24 @@
         const btn = document.getElementById('submitBtn');
         btn.innerText = "LAUNCHING..."; btn.disabled = true;
         
-        // ডিফল্টভাবে আপনার কাছে আসবে
         const pData = {
             action: "addProject", 
             projectName: document.getElementById('pName').value, 
             clientEmail: document.getElementById('pClientEmail').value,
-            assignedEditor: "Naimur Rahman", 
-            editorEmail: "naimur582582@gmail.com", 
             category: document.getElementById('pCategory').value,
             footage: document.getElementById('pFootage').value, 
             scriptLink: document.getElementById('pScript').value,
-            ref1: document.getElementById('pRef1').value, 
-            ref2: document.getElementById('pRef2').value,
             deadline: document.getElementById('pDeadline').value, 
             priority: document.getElementById('pPriority').value,
             notes: document.getElementById('pNotes').value, 
-            budget: document.getElementById('pBudget').value
+            budget: document.getElementById('pBudget').value,
+            uploadedBy: localStorage.getItem('user_name'),
+            userRole: "Client"
         };
+
         try {
             await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(pData) });
-            alert("Project Launched! Naimur will assign an editor soon.");
+            alert("Project Launched!");
             document.getElementById('projectForm').reset();
             toggleModal('pModal', false);
             setTimeout(initDashboard, 1500);
@@ -409,21 +422,33 @@
         const editorParts = document.getElementById('editEditor').value.split('|');
         
         const formData = {
-            action: "updateProject", projectID: document.getElementById('detProjectID').innerText,
-            projectName: document.getElementById('editPName').value, clientEmail: document.getElementById('editClientEmail').value,
-            status: document.getElementById('editStatus').value, revisions: document.getElementById('editRev').value,
-            budget: document.getElementById('editBudget').value, 
-            editor: editorParts[0], 
-            editorEmail: editorParts[1],
-            footage: document.getElementById('editFootage').value, script: document.getElementById('editScript').value,
-            deadline: document.getElementById('editDeadline').value, notes: document.getElementById('editNotes').value,
-            category: document.getElementById('editCategory').value, priority: document.getElementById('editPriority').value,
-            ref1: document.getElementById('editRef1').value, ref2: document.getElementById('editRef2').value
+            action: "updateProject", 
+            projectID: document.getElementById('detProjectID').innerText,
+            projectName: document.getElementById('editPName').value,
+            clientEmail: document.getElementById('editClientEmail').value,
+            editor: editorParts[0], editorEmail: editorParts[1],
+            status: document.getElementById('editStatus').value,
+            approvalStatus: document.getElementById('editApproval').value,
+            footage: document.getElementById('editFootage').value,
+            filesLink: document.getElementById('editFilesLink').value,
+            ref1: document.getElementById('editRef1').value,
+            priority: document.getElementById('editPriority').value,
+            budget: document.getElementById('editBudget').value,
+            deadline: document.getElementById('editDeadline').value,
+            revisionNumber: document.getElementById('editRevNum').value,
+            version: document.getElementById('editVersion').value,
+            requestType: document.getElementById('editReqType').value,
+            clientNotes: document.getElementById('editClientNotes').value,
+            editorNotes: document.getElementById('editEditorNotes').value,
+            clientVisible: document.getElementById('editVisible').value,
+            lastUpdated: new Date().toLocaleString()
         };
+
         try {
             await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(formData) });
-            alert("Updated!"); toggleModal('detailsModal', false);
-            setTimeout(initDashboard, 1500);
+            alert("Updated!"); 
+            toggleModal('detailsModal', false);
+            setTimeout(initDashboard, 1000);
         } catch (err) { alert("Error."); } finally { btn.innerText = "Update Project"; btn.disabled = false; }
     }
 
@@ -432,7 +457,7 @@
         try {
             await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "deleteProject", projectID: document.getElementById('detProjectID').innerText}) });
             alert("Deleted."); toggleModal('detailsModal', false);
-            setTimeout(initDashboard, 1500);
+            setTimeout(initDashboard, 1000);
         } catch (err) { location.reload(); }
     }
 
