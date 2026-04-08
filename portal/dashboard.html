@@ -18,9 +18,9 @@
         .progress-fill { height:100%; background: linear-gradient(90deg,#00f2ff,#0066ff); transition: width 1s ease; }
         
         .status-Pending { color:#f59e0b; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); }
-        .status-InProgress { color:#3b82f6; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); }
+        .status-Editing { color:#3b82f6; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); }
         .status-Review { color:#a855f7; background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2); }
-        .status-Completed { color:#10b981; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); }
+        .status-Delivered { color:#10b981; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); }
         .status-URGENT { color:#ef4444; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); animation: pulse-red 2s infinite; }
         
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
@@ -293,7 +293,7 @@ function showProjectDetails(index) {
                     </div>
                     <div><label>Project Status</label>
                         <select id="editStatus">
-                            <option value="Pending">Pending</option><option value="InProgress">InProgress</option><option value="Review">Review</option><option value="Completed">Completed</option>
+                            <option value="Pending">Pending</option><option value="Editing">InProgress</option><option value="Review">Review</option><option value="Delivered">Delivered</option>
                         </select>
                     </div>
                     <div><label>Approval Status</label>
@@ -478,7 +478,7 @@ function showProjectDetails(index) {
 
                 <div class="progress-bar mb-3">
                     <div class="progress-fill" 
-                    style="width: ${p[10] === 'Completed' ? '100%' : (revNum * 20 + 10) + '%'}">
+                    style="width: ${p[10] === 'Delivered' ? '100%' : (revNum * 20 + 10) + '%'}">
                     </div>
                 </div>
 
@@ -622,8 +622,8 @@ function showProjectDetails(index) {
     }
 
     function updateStats(data) {
-        document.getElementById('stat-active').innerText = data.filter(p => p[10] !== 'Completed').length;
-        document.getElementById('stat-done').innerText = data.filter(p => p[10] === 'Completed').length;
+        document.getElementById('stat-active').innerText = data.filter(p => p[10] !== 'Delivered').length;
+        document.getElementById('stat-done').innerText = data.filter(p => p[10] === 'Delivered').length;
         document.getElementById('stat-rev').innerText = data.reduce((acc, p) => acc + (parseInt(p[23] || 0)), 0);
         const totalRev = data.reduce((acc, p) => acc + (parseFloat(p[28] || 0)), 0);
         document.getElementById('stat-revenue').innerText = "BDT " + totalRev.toLocaleString();
