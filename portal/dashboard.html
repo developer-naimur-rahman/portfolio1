@@ -159,38 +159,7 @@
 }
 </script>
 
-<script>
-    function addRevision(event) {
-  event.preventDefault();
 
-  const projectId = revProjectId.value;       // hidden input auto-fill
-  const notes = document.getElementById("revNotes").value;
-  const fileInput = document.getElementById("revFile");
-  const file = fileInput.files[0] || null;
-
-  const data = {
-    action: "addRevision",
-    projectID: projectId,
-    notes: notes,
-    clientEmail: "client@example.com"   // আপনার login session থেকে নিতে হবে
-  };
-
-  fetch("https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-  .then(res => res.text())
-  .then(resp => {
-    alert(resp);
-    document.getElementById("revisionForm").reset();
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Failed to submit revision");
-  });
-}
-</script>
 <script>
     async function addRevision(event) {
     event.preventDefault();
