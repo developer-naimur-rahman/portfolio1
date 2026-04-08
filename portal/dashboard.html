@@ -317,33 +317,57 @@
         } finally { loader.classList.add('hidden'); }
     }
 
-    function renderUI(data) {
-        const grid = document.getElementById('projectGrid');
-        if (!data || data.length === 0) { 
-            grid.innerHTML = "<p class='col-span-full text-center py-20 text-slate-500 italic'>Pipeline empty.</p>"; 
-            return; 
-        }
-        grid.innerHTML = data.map((p, index) => {
-            const statusClass = (p[10] || 'Pending').replace(/\s+/g, '');
-            const revNum = parseInt(p[23] || 0);
-            return `
-                <div onclick="showProjectDetails(${index})" class="glass glass-card p-8 rounded-[40px] border-l-4 ${p[11] === 'URGENT' ? 'border-red-500' : 'border-transparent'}">
-                    <div class="flex justify-between items-start mb-6">
-                        <div><span class="text-[10px] font-mono text-cyan-400 tracking-widest">${p[1]}</span><h4 class="text-xl font-bold text-white italic mt-1 truncate w-40">${p[3]}</h4></div>
-                        <span class="status-${statusClass} px-4 py-1.5 rounded-xl text-[10px] font-black uppercase italic">${p[10] || 'Pending'}</span>
-                    </div>
-                    <div class="progress-bar mb-3"><div class="progress-fill" style="width: ${p[10] === 'Completed' ? '100%' : (revNum * 20 + 10) + '%'}"></div></div>
-                    <div class="flex justify-between text-[9px] uppercase font-bold text-slate-600 tracking-widest">
-                        <span>${p[24] || 'v1.0'}</span>
-                        <span>Rev: ${revNum}</span>
-                    </div>
-                </div>
-            `;
-        }).join('');
-        lucide.createIcons();
-        updateStats(data);
+  function renderUI(data) {
+    const grid = document.getElementById('projectGrid');
+
+    if (!data || data.length === 0) { 
+        grid.innerHTML = "<p class='col-span-full text-center py-20 text-slate-500 italic'>Pipeline empty.</p>"; 
+        return; 
     }
 
+    const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
+    const isAdmin = userEmail === ADMIN_EMAIL.toLowerCase();
+    const isEditor = EDITORS_EMAILS.includes(userEmail);
+    const showPriority = isAdmin || isEditor;
+
+    grid.innerHTML = data.map((p, index) => {
+        const statusClass = (p[10] || 'Pending').replace(/\s+/g, '');
+        const revNum = parseInt(p[23] || 0);
+
+        const borderClass = showPriority && p[11] === 'URGENT'
+            ? 'border-red-500'
+            : 'border-transparent';
+
+        return `
+            <div onclick="showProjectDetails(${index})" class="glass glass-card p-8 rounded-[40px] border-l-4 ${borderClass}">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-[10px] font-mono text-cyan-400 tracking-widest">${p[1]}</span>
+                        <h4 class="text-xl font-bold text-white italic mt-1 truncate w-40">${p[3]}</h4>
+                    </div>
+
+                    <span class="status-${statusClass} px-4 py-1.5 rounded-xl text-[10px] font-black uppercase italic">
+                        ${p[10] || 'Pending'}
+                    </span>
+                </div>
+
+                <div class="progress-bar mb-3">
+                    <div class="progress-fill" 
+                    style="width: ${p[10] === 'Completed' ? '100%' : (revNum * 20 + 10) + '%'}">
+                    </div>
+                </div>
+
+                <div class="flex justify-between text-[9px] uppercase font-bold text-slate-600 tracking-widest">
+                    <span>${p[24] || 'v1.0'}</span>
+                    <span>Rev: ${revNum}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    lucide.createIcons();
+    updateStats(data);
+}
 
 function showProjectDetails(index) {
     const p = ALL_PROJECTS[index];
