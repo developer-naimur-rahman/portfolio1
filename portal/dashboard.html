@@ -41,13 +41,8 @@
         <div class="w-16 h-16 bg-cyan-500 rounded-2xl flex items-center justify-center font-bold text-black italic text-3xl mx-auto mb-6 shadow-[0_0_30px_rgba(6,182,212,0.4)]">M</div>
         <h2 class="text-2xl font-black italic text-white uppercase tracking-tighter mb-2">Studio Access</h2>
         <p class="text-slate-500 text-sm mb-8 italic">Sign in with Google to manage production</p>
-        
         <div class="flex justify-center">
-            <div id="g_id_onload"
-                 data-client_id="388867750902-263hniv7d8v31m3l5pkphokg0scb9tos.apps.googleusercontent.com"
-                 data-callback="handleCredentialResponse"
-                 data-auto_prompt="false">
-            </div>
+            <div id="g_id_onload" data-client_id="388867750902-263hniv7d8v31m3l5pkphokg0scb9tos.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
             <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
         </div>
     </div>
@@ -122,12 +117,7 @@
             </div>
 
             <div class="md:col-span-1 space-y-5">
-                <div><label>Assigned Editor</label>
-                    <select id="pEditor" required>
-                        <option value="Naimur Rahman|naimur582582@gmail.com">Naimur Rahman (Default)</option>
-                        <option value="Shafin|shafin@mail.com">Shafin</option>
-                    </select>
-                </div>
+                <!-- এডিটর সিলেকশন সরিয়ে দিয়েছি, এটা আপনি ডিটেইলস থেকে সেট করবেন -->
                 <div><label>Category</label>
                     <select id="pCategory"><option>Reels</option><option>YouTube</option><option>Real Estate</option><option>Social Media Ads</option></select>
                 </div>
@@ -180,10 +170,10 @@
         <div class="flex flex-1 p-8 gap-8 overflow-y-auto">
             <div class="w-1/3 space-y-5">
                 <div><label>Client Email (C)</label><input type="email" id="editClientEmail"></div>
-                <div><label>Editor (I)</label>
+                <div><label>Assign Editor (I)</label>
                     <select id="editEditor">
-                        <option value="Naimur Rahman">Naimur Rahman</option>
-                        <option value="Shafin">Shafin</option>
+                        <option value="Naimur Rahman|naimur582582@gmail.com">Naimur Rahman</option>
+                        <option value="Shafin|shafin@mail.com">Shafin</option>
                     </select>
                 </div>
                 <div><label>Category (E)</label>
@@ -224,11 +214,10 @@
     lucide.createIcons();
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
     const ADMIN_EMAIL = "naimur582582@gmail.com"; 
-    const EDITORS_EMAILS = ["shafin@mail.com"]; // এডিটরদের ইমেইল লিস্ট এখানে দিন
+    const EDITORS_EMAILS = ["shafin@mail.com"]; 
 
     let ALL_PROJECTS = [];
 
-    // --- AUTH ---
     function handleCredentialResponse(response) {
         const payload = parseJwt(response.credential);
         localStorage.setItem('studio_logged_in', 'true');
@@ -255,16 +244,15 @@
             main.style.opacity = '1';
             document.getElementById('userNameDisplay').innerText = localStorage.getItem('user_name');
             
-            // Role display & Button logic
             if(userEmail === ADMIN_EMAIL.toLowerCase()) {
                 document.getElementById('userRoleDisplay').innerText = "Agency Owner";
                 document.getElementById('launchBtn').style.display = 'flex';
             } else if (EDITORS_EMAILS.includes(userEmail)) {
                 document.getElementById('userRoleDisplay').innerText = "Editor";
-                document.getElementById('launchBtn').style.display = 'none'; // এডিটর প্রজেক্ট খুলতে পারবে না
+                document.getElementById('launchBtn').style.display = 'none'; 
             } else {
                 document.getElementById('userRoleDisplay').innerText = "Client";
-                document.getElementById('launchBtn').style.display = 'flex'; // ক্লায়েন্ট প্রজেক্ট খুলতে পারবে
+                document.getElementById('launchBtn').style.display = 'flex'; 
             }
 
             const pic = localStorage.getItem('user_pic');
@@ -283,7 +271,6 @@
         }
     }
 
-    // --- DASHBOARD ---
     function toggleModal(id, show) { 
         document.getElementById(id).style.display = show ? 'flex' : 'none'; 
         if(id === 'pModal' && show) {
@@ -355,7 +342,11 @@
         document.getElementById('detProjectID').innerText = p[1];
         document.getElementById('editPName').value = p[3] || '';
         document.getElementById('editClientEmail').value = p[2] || '';
-        document.getElementById('editEditor').value = p[8] || 'Naimur Rahman';
+        
+        // এডিটর ভ্যালু সেট করার সময় নাম এবং ইমেইল দুটোই রাখার জন্য
+        const currentEditor = (p[8] || 'Naimur Rahman') + "|" + (p[9] || 'naimur582582@gmail.com');
+        document.getElementById('editEditor').value = currentEditor;
+        
         document.getElementById('editStatus').value = (p[10] || 'Pending').replace(/\s+/g, '');
         document.getElementById('editFootage').value = p[13] || '';
         document.getElementById('editScript').value = p[15] || '';
@@ -368,13 +359,14 @@
         document.getElementById('editRef2').value = p[17] || '';
         if(p[20]) document.getElementById('editDeadline').value = new Date(p[20]).toISOString().split('T')[0];
         
-        // শুধু অ্যাডমিন আপডেট বা ডিলিট করতে পারবে
         if(userEmail !== ADMIN_EMAIL.toLowerCase()){
             document.getElementById('saveUpdateBtn').style.display = 'none';
             document.getElementById('deleteBtn').style.display = 'none';
+            document.getElementById('editEditor').disabled = true;
         } else {
             document.getElementById('saveUpdateBtn').style.display = 'flex';
             document.getElementById('deleteBtn').style.display = 'flex';
+            document.getElementById('editEditor').disabled = false;
         }
         
         toggleModal('detailsModal', true);
@@ -384,18 +376,27 @@
         event.preventDefault();
         const btn = document.getElementById('submitBtn');
         btn.innerText = "LAUNCHING..."; btn.disabled = true;
-        const editorParts = document.getElementById('pEditor').value.split('|');
+        
+        // ডিফল্টভাবে আপনার কাছে আসবে
         const pData = {
-            action: "addProject", projectName: document.getElementById('pName').value, clientEmail: document.getElementById('pClientEmail').value,
-            assignedEditor: editorParts[0], editorEmail: editorParts[1], category: document.getElementById('pCategory').value,
-            footage: document.getElementById('pFootage').value, scriptLink: document.getElementById('pScript').value,
-            ref1: document.getElementById('pRef1').value, ref2: document.getElementById('pRef2').value,
-            deadline: document.getElementById('pDeadline').value, priority: document.getElementById('pPriority').value,
-            notes: document.getElementById('pNotes').value, budget: document.getElementById('pBudget').value
+            action: "addProject", 
+            projectName: document.getElementById('pName').value, 
+            clientEmail: document.getElementById('pClientEmail').value,
+            assignedEditor: "Naimur Rahman", 
+            editorEmail: "naimur582582@gmail.com", 
+            category: document.getElementById('pCategory').value,
+            footage: document.getElementById('pFootage').value, 
+            scriptLink: document.getElementById('pScript').value,
+            ref1: document.getElementById('pRef1').value, 
+            ref2: document.getElementById('pRef2').value,
+            deadline: document.getElementById('pDeadline').value, 
+            priority: document.getElementById('pPriority').value,
+            notes: document.getElementById('pNotes').value, 
+            budget: document.getElementById('pBudget').value
         };
         try {
             await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(pData) });
-            alert("Project Launched!");
+            alert("Project Launched! Naimur will assign an editor soon.");
             document.getElementById('projectForm').reset();
             toggleModal('pModal', false);
             setTimeout(initDashboard, 1500);
@@ -405,11 +406,15 @@
     async function saveProjectUpdate() {
         const btn = document.getElementById('saveUpdateBtn');
         btn.innerText = "SAVING..."; btn.disabled = true;
+        const editorParts = document.getElementById('editEditor').value.split('|');
+        
         const formData = {
             action: "updateProject", projectID: document.getElementById('detProjectID').innerText,
             projectName: document.getElementById('editPName').value, clientEmail: document.getElementById('editClientEmail').value,
             status: document.getElementById('editStatus').value, revisions: document.getElementById('editRev').value,
-            budget: document.getElementById('editBudget').value, editor: document.getElementById('editEditor').value,
+            budget: document.getElementById('editBudget').value, 
+            editor: editorParts[0], 
+            editorEmail: editorParts[1],
             footage: document.getElementById('editFootage').value, script: document.getElementById('editScript').value,
             deadline: document.getElementById('editDeadline').value, notes: document.getElementById('editNotes').value,
             category: document.getElementById('editCategory').value, priority: document.getElementById('editPriority').value,
