@@ -123,10 +123,10 @@
         <div class="p-8 border-b border-white/5 flex justify-between items-center bg-white/5">
             <div class="flex-1">
                 <input id="editPName" class="bg-transparent border-none text-2xl font-black italic text-white uppercase focus:ring-0 p-0 w-full mb-1" placeholder="Project Name">
-                <p id="detProjectID" class="text-cyan-400 font-mono text-xs tracking-widest italic">MN-000</p>
+                <p id="detProjectID" class="text-cyan-400 font-mono text-xs tracking-widest italic">ID: ---</p>
             </div>
             <div class="flex gap-3">
-                <button onclick="saveProjectUpdate()" id="saveUpdateBtn" class="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all active:scale-95">
+                <button onclick="saveProjectUpdate()" class="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all active:scale-95">
                     <i data-lucide="refresh-cw" size="14"></i> Update Project
                 </button>
                 <button onclick="deleteProject()" class="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-xl font-bold text-xs transition-all active:scale-95">
@@ -139,32 +139,49 @@
         <div class="flex flex-1 p-8 gap-8 overflow-y-auto">
             <div class="w-1/2 space-y-5">
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Current Status</label>
-                    <select id="editStatus" class="w-full mt-2 bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-cyan-500">
-                        <option value="Pending">Pending</option>
-                        <option value="InProgress">InProgress</option>
-                        <option value="Completed">Completed</option>
-                        <option value="URGENT">URGENT</option>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Client Email (C)</label>
+                    <input type="email" id="editClientEmail" class="w-full bg-white/5 border-white/10 rounded-xl text-white">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Editor (I)</label>
+                    <select id="editEditor" class="w-full bg-white/5 border-white/10 rounded-xl text-white">
+                        <option value="Naimur Rahman">Naimur Rahman</option>
+                        <option value="Shafin">Shafin</option>
                     </select>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Revisions</label><input type="number" id="editRev" class="w-full mt-2"></div>
-                    <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Budget (BDT)</label><input type="number" id="editBudget" class="w-full mt-2 text-cyan-400 font-bold"></div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Status (K)</label>
+                    <select id="editStatus" class="w-full bg-white/5 border-white/10 rounded-xl text-white">
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Review">Review</option>
+                        <option value="Completed">Completed</option>
+                    </select>
                 </div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Footage Link</label><input type="url" id="editFootage" class="w-full mt-2 text-xs"></div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Script/Brief Link</label><input type="url" id="editScript" class="w-full mt-2 text-xs"></div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Footage Link (N)</label>
+                    <input type="url" id="editFootage" class="w-full bg-white/5 border-white/10 rounded-xl text-white">
+                </div>
             </div>
 
             <div class="w-1/2 space-y-5">
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Client Email</label><input type="email" id="editClientEmail" class="w-full mt-2"></div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Deadline</label><input type="date" id="editDeadline" class="w-full mt-2"></div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Editor</label><input type="text" id="editEditor" class="w-full mt-2"></div>
-                
-                <div class="p-6 glass rounded-[32px] border border-green-500/20 bg-green-500/5 mt-4">
-                    <p class="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-3">Quick Notify</p>
-                    <button onclick="sendWhatsAppNotify()" id="waBtn" class="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-xl text-xs font-bold hover:bg-green-500 transition-all">
-                        <i data-lucide="message-circle" size="16"></i> Send Update via WhatsApp
-                    </button>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Script Link (P)</label>
+                    <input type="url" id="editScript" class="w-full bg-white/5 border-white/10 rounded-xl text-white">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Deadline (U)</label>
+                    <input type="date" id="editDeadline" class="w-full bg-white/5 border-white/10 rounded-xl text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Revisions (X)</label>
+                        <input type="number" id="editRev" class="w-full bg-white/5 border-white/10 rounded-xl text-white">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Budget (AC)</label>
+                        <input type="number" id="editBudget" class="w-full bg-white/5 border-white/10 rounded-xl text-white">
+                    </div>
                 </div>
             </div>
         </div>
