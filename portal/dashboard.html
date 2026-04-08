@@ -399,57 +399,6 @@ function showProjectDetails(index) {
     document.getElementById('dispLastUpdated').innerText = p[34] || '---';
     document.getElementById('editVisible').value = p[32] || 'Yes';
 
-    const isAdmin = userEmail === ADMIN_EMAIL.toLowerCase();
-
-    document.getElementById('saveUpdateBtn').style.display = isAdmin ? 'flex' : 'none';
-    document.getElementById('deleteBtn').style.display = isAdmin ? 'flex' : 'none';
-
-    // 🔒 only client lock
-    if(!isAdmin){
-        document.querySelectorAll('#detailsModal input, #detailsModal textarea, #detailsModal select')
-        .forEach(el => {
-            el.setAttribute("disabled", true);
-            el.style.opacity = "0.6";
-        });
-    } else {
-        document.querySelectorAll('#detailsModal input, #detailsModal textarea, #detailsModal select')
-        .forEach(el => {
-            el.removeAttribute("disabled");
-            el.style.opacity = "1";
-        });
-    }
-
-    toggleModal('detailsModal', true);
-}
-    const p = ALL_PROJECTS[index];
-    const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
-    if(!p) return;
-    
-    document.getElementById('detProjectID').innerText = p[1];
-    document.getElementById('editPName').value = p[3] || '';
-    document.getElementById('editClientEmail').value = p[2] || '';
-    document.getElementById('editEditor').value = (p[8] || 'Naimur Rahman') + "|" + (p[9] || 'naimur582582@gmail.com');
-    document.getElementById('editStatus').value = p[10] || 'Pending';
-    document.getElementById('editApproval').value = p[29] || 'Pending';
-    
-    document.getElementById('editFootage').value = p[13] || '';
-    document.getElementById('editFilesLink').value = p[14] || '';
-    document.getElementById('editRef1').value = p[16] || '';
-    document.getElementById('editPriority').value = p[11] || 'Normal';
-    document.getElementById('editBudget').value = p[28] || 0;
-    if(p[20]) document.getElementById('editDeadline').value = new Date(p[20]).toISOString().split('T')[0];
-    
-    document.getElementById('editRevNum').value = p[23] || 0;
-    document.getElementById('editVersion').value = p[24] || 'v1.0';
-    document.getElementById('editReqType').value = p[25] || 'General';
-    document.getElementById('editClientNotes').value = p[27] || '';
-    document.getElementById('editEditorNotes').value = p[26] || '';
-    
-    document.getElementById('dispUploadedBy').innerText = p[30] || '---';
-    document.getElementById('dispUserRole').innerText = p[31] || '---';
-    document.getElementById('dispLastUpdated').innerText = p[34] || '---';
-    document.getElementById('editVisible').value = p[32] || 'Yes';
-
     // 🔐 ADMIN CONTROL
     const isAdmin = userEmail === ADMIN_EMAIL.toLowerCase();
 
