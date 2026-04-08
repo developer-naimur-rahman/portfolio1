@@ -103,16 +103,21 @@
         <p class="text-slate-500 text-sm italic">Connecting to Studio Database...</p>
     </div>
     <div id="projectGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8"></div>
-     <!-- ✨ Client Revision Form Start ✨ -->
-    <div class="mt-8 p-6 glass rounded-2xl">
-        <h2 class="text-xl font-bold mb-4">Add Revision</h2>
+
+
+<!-- Project Details + Revision Form -->
+<div id="projectDetails" class="mt-8 p-6 glass rounded-2xl hidden">
+    <!-- Project Info -->
+    <h2 id="projTitle" class="text-xl font-bold mb-4">Project Title</h2>
+    <p id="projDesc" class="mb-4">Project description will appear here...</p>
+
+    <!-- ✨ Client Revision Form Start ✨ -->
+    <div class="mt-4">
+        <h3 class="text-lg font-semibold mb-2">Add Revision</h3>
         <form id="revisionForm" onsubmit="addRevision(event)" class="grid grid-cols-1 gap-4">
-            <div>
-                <label>Select Project</label>
-                <select id="revProject" required>
-                    <!-- JS দিয়ে populate করবে client projects দিয়ে -->
-                </select>
-            </div>
+            <!-- Hidden input to store project ID -->
+            <input type="hidden" id="revProjectId">
+
             <div>
                 <label>Revision Details</label>
                 <textarea id="revNotes" rows="4" placeholder="Explain what needs to be changed..." required></textarea>
@@ -127,53 +132,47 @@
         </form>
     </div>
     <!-- ✨ Client Revision Form End ✨ -->
+</div>
+    
 </main>
-<!-- JS scripts -->
-<!-- Body শেষের আগে -->
-<script>
-    // 1. Project List Populate
-    const projects = [
-        { id: 1, name: "Project Alpha" },
-        { id: 2, name: "Project Beta" },
-        { id: 3, name: "Project Gamma" }
-    ];
+<script>// Example projects data
+const projects = [
+    { id: 1, name: "Project Alpha", description: "This is Project Alpha description." },
+    { id: 2, name: "Project Beta", description: "This is Project Beta description." },
+    { id: 3, name: "Project Gamma", description: "This is Project Gamma description." }
+];
 
-    const revProject = document.getElementById("revProject");
+const projectGrid = document.getElementById("projectGrid");
+const projectDetails = document.getElementById("projectDetails");
+const projTitle = document.getElementById("projTitle");
+const projDesc = document.getElementById("projDesc");
+const revProjectId = document.getElementById("revProjectId");
 
-    projects.forEach(proj => {
-        const option = document.createElement("option");
-        option.value = proj.id;
-        option.textContent = proj.name;
-        revProject.appendChild(option);
-    });
+// Populate Project Grid
+projects.forEach(proj => {
+    const card = document.createElement("div");
+    card.className = "p-4 glass rounded cursor-pointer hover:shadow-lg transition";
+    card.innerHTML = `
+        <h3 class="font-semibold text-lg mb-2">${proj.name}</h3>
+        <p class="text-sm text-gray-600">${proj.description.substring(0, 50)}...</p>
+    `;
+    card.addEventListener("click", () => showProjectDetails(proj));
+    projectGrid.appendChild(card);
+});
 
-    // 2. Handle Revision Submit
-    function addRevision(event) {
-        event.preventDefault();
+// Show Project Details + Auto Fill Hidden Input
+function showProjectDetails(proj) {
+    projectDetails.classList.remove("hidden");
+    projTitle.textContent = proj.name;
+    projDesc.textContent = proj.description;
+    revProjectId.value = proj.id; // Hidden input auto fill
+}
 
-        const projectId = revProject.value;
-        const notes = document.getElementById("revNotes").value;
-        const file = document.getElementById("revFile").files[0] || null;
-
-        if (!projectId || !notes) {
-            alert("Please select a project and enter revision details!");
-            return;
-        }
-
-        console.log("Project ID:", projectId);
-        console.log("Notes:", notes);
-        console.log("File:", file);
-
-        alert("Revision submitted successfully!");
-        document.getElementById("revisionForm").reset();
-    }
-</script>
-
-<script>
+// Handle Revision Submission
 function addRevision(event) {
     event.preventDefault();
-
-    const projectId = document.getElementById("revProject").value;
+    
+    const projectId = revProjectId.value;
     const notes = document.getElementById("revNotes").value;
     const file = document.getElementById("revFile").files[0] || null;
 
@@ -181,11 +180,11 @@ function addRevision(event) {
     console.log("Notes:", notes);
     console.log("File:", file);
 
-    // এখানে তুমি API call বা Google Sheets update করতে পারো
     alert("Revision submitted successfully!");
     document.getElementById("revisionForm").reset();
 }
 </script>
+
 
 <div id="pModal" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden z-[100] items-center justify-center p-4">
     <div class="glass w-full max-w-5xl p-10 rounded-[40px] shadow-2xl overflow-y-auto max-h-[90vh]">
