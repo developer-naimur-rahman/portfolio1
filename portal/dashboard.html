@@ -8,32 +8,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #05060b;
-            --glass: rgba(255,255,255,0.03);
-            --border: rgba(255,255,255,0.08);
-            --accent: #00f2ff;
-        }
+        :root { --bg: #05060b; --glass: rgba(255,255,255,0.03); --border: rgba(255,255,255,0.08); --accent: #00f2ff; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #f8fafc; min-height: 100vh; }
         .glass { background: var(--glass); backdrop-filter: blur(16px); border:1px solid var(--border); }
-        .glass-card { transition: all 0.4s ease; overflow:hidden; position:relative; cursor: pointer; }
+        .glass-card { transition: all 0.4s ease; cursor: pointer; }
         .glass-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 20px 40px -20px rgba(0,242,255,0.2); }
         .progress-bar { height: 6px; background: rgba(255,255,255,0.05); border-radius:3px; overflow:hidden; }
         .progress-fill { height:100%; background: linear-gradient(90deg,#00f2ff,#0066ff); transition: width 1s ease; }
         
-        /* Status Colors */
+        /* Status Tags */
         .status-Pending { color:#f59e0b; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); }
         .status-InProgress { color:#3b82f6; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); }
         .status-Completed { color:#10b981; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); }
         .status-URGENT { color:#ef4444; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); animation: pulse-red 2s infinite; }
         
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
-        
         .loading-spinner { width:40px; height:40px; border:3px solid rgba(0,242,255,0.1); border-radius:50%; border-top-color: var(--accent); animation:spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        input, select, textarea { background: rgba(255,255,255,0.05); border:1px solid var(--border); outline:none; transition:0.3s; color:white; padding:12px; border-radius:16px; }
-        input:focus, select:focus { border-color: var(--accent); }
+        input, select, textarea { background: rgba(255,255,255,0.05); border:1px solid var(--border); outline:none; color:white; padding:12px; border-radius:16px; width: 100%; }
+        input:focus { border-color: var(--accent); }
     </style>
 </head>
 <body class="flex">
@@ -46,17 +40,17 @@
         </div>
         <p class="text-[10px] text-slate-500 uppercase tracking-[4px] ml-1 font-semibold">Production Console</p>
     </div>
-    <nav class="space-y-3 flex-grow">
-        <div onclick="location.reload()" class="flex items-center justify-between p-4 glass rounded-2xl text-cyan-400 cursor-pointer group">
-            <div class="flex items-center gap-3 font-bold"><i data-lucide="layout-grid" size="18"></i> Dashboard</div>
+    <nav class="space-y-3 flex-grow text-sm">
+        <div onclick="location.reload()" class="flex items-center gap-3 p-4 glass rounded-2xl text-cyan-400 cursor-pointer">
+            <i data-lucide="layout-grid" size="18"></i> Dashboard
         </div>
     </nav>
     <div class="pt-8 border-t border-white/5">
-        <div class="flex items-center gap-3 p-2">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg">N</div>
+        <div class="flex items-center gap-3 p-2 text-xs">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg text-lg">N</div>
             <div class="overflow-hidden">
-                <p id="userEmailTag" class="text-xs font-bold text-white truncate text-ellipsis">naimur582582@gmail.com</p>
-                <p class="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Agency Owner</p>
+                <p class="font-bold text-white truncate">Naimur Rahman</p>
+                <p class="text-slate-500 uppercase font-bold tracking-wider">Agency Owner</p>
             </div>
         </div>
     </div>
@@ -66,118 +60,98 @@
     <header class="flex justify-between items-end mb-12">
         <div>
             <h2 class="text-4xl font-extrabold tracking-tight text-white mb-2 italic">Studio Hub<span class="text-cyan-500">.</span></h2>
-            <p class="text-slate-500 font-medium flex items-center gap-2">
+            <p class="text-slate-500 font-medium flex items-center gap-2 text-sm">
                 <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Production Pipeline Active
             </p>
         </div>
-        <div class="flex gap-4">
-            <button onclick="toggleModal('pModal', true)" class="bg-cyan-500 hover:bg-cyan-400 text-black px-8 py-4 rounded-2xl font-bold flex items-center gap-3 shadow-lg shadow-cyan-500/20 transition-all active:scale-95">
-                <i data-lucide="plus-circle" size="20"></i> Launch Production
-            </button>
-        </div>
+        <button onclick="toggleModal('pModal', true)" class="bg-cyan-500 hover:bg-cyan-400 text-black px-8 py-4 rounded-2xl font-bold flex items-center gap-3 shadow-lg shadow-cyan-500/20 active:scale-95 transition-all">
+            <i data-lucide="plus-circle" size="20"></i> Launch Production
+        </button>
     </header>
 
     <div class="grid grid-cols-4 gap-6 mb-16">
-        <div class="glass p-8 rounded-[32px] relative overflow-hidden group">
-            <p class="text-slate-500 text-[11px] font-bold uppercase tracking-widest mb-3">Active Projects</p>
-            <h3 id="stat-active" class="text-4xl font-bold italic text-white">0</h3>
-        </div>
-        <div class="glass p-8 rounded-[32px] border-b-4 border-green-500/30">
-            <p class="text-slate-500 text-[11px] font-bold uppercase tracking-widest mb-3">Delivered</p>
-            <h3 id="stat-done" class="text-4xl font-bold text-green-400 italic">0</h3>
-        </div>
-        <div class="glass p-8 rounded-[32px] border-b-4 border-orange-500/30">
-            <p class="text-slate-500 text-[11px] font-bold uppercase tracking-widest mb-3">Total Revisions</p>
-            <h3 id="stat-rev" class="text-4xl font-bold text-orange-400 italic">0</h3>
-        </div>
-        <div class="glass p-8 rounded-[32px] border-b-4 border-cyan-500/30">
-            <p class="text-slate-500 text-[11px] font-bold uppercase tracking-widest mb-3">Revenue Tracking</p>
-            <h3 id="stat-revenue" class="text-4xl font-bold text-cyan-400 italic">$0</h3>
-        </div>
+        <div class="glass p-8 rounded-[32px]"><p class="text-slate-500 text-[11px] font-bold uppercase mb-3">Active</p><h3 id="stat-active" class="text-4xl font-bold italic text-white">0</h3></div>
+        <div class="glass p-8 rounded-[32px]"><p class="text-slate-500 text-[11px] font-bold uppercase mb-3">Delivered</p><h3 id="stat-done" class="text-4xl font-bold text-green-400 italic">0</h3></div>
+        <div class="glass p-8 rounded-[32px]"><p class="text-slate-500 text-[11px] font-bold uppercase mb-3">Revisions</p><h3 id="stat-rev" class="text-4xl font-bold text-orange-400 italic">0</h3></div>
+        <div class="glass p-8 rounded-[32px] border-b-4 border-cyan-500/30"><p class="text-slate-500 text-[11px] font-bold uppercase mb-3">Revenue</p><h3 id="stat-revenue" class="text-4xl font-bold text-cyan-400 italic">BDT 0</h3></div>
     </div>
 
     <div id="loader" class="flex flex-col items-center justify-center py-32">
         <div class="loading-spinner mb-6"></div>
-        <p class="text-slate-500 text-sm italic">Syncing with Google Sheets...</p>
+        <p class="text-slate-500 text-sm italic">Connecting to Studio Database...</p>
     </div>
     <div id="projectGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"></div>
 </main>
 
+<!-- ADD PROJECT MODAL -->
 <div id="pModal" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden z-[100] items-center justify-center p-4 overflow-y-auto">
     <div class="glass w-full max-w-4xl p-10 my-10 rounded-[40px] relative">
         <div class="flex justify-between items-start mb-10">
-            <h3 class="text-3xl font-bold italic text-white tracking-tighter">Deploy New Production</h3>
-            <button onclick="toggleModal('pModal', false)" class="w-12 h-12 glass rounded-full flex items-center justify-center hover:bg-red-500/20 text-slate-400"><i data-lucide="x"></i></button>
+            <h3 class="text-3xl font-bold italic text-white tracking-tighter uppercase">New Production</h3>
+            <button onclick="toggleModal('pModal', false)" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
         </div>
         <form id="projectForm" class="grid grid-cols-2 gap-8">
-            <div class="space-y-6">
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Project Name</label><input type="text" id="pName" required class="w-full mt-2"></div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Client Email</label><input type="email" id="pClientEmail" required class="w-full mt-2"></div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Assigned Editor</label>
-                    <select id="pEditor" required class="w-full mt-2">
-                        <option value="Editor Name|editor@mail.com">Select Editor</option>
-                        <option value="Naimur|naimur@mail.com">Naimur Rahman</option>
-                        <option value="Shafin|shafin@mail.com">Shafin (Editor)</option>
+            <div class="space-y-4">
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Project Name</label><input type="text" id="pName" required></div>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Client Email</label><input type="email" id="pClientEmail" required></div>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Editor</label>
+                    <select id="pEditor" required>
+                        <option value="">Select Editor</option>
+                        <option value="Naimur Rahman|naimur582582@gmail.com">Naimur Rahman</option>
+                        <option value="Shafin|shafin@mail.com">Shafin</option>
                     </select>
                 </div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Category</label>
-                    <select id="pCategory" class="w-full mt-2">
-                        <option value="YouTube">YouTube Video</option>
-                        <option value="Reels">Shorts/Reels</option>
-                        <option value="Real Estate">Real Estate</option>
-                        <option value="Ads">Social Media Ads</option>
-                    </select>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Category</label>
+                    <select id="pCategory"><option>YouTube</option><option>Reels</option><option>Real Estate</option><option>Ads</option></select>
                 </div>
             </div>
-            <div class="space-y-6">
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Deadline</label><input type="date" id="pDeadline" required class="w-full mt-2"></div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Priority</label>
-                    <select id="pPriority" class="w-full mt-2">
-                        <option value="Normal">Normal</option>
-                        <option value="High">High</option>
-                        <option value="URGENT">URGENT</option>
-                    </select>
+            <div class="space-y-4">
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Deadline</label><input type="date" id="pDeadline" required></div>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Priority</label>
+                    <select id="pPriority"><option>Normal</option><option>High</option><option value="URGENT">URGENT</option></select>
                 </div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Budget (USD)</label><input type="number" id="pBudget" value="0" class="w-full mt-2 font-bold text-cyan-400"></div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Footage Link</label><input type="url" id="pFootage" placeholder="https://..." class="w-full mt-2"></div>
-                <button type="submit" id="submitBtn" class="w-full bg-cyan-500 text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-cyan-400 mt-4 transition-all active:scale-95">Launch Project</button>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Budget (BDT)</label><input type="number" id="pBudget" value="0"></div>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Footage Link</label><input type="url" id="pFootage"></div>
+                <button type="submit" id="submitBtn" class="w-full bg-cyan-500 text-black py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-cyan-400 mt-4">Launch Project</button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- DETAILS MODAL -->
 <div id="detailsModal" class="fixed inset-0 bg-black/95 backdrop-blur-2xl hidden z-[150] items-center justify-center p-4">
-    <div class="glass w-full max-w-5xl h-[80vh] overflow-hidden rounded-[40px] flex flex-col shadow-2xl">
+    <div class="glass w-full max-w-4xl rounded-[40px] flex flex-col shadow-2xl overflow-hidden">
         <div class="p-8 border-b border-white/5 flex justify-between items-center bg-white/5">
             <div>
-                <h3 id="detProjectName" class="text-3xl font-black italic text-white uppercase tracking-tighter">PROJECT NAME</h3>
-                <p id="detProjectID" class="text-cyan-400 font-mono text-sm tracking-widest mt-1 italic">MN-101</p>
+                <h3 id="detProjectName" class="text-2xl font-black italic text-white uppercase">PROJECT NAME</h3>
+                <p id="detProjectID" class="text-cyan-400 font-mono text-xs tracking-widest mt-1 italic">MN-000</p>
             </div>
-            <button onclick="toggleModal('detailsModal', false)" class="p-3 glass rounded-full text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
+            <button onclick="toggleModal('detailsModal', false)" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
         </div>
-        <div class="flex flex-1 overflow-hidden">
-            <div class="w-1/3 p-8 border-r border-white/5 space-y-8 bg-black/20 overflow-y-auto">
-                <div>
-                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Current Status</label>
-                    <div id="detStatusBadge" class="mt-2 inline-block px-4 py-2 rounded-xl font-bold text-xs uppercase italic border">PENDING</div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="text-slate-500 text-[10px] uppercase font-bold">Version</label><p id="detVersion" class="text-lg font-bold text-white italic">V1.0</p></div>
-                    <div><label class="text-slate-500 text-[10px] uppercase font-bold">Revisions</label><p id="detRevisions" class="text-lg font-bold text-orange-400 italic">0/3</p></div>
+        <div class="flex flex-1 p-8 gap-8">
+            <div class="w-1/2 space-y-6">
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase">Status</label><div id="detStatusBadge" class="mt-2 inline-block px-4 py-1 rounded-lg font-bold text-[10px] uppercase border">--</div></div>
+                <div class="flex gap-10">
+                    <div><label class="text-slate-500 text-[10px] uppercase font-bold">Version</label><p id="detVersion" class="text-xl font-bold text-white italic">--</p></div>
+                    <div><label class="text-slate-500 text-[10px] uppercase font-bold">Revisions</label><p id="detRevisions" class="text-xl font-bold text-orange-400 italic">--</p></div>
                 </div>
                 <div class="space-y-3">
-                    <a id="detFootageLink" target="_blank" class="flex items-center gap-3 p-4 glass rounded-2xl hover:text-cyan-400"><i data-lucide="external-link" size="18"></i> Footage Link</a>
-                    <a id="detScriptLink" target="_blank" class="flex items-center gap-3 p-4 glass rounded-2xl hover:text-purple-400"><i data-lucide="file-text" size="18"></i> Script/Notes</a>
-                </div>
-                <div class="pt-6 border-t border-white/5">
-                    <label class="text-slate-500 text-[10px] uppercase font-bold">Assigned Editor</label>
-                    <p id="detEditor" class="text-white font-bold mt-1 italic">--</p>
+                    <a id="detFootageLink" target="_blank" class="flex items-center gap-3 p-4 glass rounded-2xl hover:text-cyan-400 text-sm"><i data-lucide="video" size="18"></i> Raw Footage</a>
+                    <a id="detScriptLink" target="_blank" class="flex items-center gap-3 p-4 glass rounded-2xl hover:text-purple-400 text-sm"><i data-lucide="file-text" size="18"></i> Script / Brief</a>
                 </div>
             </div>
-            <div class="flex-1 p-8 bg-black/40 overflow-y-auto">
-                <h4 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">Production Timeline</h4>
-                <div id="detTimeline" class="space-y-6">
-                    <div class="flex gap-4 items-start opacity-50"><div class="w-2 h-2 bg-slate-600 rounded-full mt-2"></div><p class="text-sm italic">No revision history found for this project.</p></div>
+            <div class="w-1/2 space-y-6">
+                <div class="p-6 glass rounded-[32px] border-l-4 border-cyan-500">
+                    <label class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Client Contact</label>
+                    <p id="detClient" class="text-white font-bold mb-4 italic truncate">--</p>
+                    <!-- WHATSAPP BUTTON -->
+                    <button id="waBtn" class="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-green-500">
+                        <i data-lucide="message-circle" size="14"></i> Send WhatsApp Update
+                    </button>
+                </div>
+                <div class="p-6 glass rounded-[32px]">
+                    <label class="text-slate-500 text-[10px] uppercase font-bold">Assigned Editor</label>
+                    <p id="detEditor" class="text-white font-bold mt-1 italic">--</p>
                 </div>
             </div>
         </div>
@@ -186,7 +160,8 @@
 
 <script>
     lucide.createIcons();
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec"; // Replace with your DEPLOYED URL
+    // এই URL টি অবশ্যই আপনার Apps Script এর নতুন Deployment URL হতে হবে
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
     let ALL_PROJECTS = [];
 
     function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
@@ -194,88 +169,91 @@
     async function initDashboard() {
         const loader = document.getElementById('loader');
         const grid = document.getElementById('projectGrid');
-        loader.classList.remove('hidden'); grid.innerHTML = '';
+        loader.classList.remove('hidden'); 
+        grid.innerHTML = '';
+        
         try {
             const res = await fetch(WEB_APP_URL);
             const response = await res.json();
             ALL_PROJECTS = response.data || [];
             renderUI(ALL_PROJECTS);
         } catch (err) {
-            console.error(err);
-            grid.innerHTML = `<div class="col-span-full py-20 text-center"><p class="text-red-500">Failed to sync with Master Sheet. Check Script URL.</p></div>`;
+            grid.innerHTML = `<div class="col-span-full py-20 text-center"><p class="text-red-500">Data Sync Failed. Please check the URL.</p></div>`;
         } finally { loader.classList.add('hidden'); }
     }
 
     function renderUI(data) {
         const grid = document.getElementById('projectGrid');
-        if (!data || data.length === 0) { grid.innerHTML = "<p class='col-span-full text-center py-20 text-slate-500 italic'>No active productions found.</p>"; return; }
+        if (!data || data.length === 0) { grid.innerHTML = "<p class='col-span-full text-center py-20 text-slate-500 italic'>No projects found.</p>"; return; }
         
         grid.innerHTML = data.map((p, index) => {
-            const status = p[9] || 'Pending';
-            const priority = p[10] || 'Normal';
-            const revCount = parseInt(p[22] || 0);
-            const deadline = new Date(p[19]).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+            const status = (p[10] || 'Pending').replace(/\s+/g, '');
+            const priority = p[11] || 'Normal';
+            const revCount = parseInt(p[23] || 0);
+            const deadline = p[20] ? new Date(p[20]).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : 'N/A';
             
             return `
                 <div onclick="showProjectDetails(${index})" class="glass glass-card p-8 rounded-[40px] border-l-4 ${priority === 'URGENT' ? 'border-red-500' : 'border-transparent'}">
                     <div class="flex justify-between items-start mb-6">
                         <div>
                             <span class="text-[10px] font-mono text-cyan-400 tracking-widest">${p[1]}</span>
-                            <h4 class="text-xl font-bold text-white italic mt-1">${p[2]}</h4>
+                            <h4 class="text-xl font-bold text-white italic mt-1 truncate w-48">${p[3]}</h4>
                         </div>
-                        <span class="status-${status} px-4 py-1.5 rounded-xl text-[10px] font-black uppercase italic">${status}</span>
+                        <span class="status-${status} px-4 py-1.5 rounded-xl text-[10px] font-black uppercase italic">${p[10] || 'Pending'}</span>
                     </div>
-                    
                     <div class="flex gap-4 text-slate-400 text-[11px] font-bold mb-6">
-                        <span class="flex items-center gap-1"><i data-lucide="layers" size="12"></i> ${p[3]}</span>
-                        <span class="flex items-center gap-1 text-orange-400"><i data-lucide="refresh-cw" size="12"></i> ${p[23]}</span>
+                        <span class="flex items-center gap-1"><i data-lucide="layers" size="12"></i> ${p[4] || 'Video'}</span>
+                        <span class="flex items-center gap-1 text-orange-400"><i data-lucide="refresh-cw" size="12"></i> ${revCount}</span>
                         <span class="flex items-center gap-1"><i data-lucide="calendar" size="12"></i> ${deadline}</span>
                     </div>
-
                     <div class="progress-bar mb-3">
-                        <div class="progress-fill" style="width: ${status === 'Completed' ? '100%' : (revCount * 33) + '%'}"></div>
+                        <div class="progress-fill" style="width: ${p[10] === 'Completed' ? '100%' : (revCount * 33) + '%'}"></div>
                     </div>
-                    <div class="flex justify-between text-[10px] uppercase font-bold text-slate-500">
-                        <span>Production Progress</span>
-                        <span class="${revCount > 2 ? 'text-red-500' : ''}">Revisions: ${revCount}/3</span>
-                    </div>
+                    <p class="text-[10px] uppercase font-bold text-slate-500 italic">Production Underway</p>
                 </div>
             `;
         }).join('');
-        
         lucide.createIcons();
         updateStats(data);
     }
 
     function showProjectDetails(index) {
         const p = ALL_PROJECTS[index];
-        document.getElementById('detProjectName').innerText = p[2];
+        document.getElementById('detProjectName').innerText = p[3];
         document.getElementById('detProjectID').innerText = p[1];
-        document.getElementById('detVersion').innerText = p[23] || 'V1.0';
-        document.getElementById('detRevisions').innerText = (p[22] || 0) + "/3";
-        document.getElementById('detEditor').innerText = p[7] || '--';
-        document.getElementById('detFootageLink').href = p[12] || '#';
-        document.getElementById('detScriptLink').href = p[14] || '#';
+        document.getElementById('detVersion').innerText = p[24] || 'V1.0';
+        document.getElementById('detRevisions').innerText = (p[23] || 0) + "/3";
+        document.getElementById('detEditor').innerText = p[8] || '--';
+        document.getElementById('detClient').innerText = p[2] || '--';
+        document.getElementById('detFootageLink').href = p[13] || '#';
+        document.getElementById('detScriptLink').href = p[15] || '#';
         
+        const statusText = p[10] || 'Pending';
         const badge = document.getElementById('detStatusBadge');
-        badge.innerText = p[9];
-        badge.className = `mt-2 inline-block px-4 py-2 rounded-xl font-bold text-xs uppercase italic border status-${p[9]}`;
+        badge.innerText = statusText;
+        badge.className = `mt-2 inline-block px-4 py-1 rounded-lg font-bold text-[10px] uppercase border status-${statusText.replace(/\s+/g, '')}`;
         
+        // WhatsApp Action
+        document.getElementById('waBtn').onclick = () => {
+            const msg = `Hi, This is Motion Of Naimur. Your project "${p[3]}" status is now: ${statusText}.`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
         toggleModal('detailsModal', true);
     }
 
     function updateStats(data) {
-        document.getElementById('stat-active').innerText = data.filter(p => p[9] !== 'Completed').length;
-        document.getElementById('stat-done').innerText = data.filter(p => p[9] === 'Completed').length;
-        document.getElementById('stat-rev').innerText = data.reduce((acc, p) => acc + (parseInt(p[22] || 0)), 0);
+        document.getElementById('stat-active').innerText = data.filter(p => p[10] !== 'Completed').length;
+        document.getElementById('stat-done').innerText = data.filter(p => p[10] === 'Completed').length;
+        document.getElementById('stat-rev').innerText = data.reduce((acc, p) => acc + (parseInt(p[23] || 0)), 0);
         const totalRev = data.reduce((acc, p) => acc + (parseFloat(p[28] || 0)), 0);
-        document.getElementById('stat-revenue').innerText = "$" + totalRev;
+        document.getElementById('stat-revenue').innerText = "BDT " + totalRev.toLocaleString();
     }
 
     document.getElementById('projectForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.innerText = "Deploying...";
+        btn.innerText = "Processing...";
         btn.disabled = true;
 
         const editorData = document.getElementById('pEditor').value.split('|');
@@ -290,23 +268,31 @@
             deadline: document.getElementById('pDeadline').value,
             priority: document.getElementById('pPriority').value,
             budget: document.getElementById('pBudget').value,
-            footage: document.getElementById('pFootage').value,
-            notes: "Initial launch"
+            footage: document.getElementById('pFootage').value
         };
 
         try {
-            await fetch(WEB_APP_URL, {
+            // POST Request with JSON
+            const response = await fetch(WEB_APP_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 body: JSON.stringify(formData)
             });
-            alert("Project Launched! Syncing may take a few seconds.");
+            const result = await response.json();
+            
+            if(result.status === "success") {
+                alert("Project Launched Successfully!");
+                toggleModal('pModal', false);
+                initDashboard();
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (err) {
+            // অনেক সময় CORS এর জন্য response.json() ফেল করে, কিন্তু ডাটা সাবমিট হয়ে যায়।
+            alert("Request sent to server. Refreshing dashboard...");
             toggleModal('pModal', false);
             setTimeout(initDashboard, 2000);
-        } catch (err) {
-            alert("Error: " + err.message);
         } finally {
-            btn.innerText = "Launch Production";
+            btn.innerText = "Launch Project";
             btn.disabled = false;
         }
     });
