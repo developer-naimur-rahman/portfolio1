@@ -129,8 +129,9 @@
     <!-- ✨ Client Revision Form End ✨ -->
 </main>
 <!-- JS scripts -->
+<!-- Body শেষের আগে -->
 <script>
-    // Example JS
+    // 1. Project List Populate
     const projects = [
         { id: 1, name: "Project Alpha" },
         { id: 2, name: "Project Beta" },
@@ -145,6 +146,27 @@
         option.textContent = proj.name;
         revProject.appendChild(option);
     });
+
+    // 2. Handle Revision Submit
+    function addRevision(event) {
+        event.preventDefault();
+
+        const projectId = revProject.value;
+        const notes = document.getElementById("revNotes").value;
+        const file = document.getElementById("revFile").files[0] || null;
+
+        if (!projectId || !notes) {
+            alert("Please select a project and enter revision details!");
+            return;
+        }
+
+        console.log("Project ID:", projectId);
+        console.log("Notes:", notes);
+        console.log("File:", file);
+
+        alert("Revision submitted successfully!");
+        document.getElementById("revisionForm").reset();
+    }
 </script>
 
 <script>
