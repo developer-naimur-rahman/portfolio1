@@ -174,32 +174,36 @@ projects.forEach(proj => {
 });
 </script>
 
-<script>function addRevision(event) {
-    event.preventDefault();
+<script>
+    function addRevision(event) {
+  event.preventDefault();
 
-    const projectId = revProjectId.value;
-    const notes = document.getElementById("revNotes").value;
-    const fileInput = document.getElementById("revFile");
-    const file = fileInput.files[0] || null;
+  const projectId = revProjectId.value;       // hidden input auto-fill
+  const notes = document.getElementById("revNotes").value;
+  const fileInput = document.getElementById("revFile");
+  const file = fileInput.files[0] || null;
 
-    if (!projectId || !notes) {
-        alert("Please fill in all required fields!");
-        return;
-    }
+  const data = {
+    action: "addRevision",
+    projectID: projectId,
+    notes: notes,
+    clientEmail: "client@example.com"   // আপনার login session থেকে নিতে হবে
+  };
 
-    // 🔹 Prepare data for backend / Google Sheets
-    const formData = new FormData();
-    formData.append("projectId", projectId);
-    formData.append("notes", notes);
-    if (file) formData.append("file", file);
-
-    // Example: console log (Replace this with actual API call)
-    console.log("Revision Data:", projectId, notes, file);
-
-    alert("Revision submitted successfully!");
-
-    // Reset form
+  fetch("https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.text())
+  .then(resp => {
+    alert(resp);
     document.getElementById("revisionForm").reset();
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Failed to submit revision");
+  });
 }
 </script>
 
