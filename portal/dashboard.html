@@ -14,57 +14,48 @@
     --border: rgba(255,255,255,0.08);
     --accent: #00f2ff;
 }
-body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: var(--bg);
-    color: #f8fafc;
-    min-height: 100vh;
-}
-.glass {
-    background: var(--glass);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--border);
-}
-.glass-card { transition: all 0.4s ease; overflow: hidden; position: relative; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #f8fafc; min-height: 100vh; }
+.glass { background: var(--glass); backdrop-filter: blur(16px); border:1px solid var(--border); }
+.glass-card { transition: all 0.4s ease; overflow:hidden; position:relative; }
 .glass-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 20px 40px -20px rgba(0,242,255,0.2); }
-.progress-bar { height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, #00f2ff, #0066ff); width: 0%; transition: width 1s ease; }
-.loading-spinner { width: 40px; height: 40px; border: 3px solid rgba(0,242,255,0.1); border-radius: 50%; border-top-color: var(--accent); animation: spin 1s linear infinite; }
+.progress-bar { height: 4px; background: rgba(255,255,255,0.05); border-radius:2px; overflow:hidden; }
+.progress-fill { height:100%; background: linear-gradient(90deg,#00f2ff,#0066ff); width:0%; transition: width 1s ease; }
+.loading-spinner { width:40px; height:40px; border:3px solid rgba(0,242,255,0.1); border-radius:50%; border-top-color: var(--accent); animation:spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-input, select, textarea { background: rgba(255,255,255,0.05); border: 1px solid var(--border); outline: none; transition:0.3s; color: white; padding: 12px; border-radius:16px; }
-input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(0,242,255,0.1); }
-.status-Pending { color: #f59e0b; background: rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); }
-.status-InProgress { color: #3b82f6; background: rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.2); }
-.status-Completed { color: #10b981; background: rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.2); }
-.status-Urgent { color: #ef4444; background: rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); }
+input, select, textarea { background: rgba(255,255,255,0.05); border:1px solid var(--border); outline:none; transition:0.3s; color:white; padding:12px; border-radius:16px; }
+input:focus, textarea:focus { border-color: var(--accent); box-shadow:0 0 0 4px rgba(0,242,255,0.1); }
+.status-Pending { color:#f59e0b; background: rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); }
+.status-InProgress { color:#3b82f6; background: rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.2); }
+.status-Completed { color:#10b981; background: rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.2); }
+.status-Urgent { color:#ef4444; background: rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); }
 </style>
 </head>
 <body class="flex">
 
 <!-- Sidebar -->
 <aside class="w-72 glass border-r border-white/5 p-8 flex flex-col fixed h-full z-50">
-    <div class="mb-12">
-        <div class="flex items-center gap-3 mb-2">
-            <div class="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center font-bold text-black italic">M</div>
-            <h1 class="text-xl font-bold text-white tracking-tighter italic">MOTION OF NAIMUR</h1>
-        </div>
-        <p class="text-[10px] text-slate-500 uppercase tracking-[4px] ml-1 font-semibold">Production Console</p>
+<div class="mb-12">
+    <div class="flex items-center gap-3 mb-2">
+        <div class="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center font-bold text-black italic">M</div>
+        <h1 class="text-xl font-bold text-white tracking-tighter italic">MOTION OF NAIMUR</h1>
     </div>
-    <nav class="space-y-3 flex-grow">
-        <div onclick="initDashboard()" class="flex items-center justify-between p-4 glass rounded-2xl text-cyan-400 cursor-pointer group">
-            <div class="flex items-center gap-3 font-bold"><i data-lucide="layout-grid" size="18"></i> Dashboard</div>
-            <i data-lucide="chevron-right" size="14" class="opacity-0 group-hover:opacity-100 transition-all"></i>
-        </div>
-    </nav>
-    <div class="pt-8 border-t border-white/5">
-        <div class="flex items-center gap-3 p-2">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg">N</div>
-            <div class="overflow-hidden">
-                <p id="userEmailTag" class="text-xs font-bold text-white truncate">naimur582582@gmail.com</p>
-                <p class="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Premium Account</p>
-            </div>
+    <p class="text-[10px] text-slate-500 uppercase tracking-[4px] ml-1 font-semibold">Production Console</p>
+</div>
+<nav class="space-y-3 flex-grow">
+    <div onclick="initDashboard()" class="flex items-center justify-between p-4 glass rounded-2xl text-cyan-400 cursor-pointer group">
+        <div class="flex items-center gap-3 font-bold"><i data-lucide="layout-grid" size="18"></i> Dashboard</div>
+        <i data-lucide="chevron-right" size="14" class="opacity-0 group-hover:opacity-100 transition-all"></i>
+    </div>
+</nav>
+<div class="pt-8 border-t border-white/5">
+    <div class="flex items-center gap-3 p-2">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg">N</div>
+        <div class="overflow-hidden">
+            <p id="userEmailTag" class="text-xs font-bold text-white truncate">naimur582582@gmail.com</p>
+            <p class="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Premium Account</p>
         </div>
     </div>
+</div>
 </aside>
 
 <!-- Main -->
@@ -137,7 +128,6 @@ input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px
 <form id="projectForm" class="grid grid-cols-1 md:grid-cols-2 gap-8">
 <!-- Left Column -->
 <div class="space-y-6">
-    <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Project ID</label><input type="text" id="pID" readonly class="w-full mt-2 p-4 rounded-2xl"></div>
     <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Project Name</label><input type="text" id="pName" required class="w-full mt-2 p-4 rounded-2xl"></div>
     <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Client Email</label><input type="email" id="pClientEmail" required class="w-full mt-2 p-4 rounded-2xl"></div>
     <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Assigned Editor</label>
@@ -174,7 +164,6 @@ input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px
     </div>
     <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Notes</label><textarea id="pNotes" rows="2" class="w-full mt-2 p-4 rounded-2xl"></textarea></div>
     <div class="grid grid-cols-2 gap-4">
-        <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Revisions</label><input type="number" id="pRevCount" value="0" class="w-full mt-2 p-4 rounded-2xl text-center" readonly></div>
         <div><label class="text-[10px] font-bold text-slate-500 uppercase ml-2 tracking-widest">Budget (USD)</label><input type="number" id="pBudget" class="w-full mt-2 p-4 rounded-2xl font-bold"></div>
     </div>
     <button type="submit" id="submitBtn" class="w-full bg-cyan-500 text-black py-5 rounded-[24px] font-black text-lg uppercase tracking-[4px] flex items-center justify-center gap-3 hover:bg-cyan-400 transition-all active:scale-95">
@@ -188,7 +177,7 @@ input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px
 <script>
 lucide.createIcons();
 
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
 let ALL_PROJECTS = [];
 
 function toggleModal(id, show){ document.getElementById(id).style.display = show?'flex':'none'; }
@@ -211,9 +200,9 @@ function renderUI(data){
     const grid=document.getElementById('projectGrid');
     if(!data||data.length===0){ grid.innerHTML="<div class='col-span-full py-20 text-center glass rounded-[40px]'><p class='text-slate-500 italic'>No active productions found.</p></div>"; return; }
     grid.innerHTML=data.map(p=>{
-        const id=p[0]||'N/A'; const name=p[1]||'Untitled'; const status=p[9]||'Pending';
+        const id=p[1]||'N/A'; const name=p[2]||'Untitled'; const status=p[9]||'Pending';
         const deadline=p[19]||'TBD'; const revs=parseInt(p[22]||0); const version=p[23]||'V1.0';
-        const editor=p[3]||'N/A'; const category=p[4]||'N/A'; const priority=p[20]||'Low';
+        const editor=p[7]||'N/A'; const category=p[3]||'N/A'; const priority=p[10]||'Low';
         return `<div class="glass glass-card p-8 rounded-[40px] group">
             <div class="flex justify-between items-start mb-4">
                 <div><h4 class="text-xl font-bold text-white italic">${name}</h4>
@@ -224,8 +213,8 @@ function renderUI(data){
             <p class="text-slate-400 text-xs mb-4">Deadline: ${deadline} | Editor: ${editor}</p>
             <div class="progress-bar mb-4"><div class="progress-fill" style="width:${Math.min(revs*33,100)}%"></div></div>
             <div class="flex items-center gap-3 text-xs">
-                <a href="${p[5]||'#'}" target="_blank" class="text-cyan-400 hover:underline">Footage</a>
-                <a href="${p[6]||'#'}" target="_blank" class="text-cyan-400 hover:underline">Script</a>
+                <a href="${p[12]||'#'}" target="_blank" class="text-cyan-400 hover:underline">Footage</a>
+                <a href="${p[14]||'#'}" target="_blank" class="text-cyan-400 hover:underline">Script</a>
             </div>
         </div>`;
     }).join('');
@@ -237,7 +226,6 @@ function renderUI(data){
 document.getElementById('projectForm').addEventListener('submit',async(e)=>{
     e.preventDefault();
     const data={
-        ID: document.getElementById('pID').value,
         Name: document.getElementById('pName').value,
         ClientEmail: document.getElementById('pClientEmail').value,
         Editor: document.getElementById('pEditor').value,
@@ -248,7 +236,7 @@ document.getElementById('projectForm').addEventListener('submit',async(e)=>{
         Deadline: document.getElementById('pDeadline').value,
         Priority: document.getElementById('pPriority').value,
         Notes: document.getElementById('pNotes').value,
-        Revisions: parseInt(document.getElementById('pRevCount').value),
+        Revisions: 0,
         Version:'V1.0',
         Status:'Pending',
         Created:new Date().toLocaleDateString(),
