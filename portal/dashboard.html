@@ -142,36 +142,21 @@
 
     
 </main>
-<script>// Example projects data
-// Example projects array
-const projects = [
-    { id: 1, name: "Project Alpha", desc: "Description Alpha" },
-    { id: 2, name: "Project Beta", desc: "Description Beta" },
-    { id: 3, name: "Project Gamma", desc: "Description Gamma" }
-];
+<script>function showProjectDetails(index) {
+    const p = ALL_PROJECTS[index];
+    const projectDetails = document.getElementById("projectDetails");
+    const projTitle = document.getElementById("projTitle");
+    const projDesc = document.getElementById("projDesc");
+    const revProjectId = document.getElementById("revProjectId");
 
-const projectGrid = document.getElementById("projectGrid");
-const projectDetails = document.getElementById("projectDetails");
-const projTitle = document.getElementById("projTitle");
-const projDesc = document.getElementById("projDesc");
-const revProjectId = document.getElementById("revProjectId");
+    projTitle.textContent = p[3] || "Project Title";
+    projDesc.textContent = p[7] || "No description available.";
 
-// Populate Project Grid
-projects.forEach(proj => {
-    const card = document.createElement("div");
-    card.className = "p-4 glass rounded cursor-pointer hover:shadow-lg";
-    card.innerHTML = `<h3 class="font-bold">${proj.name}</h3><p>${proj.desc}</p>`;
-    card.addEventListener("click", () => {
-        // Show Project Details
-        projectDetails.classList.remove("hidden");
-        projTitle.textContent = proj.name;
-        projDesc.textContent = proj.desc;
+    // Hidden input auto-fill
+    revProjectId.value = p[1]; // Project ID from Sheets
 
-        // Auto assign project ID to hidden input
-        revProjectId.value = proj.id;
-    });
-    projectGrid.appendChild(card);
-});
+    projectDetails.classList.remove("hidden");
+}
 </script>
 
 <script>
@@ -206,7 +191,42 @@ projects.forEach(proj => {
   });
 }
 </script>
+<script>
+    async function addRevision(event) {
+    event.preventDefault();
 
+    const projectId = document.getElementById("revProjectId").value;
+    const notes = document.getElementById("revNotes").value;
+    const fileInput = document.getElementById("revFile");
+    const file = fileInput.files[0] || null;
+
+    if (!projectId) {
+        alert("Select a project first!");
+        return;
+    }
+
+    const data = {
+        action: "addRevision",
+        projectID: projectId,
+        notes: notes,
+        clientEmail: localStorage.getItem("user_email") || "unknown@example.com"
+    };
+
+    try {
+        const res = await fetch(WEB_APP_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+        const resp = await res.text();
+        alert("Revision submitted: " + resp);
+        document.getElementById("revisionForm").reset();
+    } catch (err) {
+        console.error(err);
+        alert("Failed to submit revision.");
+    }
+}
+</script>
 
 <div id="pModal" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden z-[100] items-center justify-center p-4">
     <div class="glass w-full max-w-5xl p-10 rounded-[40px] shadow-2xl overflow-y-auto max-h-[90vh]">
