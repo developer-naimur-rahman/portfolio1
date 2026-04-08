@@ -185,7 +185,7 @@
                     <div><label>Reference Link</label><input type="url" id="editRef1"></div>
                     <div class="grid grid-cols-2 gap-4">
                         <div><label>Priority</label><select id="editPriority"><option>Normal</option><option>High</option><option>URGENT</option></select></div>
-                        <div><label>Budget USD</label><input type="number" id="editBudget"></div>
+                        <div><label>Budget BDT</label><input type="number" id="editBudget"></div>
                     </div>
                     <div><label>Deadline</label><input type="date" id="editDeadline"></div>
                 </div>
@@ -501,7 +501,7 @@ function showProjectDetails(index) {
         document.getElementById('stat-done').innerText = data.filter(p => p[10] === 'Completed').length;
         document.getElementById('stat-rev').innerText = data.reduce((acc, p) => acc + (parseInt(p[23] || 0)), 0);
         const totalRev = data.reduce((acc, p) => acc + (parseFloat(p[28] || 0)), 0);
-        document.getElementById('stat-revenue').innerText = "USD " + totalRev.toLocaleString();
+        document.getElementById('stat-revenue').innerText = "BDT " + totalRev.toLocaleString();
     }
 
     window.onload = checkAuth;
