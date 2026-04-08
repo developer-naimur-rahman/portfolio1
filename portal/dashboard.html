@@ -103,7 +103,67 @@
         <p class="text-slate-500 text-sm italic">Connecting to Studio Database...</p>
     </div>
     <div id="projectGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8"></div>
+     <!-- ✨ Client Revision Form Start ✨ -->
+    <div class="mt-8 p-6 glass rounded-2xl">
+        <h2 class="text-xl font-bold mb-4">Add Revision</h2>
+        <form id="revisionForm" onsubmit="addRevision(event)" class="grid grid-cols-1 gap-4">
+            <div>
+                <label>Select Project</label>
+                <select id="revProject" required>
+                    <!-- JS দিয়ে populate করবে client projects দিয়ে -->
+                </select>
+            </div>
+            <div>
+                <label>Revision Details</label>
+                <textarea id="revNotes" rows="4" placeholder="Explain what needs to be changed..." required></textarea>
+            </div>
+            <div>
+                <label>Upload File (Optional)</label>
+                <input type="file" id="revFile" accept="image/*,video/*,application/pdf">
+            </div>
+            <button type="submit" class="bg-cyan-500 text-black py-2 px-5 rounded hover:bg-cyan-400">
+                Submit Revision
+            </button>
+        </form>
+    </div>
+    <!-- ✨ Client Revision Form End ✨ -->
 </main>
+<!-- JS scripts -->
+<script>
+    // Example JS
+    const projects = [
+        { id: 1, name: "Project Alpha" },
+        { id: 2, name: "Project Beta" },
+        { id: 3, name: "Project Gamma" }
+    ];
+
+    const revProject = document.getElementById("revProject");
+
+    projects.forEach(proj => {
+        const option = document.createElement("option");
+        option.value = proj.id;
+        option.textContent = proj.name;
+        revProject.appendChild(option);
+    });
+</script>
+
+<script>
+function addRevision(event) {
+    event.preventDefault();
+
+    const projectId = document.getElementById("revProject").value;
+    const notes = document.getElementById("revNotes").value;
+    const file = document.getElementById("revFile").files[0] || null;
+
+    console.log("Project ID:", projectId);
+    console.log("Notes:", notes);
+    console.log("File:", file);
+
+    // এখানে তুমি API call বা Google Sheets update করতে পারো
+    alert("Revision submitted successfully!");
+    document.getElementById("revisionForm").reset();
+}
+</script>
 
 <div id="pModal" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden z-[100] items-center justify-center p-4">
     <div class="glass w-full max-w-5xl p-10 rounded-[40px] shadow-2xl overflow-y-auto max-h-[90vh]">
