@@ -1,11 +1,10 @@
 // ===============================
-// 🚀 API ENDPOINT
+// API ENDPOINT
 // ===============================
 const API_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
 
-
 // ===============================
-// 🔥 CORE REQUEST WRAPPER
+// CORE REQUEST
 // ===============================
 async function apiRequest(action, payload = {}) {
     try {
@@ -21,32 +20,28 @@ async function apiRequest(action, payload = {}) {
         });
 
         return await res.json();
-
-    } catch (error) {
-        console.error("API ERROR:", error);
-        return { success: false, error: error.message };
+    } catch (err) {
+        console.error("API ERROR:", err);
+        return { success: false, error: err.message };
     }
 }
 
-
 // ===============================
-// 👤 USER
+// AUTH / USER
 // ===============================
 function getUser(email) {
     return apiRequest("getUser", { email });
 }
 
-
 // ===============================
-// 📊 DASHBOARD
+// DASHBOARD
 // ===============================
 function getDashboard(email, role) {
     return apiRequest("getDashboard", { email, role });
 }
 
-
 // ===============================
-// 📁 PROJECTS
+// PROJECTS
 // ===============================
 function getProjects(email, role) {
     return apiRequest("getProjects", { email, role });
@@ -60,29 +55,29 @@ function updateProject(data) {
     return apiRequest("updateProject", data);
 }
 
-
 // ===============================
-// 🎬 EDITOR SYSTEM
+// EDITOR
 // ===============================
 function assignEditor(data) {
     return apiRequest("assignEditor", data);
 }
 
+// ===============================
+// DELIVERY
+// ===============================
 function submitDelivery(data) {
     return apiRequest("submitDelivery", data);
 }
 
-
 // ===============================
-// 🔁 REVISION
+// REVISION
 // ===============================
 function createRevision(data) {
     return apiRequest("createRevision", data);
 }
 
-
 // ===============================
-// 📂 DROPDOWN
+// DROPDOWN
 // ===============================
 function getDropdownOptions(type) {
     return apiRequest("getDropdownOptions", { type });

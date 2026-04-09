@@ -3,103 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Dashboard | Agency OS</title>
+<title>AgencyOS Dashboard v2</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
-    body {
-        margin: 0;
-        font-family: 'Outfit', sans-serif;
-        background: #0b0c10;
-        color: #fff;
-        display: flex;
-        min-height: 100vh;
-    }
+body{
+    margin:0;
+    font-family:Outfit;
+    background:#0b0c10;
+    color:white;
+    display:flex;
+}
 
-    /* SIDEBAR */
-    .sidebar {
-        width: 260px;
-        background: #111318;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        border-right: 1px solid rgba(255,255,255,0.05);
-    }
+/* SIDEBAR */
+.sidebar{
+    width:250px;
+    background:#111318;
+    padding:20px;
+    height:100vh;
+}
 
-    .logo {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 20px;
-        color: #3b82f6;
-    }
+.sidebar button{
+    width:100%;
+    margin:5px 0;
+    padding:10px;
+    background:#1f2937;
+    border:none;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+}
 
-    .menu {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
+.sidebar button:hover{
+    background:#3b82f6;
+}
 
-    .menu button {
-        background: transparent;
-        border: 1px solid rgba(255,255,255,0.08);
-        color: white;
-        padding: 10px;
-        border-radius: 10px;
-        cursor: pointer;
-        text-align: left;
-    }
+/* MAIN */
+.main{
+    flex:1;
+    padding:20px;
+}
 
-    .menu button:hover {
-        background: rgba(59,130,246,0.15);
-    }
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
 
-    /* MAIN */
-    .main {
-        flex: 1;
-        padding: 20px;
-    }
+.card{
+    background:#151823;
+    padding:15px;
+    border-radius:10px;
+}
 
-    .topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
+table{
+    width:100%;
+    margin-top:20px;
+    border-collapse:collapse;
+}
 
-    .cards {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-    }
+th,td{
+    padding:10px;
+    border-bottom:1px solid #222;
+    text-align:left;
+    font-size:14px;
+}
 
-    .card {
-        background: #151823;
-        padding: 15px;
-        border-radius: 12px;
-        border: 1px solid rgba(255,255,255,0.05);
-    }
-
-    table {
-        width: 100%;
-        margin-top: 20px;
-        border-collapse: collapse;
-        font-size: 14px;
-    }
-
-    th, td {
-        padding: 10px;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-        text-align: left;
-    }
-
-    th {
-        color: #94a3b8;
-    }
-
+th{color:#94a3b8;}
 </style>
 </head>
 
@@ -107,146 +78,123 @@
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-    <div class="logo">Agency OS</div>
+    <h3>AgencyOS</h3>
 
-    <div class="menu">
-        <button onclick="loadDashboard()">Dashboard</button>
-        <button onclick="loadProjects()">Projects</button>
-        <button onclick="loadRevisions()">Revisions</button>
-        <button onclick="loadMessages()">Messages</button>
-    </div>
+    <button onclick="loadDashboard()">Dashboard</button>
+    <button onclick="loadProjects()">Projects</button>
+    <button onclick="loadCreateProject()">Create Project</button>
+    <button onclick="logout()">Logout</button>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-    <div class="topbar">
-        <h2 id="title">Dashboard</h2>
-        <div id="userInfo"></div>
-    </div>
+    <h2 id="title">Dashboard</h2>
+    <p id="userBox"></p>
 
     <!-- CARDS -->
     <div class="cards">
-        <div class="card">
-            <h3>Active</h3>
-            <p id="activeCount">0</p>
-        </div>
-
-        <div class="card">
-            <h3>Completed</h3>
-            <p id="completedCount">0</p>
-        </div>
-
-        <div class="card">
-            <h3>Revisions</h3>
-            <p id="revisionCount">0</p>
-        </div>
-
-        <div class="card">
-            <h3>Revenue</h3>
-            <p id="revenue">0 BDT</p>
-        </div>
+        <div class="card">Active <h3 id="active">0</h3></div>
+        <div class="card">Completed <h3 id="completed">0</h3></div>
+        <div class="card">Revisions <h3 id="revision">0</h3></div>
+        <div class="card">Revenue <h3 id="revenue">0</h3></div>
     </div>
 
     <!-- TABLE -->
     <table>
         <thead>
             <tr>
-                <th>Project ID</th>
+                <th>ID</th>
                 <th>Name</th>
                 <th>Status</th>
+                <th>Priority</th>
                 <th>Editor</th>
-                <th>Deadline</th>
             </tr>
         </thead>
-        <tbody id="projectTable">
-        </tbody>
+        <tbody id="table"></tbody>
     </table>
 
 </div>
 
-<script>
-    const API_URL = "YOUR_GOOGLE_SCRIPT_WEB_APP_URL_HERE";
-
-    let user = {
-        email: localStorage.getItem("clientEmail"),
-        name: localStorage.getItem("clientName"),
-        role: "client"
-    };
-
-    document.getElementById("userInfo").innerText =
-        user.name ? user.name : "Guest";
-
-    // =========================
-    // LOAD DASHBOARD
-    // =========================
-    async function loadDashboard() {
-        document.getElementById("title").innerText = "Dashboard";
-
-        const res = await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify({
-                action: "getDashboard",
-                email: user.email,
-                role: user.role
-            })
-        });
-
-        const data = await res.json();
-
-        document.getElementById("activeCount").innerText = data.active;
-        document.getElementById("completedCount").innerText = data.completed;
-        document.getElementById("revisionCount").innerText = data.revision;
-        document.getElementById("revenue").innerText = data.revenue + " BDT";
-    }
-
-    // =========================
-    // LOAD PROJECTS
-    // =========================
-    async function loadProjects() {
-        document.getElementById("title").innerText = "Projects";
-
-        const res = await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify({
-                action: "getProjects",
-                email: user.email,
-                role: user.role
-            })
-        });
-
-        const data = await res.json();
-
-        const table = document.getElementById("projectTable");
-        table.innerHTML = "";
-
-        data.forEach(row => {
-            table.innerHTML += `
-                <tr>
-                    <td>${row[1]}</td>
-                    <td>${row[3]}</td>
-                    <td>${row[10]}</td>
-                    <td>${row[7]}</td>
-                    <td>${row[20]}</td>
-                </tr>
-            `;
-        });
-    }
-
-    function loadRevisions(){
-        alert("Next Step: Revision UI will connect here");
-    }
-
-    function loadMessages(){
-        alert("Next Step: Message UI will connect here");
-    }
-
-    // INIT
-    loadDashboard();
-</script>
-
 <script src="api.js"></script>
-<script src="portal-script.js"></script>
+
+<script>
+// ==========================
+// USER SESSION
+// ==========================
+// =========================
+// USER INFO
+// =========================
+const user = {
+    email: localStorage.getItem("clientEmail"),
+    name: localStorage.getItem("clientName"),
+    role: localStorage.getItem("currentRole") || "client"
+};
+
+// =========================
+// INIT
+// =========================
+document.getElementById("userInfo").innerText =
+    user.name ? user.name : "Guest";
+
+// =========================
+// LOAD DASHBOARD
+// =========================
+async function loadDashboard() {
+    document.getElementById("title").innerText = "Dashboard";
+
+    const data = await getDashboard(user.email, user.role);
+
+    if (!data) return;
+
+    document.getElementById("activeCount").innerText = data.active || 0;
+    document.getElementById("completedCount").innerText = data.completed || 0;
+    document.getElementById("revisionCount").innerText = data.revision || 0;
+    document.getElementById("revenue").innerText = (data.revenue || 0) + " BDT";
+}
+
+// =========================
+// LOAD PROJECTS
+// =========================
+async function loadProjects() {
+    document.getElementById("title").innerText = "Projects";
+
+    const data = await getProjects(user.email, user.role);
+
+    const table = document.getElementById("projectTable");
+    table.innerHTML = "";
+
+    if (!data || !Array.isArray(data)) return;
+
+    data.forEach(row => {
+        table.innerHTML += `
+            <tr>
+                <td>${row[1] || ""}</td>
+                <td>${row[3] || ""}</td>
+                <td>${row[10] || ""}</td>
+                <td>${row[7] || ""}</td>
+                <td>${row[20] || ""}</td>
+            </tr>
+        `;
+    });
+}
+
+// =========================
+// PLACEHOLDER FUNCTIONS
+// =========================
+function loadRevisions() {
+    alert("Revision system coming next step");
+}
+
+function loadMessages() {
+    alert("Message system coming next step");
+}
+
+// =========================
+// INIT LOAD
+// =========================
+loadDashboard();
+</script>
 
 </body>
 </html>
