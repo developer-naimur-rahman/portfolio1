@@ -213,7 +213,41 @@ function loadMessages() {
 // INIT LOAD
 // =========================
 loadDashboard();
+
 </script>
+
+<script>
+function openProjectModal() {
+    document.getElementById("projectModal").style.display = "block";
+}
+
+function closeProjectModal() {
+    document.getElementById("projectModal").style.display = "none";
+}
+
+async function submitProject() {
+
+    const data = {
+        clientEmail: user.email,
+        projectName: document.getElementById("projectName").value,
+        category: document.getElementById("category").value,
+        budget: document.getElementById("budget").value,
+        deadline: document.getElementById("deadline").value
+    };
+
+    const res = await createProject(data);
+
+    if (res.success) {
+        alert("Project Created!");
+        closeProjectModal();
+        loadProjects();
+        loadDashboard();
+    } else {
+        alert("Failed to create project");
+    }
+}
+</script>
+
 
 </body>
 </html>
