@@ -1,642 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motion Of Naimur | Agency OS</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --bg: #05060b; --glass: rgba(255,255,255,0.03); --border: rgba(255,255,255,0.08); --accent: #00f2ff; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #f8fafc; min-height: 100vh; overflow-x: hidden; }
-        .glass { background: var(--glass); backdrop-filter: blur(16px); border:1px solid var(--border); }
-        .glass-card { transition: all 0.4s ease; cursor: pointer; }
-        .glass-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 20px 40px -20px rgba(0,242,255,0.2); }
-        .progress-bar { height: 6px; background: rgba(255,255,255,0.05); border-radius:3px; overflow:hidden; }
-        .progress-fill { height:100%; background: linear-gradient(90deg,#00f2ff,#0066ff); transition: width 1s ease; }
-        
-        .status-Pending { color:#f59e0b; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); }
-        .status-Editing { color:#3b82f6; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); }
-        .status-Review { color:#a855f7; background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2); }
-        .status-Delivered { color:#10b981; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); }
-        .status-URGENT { color:#ef4444; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); animation: pulse-red 2s infinite; }
-        
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
-        .loading-spinner { width:40px; height:40px; border:3px solid rgba(0,242,255,0.1); border-radius:50%; border-top-color: var(--accent); animation:spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        input, select, textarea { background: rgba(255,255,255,0.05); border:1px solid var(--border); outline:none; color:white; padding:12px; border-radius:16px; width: 100%; font-size: 14px; }
-        input:focus, select:focus, textarea:focus { border-color: var(--accent); background: rgba(255,255,255,0.08); }
-        label { display: block; margin-bottom: 6px; margin-left: 8px; font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        #loginOverlay { position: fixed; inset: 0; background: #05060b; z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-    </style>
+<title>Dashboard | Agency OS</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Outfit', sans-serif;
+        background: #0b0c10;
+        color: #fff;
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 260px;
+        background: #111318;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        border-right: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .logo {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #3b82f6;
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .menu button {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.08);
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: left;
+    }
+
+    .menu button:hover {
+        background: rgba(59,130,246,0.15);
+    }
+
+    /* MAIN */
+    .main {
+        flex: 1;
+        padding: 20px;
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+
+    .card {
+        background: #151823;
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        text-align: left;
+    }
+
+    th {
+        color: #94a3b8;
+    }
+
+</style>
 </head>
-<body class="flex">
 
-<div id="loginOverlay">
-    <div class="glass p-10 rounded-[40px] w-full max-w-md text-center shadow-2xl border-cyan-500/20">
-        <div class="w-16 h-16 bg-cyan-500 rounded-2xl flex items-center justify-center font-bold text-black italic text-3xl mx-auto mb-6 shadow-[0_0_30px_rgba(6,182,212,0.4)]">M</div>
-        <h2 class="text-2xl font-black italic text-white uppercase tracking-tighter mb-2">Studio Access</h2>
-        <p class="text-slate-500 text-sm mb-8 italic">Sign in with Google to manage production</p>
-        <div class="flex justify-center">
-            <div id="g_id_onload" data-client_id="388867750902-263hniv7d8v31m3l5pkphokg0scb9tos.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
-            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
-        </div>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="logo">Agency OS</div>
+
+    <div class="menu">
+        <button onclick="loadDashboard()">Dashboard</button>
+        <button onclick="loadProjects()">Projects</button>
+        <button onclick="loadRevisions()">Revisions</button>
+        <button onclick="loadMessages()">Messages</button>
     </div>
 </div>
 
-<aside class="hidden md:flex w-72 glass border-r border-white/5 p-8 flex-col fixed h-full z-50">
-    <div class="mb-12">
-        <div class="flex items-center gap-3 mb-2">
-            <div class="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center font-bold text-black italic shadow-[0_0_15px_rgba(6,182,212,0.5)]">M</div>
-            <h1 class="text-xl font-bold text-white tracking-tighter italic uppercase">Motion Of Naimur</h1>
+<!-- MAIN -->
+<div class="main">
+
+    <div class="topbar">
+        <h2 id="title">Dashboard</h2>
+        <div id="userInfo"></div>
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards">
+        <div class="card">
+            <h3>Active</h3>
+            <p id="activeCount">0</p>
         </div>
-        <p class="text-[10px] text-slate-500 uppercase tracking-[4px] ml-1 font-semibold">Production Console</p>
-    </div>
-    <nav class="space-y-3 flex-grow">
-        <div onclick="location.reload()" class="flex items-center gap-3 p-4 glass rounded-2xl text-cyan-400 cursor-pointer hover:bg-white/5 transition-all">
-            <i data-lucide="layout-grid" size="18"></i> <span class="font-bold text-sm">Dashboard</span>
+
+        <div class="card">
+            <h3>Completed</h3>
+            <p id="completedCount">0</p>
         </div>
-    </nav>
-    <div class="pt-8 border-t border-white/5 space-y-4">
-        <div class="flex items-center gap-3 p-2">
-            <div id="userAvatar" class="w-10 h-10 rounded-full bg-cyan-500 flex items-center justify-center font-bold text-white shadow-lg overflow-hidden">N</div>
-            <div class="overflow-hidden">
-                <p id="userNameDisplay" class="font-bold text-white text-sm truncate">User</p>
-                <p id="userRoleDisplay" class="text-[9px] text-slate-500 uppercase font-black tracking-widest italic">Client</p>
-            </div>
+
+        <div class="card">
+            <h3>Revisions</h3>
+            <p id="revisionCount">0</p>
         </div>
-        <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 p-3 rounded-xl border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
-            <i data-lucide="log-out" size="14"></i> Sign Out
-        </button>
-    </div>
-</aside>
 
-<main id="mainContent" class="ml-0 md:ml-72 p-6 md:p-12 w-full max-w-[1600px] opacity-0 transition-opacity duration-700">
-    <header class="flex justify-between items-end mb-12">
-        <div>
-            <h2 class="text-4xl font-extrabold tracking-tight text-white mb-2 italic">Studio Hub<span class="text-cyan-500">.</span></h2>
-            <p class="text-slate-500 font-medium flex items-center gap-2 text-sm">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Production Pipeline Active
-            </p>
+        <div class="card">
+            <h3>Revenue</h3>
+            <p id="revenue">0 BDT</p>
         </div>
-        <button id="launchBtn" onclick="toggleModal('pModal', true)" class="bg-cyan-500 hover:bg-cyan-400 text-black px-8 py-4 rounded-2xl font-bold flex items-center gap-3 shadow-lg shadow-cyan-500/20 active:scale-95 transition-all uppercase tracking-widest text-xs">
-            <i data-lucide="plus-circle" size="20"></i> Launch Production
-        </button>
-    </header>
-
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
-        <div class="glass p-8 rounded-[32px]"><p class="text-slate-500 text-[11px] font-bold uppercase mb-3">Active</p><h3 id="stat-active" class="text-4xl font-bold italic text-white">0</h3></div>
-        <div class="glass p-8 rounded-[32px]"><p class="text-slate-500 text-[11px] font-bold uppercase mb-3">Delivered</p><h3 id="stat-done" class="text-4xl font-bold text-green-400 italic">0</h3></div>
-        <div class="glass p-8 rounded-[32px]"><p class="text-slate-500 text-[11px] font-bold uppercase mb-3">Revisions</p><h3 id="stat-rev" class="text-4xl font-bold text-orange-400 italic">0</h3></div>
-        <div class="glass p-8 rounded-[32px] border-b-4 border-cyan-500/30"><p class="text-slate-500 text-[11px] font-bold uppercase mb-3">Revenue</p><h3 id="stat-revenue" class="text-4xl font-bold text-cyan-400 italic">USD 0</h3></div>
     </div>
 
-    <div id="loader" class="flex flex-col items-center justify-center py-32">
-        <div class="loading-spinner mb-6"></div>
-        <p class="text-slate-500 text-sm italic">Connecting to Studio Database...</p>
-    </div>
-    <div id="projectGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8"></div>
+    <!-- TABLE -->
+    <table>
+        <thead>
+            <tr>
+                <th>Project ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Editor</th>
+                <th>Deadline</th>
+            </tr>
+        </thead>
+        <tbody id="projectTable">
+        </tbody>
+    </table>
 
-
-
-
-
-<div id="projectDetails" class="mt-8 p-6 glass rounded-2xl hidden">
-    <h2 id="projTitle" class="text-xl font-bold mb-4">Project Title</h2>
-    <p id="projDesc" class="mb-4">Project description will appear here...</p>
-
-    <!-- ✨ Client Revision Form Start ✨ -->
-    <div class="mt-4">
-        <h3 class="text-lg font-semibold mb-2">Add Revision</h3>
-        <form id="revisionForm" onsubmit="addRevision(event)" class="grid grid-cols-1 gap-4">
-            <!-- Hidden input to store project ID -->
-            <input type="hidden" id="revProjectId">
-
-            <div>
-                <label>Revision Details</label>
-                <textarea id="revNotes" rows="4" placeholder="Explain what needs to be changed..." required></textarea>
-            </div>
-            <div>
-                <label>Upload File (Optional)</label>
-                <input type="file" id="revFile" accept="image/*,video/*,application/pdf">
-            </div>
-            <button type="submit" class="bg-cyan-500 text-black py-2 px-5 rounded hover:bg-cyan-400">
-                Submit Revision
-            </button>
-        </form>
-    </div>
-    <!-- ✨ Client Revision Form End ✨ -->
 </div>
 
-
-
-
-
-
-    
-</main>
-
-
-
 <script>
-function showProjectDetails(index) {
-    const p = ALL_PROJECTS[index];
-    if(!p) return;
+    const API_URL = "YOUR_GOOGLE_SCRIPT_WEB_APP_URL_HERE";
 
-    // Project Details Panel
-    const projectDetails = document.getElementById("projectDetails");
-    document.getElementById("projTitle").textContent = p[3] || "Project Title";
-    document.getElementById("projDesc").textContent = p[7] || "No description available.";
-    document.getElementById("revProjectId").value = p[1]; // Hidden input for revision
-
-    // Details Modal Fields
-    document.getElementById("detProjectID").innerText = p[1] || "---";
-    document.getElementById("editPName").value = p[3] || "";
-    document.getElementById("editClientEmail").value = p[2] || "";
-    document.getElementById("editEditor").value = p[9] || "";
-    document.getElementById("editStatus").value = p[10] || "Pending";
-    document.getElementById("editApproval").value = p[12] || "Pending";
-    document.getElementById("editFootage").value = p[4] || "";
-    document.getElementById("editFilesLink").value = p[5] || "";
-    document.getElementById("editRef1").value = p[6] || "";
-    document.getElementById("editPriority").value = p[11] || "Normal";
-    document.getElementById("editBudget").value = p[13] || "";
-    document.getElementById("editDeadline").value = p[14] || "";
-    document.getElementById("editRevNum").value = p[23] || 0;
-    document.getElementById("editVersion").value = p[24] || "v1.0";
-    document.getElementById("editReqType").value = p[25] || "General";
-    document.getElementById("editClientNotes").value = p[15] || "";
-    document.getElementById("editEditorNotes").value = p[16] || "";
-    document.getElementById("editVisible").value = p[26] || "Yes";
-
-    document.getElementById("dispUploadedBy").innerText = p[17] || "---";
-    document.getElementById("dispUserRole").innerText = p[18] || "---";
-    document.getElementById("dispLastUpdated").innerText = p[19] || "---";
-
-    // Show project details section
-    projectDetails.classList.remove("hidden");
-
-    // Open details modal
-    toggleModal('detailsModal', true);
-}
-</script>
-
-
-<script>
-    async function addRevision(event) {
-    event.preventDefault();
-
-    const projectId = document.getElementById("revProjectId").value;
-    const notes = document.getElementById("revNotes").value;
-    const fileInput = document.getElementById("revFile");
-    const file = fileInput.files[0] || null;
-
-    if (!projectId) {
-        alert("Select a project first!");
-        return;
-    }
-
-    const data = {
-        action: "addRevision",
-        projectID: projectId,
-        notes: notes,
-        clientEmail: localStorage.getItem("user_email") || "unknown@example.com"
+    let user = {
+        email: localStorage.getItem("clientEmail"),
+        name: localStorage.getItem("clientName"),
+        role: "client"
     };
 
-    try {
-        const res = await fetch(WEB_APP_URL, {
+    document.getElementById("userInfo").innerText =
+        user.name ? user.name : "Guest";
+
+    // =========================
+    // LOAD DASHBOARD
+    // =========================
+    async function loadDashboard() {
+        document.getElementById("title").innerText = "Dashboard";
+
+        const res = await fetch(API_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
+            body: JSON.stringify({
+                action: "getDashboard",
+                email: user.email,
+                role: user.role
+            })
         });
-        const resp = await res.text();
-        alert("Revision submitted: " + resp);
-        document.getElementById("revisionForm").reset();
-    } catch (err) {
-        console.error(err);
-        alert("Failed to submit revision.");
+
+        const data = await res.json();
+
+        document.getElementById("activeCount").innerText = data.active;
+        document.getElementById("completedCount").innerText = data.completed;
+        document.getElementById("revisionCount").innerText = data.revision;
+        document.getElementById("revenue").innerText = data.revenue + " BDT";
     }
-}
+
+    // =========================
+    // LOAD PROJECTS
+    // =========================
+    async function loadProjects() {
+        document.getElementById("title").innerText = "Projects";
+
+        const res = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                action: "getProjects",
+                email: user.email,
+                role: user.role
+            })
+        });
+
+        const data = await res.json();
+
+        const table = document.getElementById("projectTable");
+        table.innerHTML = "";
+
+        data.forEach(row => {
+            table.innerHTML += `
+                <tr>
+                    <td>${row[1]}</td>
+                    <td>${row[3]}</td>
+                    <td>${row[10]}</td>
+                    <td>${row[7]}</td>
+                    <td>${row[20]}</td>
+                </tr>
+            `;
+        });
+    }
+
+    function loadRevisions(){
+        alert("Next Step: Revision UI will connect here");
+    }
+
+    function loadMessages(){
+        alert("Next Step: Message UI will connect here");
+    }
+
+    // INIT
+    loadDashboard();
 </script>
 
-<div id="pModal" class="fixed inset-0 bg-black/95 backdrop-blur-xl hidden z-[100] items-center justify-center p-4">
-    <div class="glass w-full max-w-5xl p-10 rounded-[40px] shadow-2xl overflow-y-auto max-h-[90vh]">
-        <div class="flex justify-between items-center mb-10 border-b border-white/5 pb-6">
-            <h3 class="text-3xl font-black italic text-white uppercase tracking-tighter">New Production</h3>
-            <button onclick="toggleModal('pModal', false)" class="text-slate-400 hover:text-white p-2 glass rounded-full"><i data-lucide="x"></i></button>
-        </div>
-
-        <form id="projectForm" onsubmit="handleNewProject(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-            <div class="md:col-span-1 space-y-5">
-                <div><label>Project ID (Auto)</label><input type="text" id="pID_display" value="MN-Generating..." disabled class="text-cyan-400 font-mono"></div>
-                <div><label>Project Name</label><input type="text" id="pName" required placeholder="Project Title"></div>
-                <div><label>Client Email</label><input type="email" id="pClientEmail" readonly class="opacity-50 cursor-not-allowed"></div>
-            </div>
-            <div class="md:col-span-1 space-y-5">
-                <div><label>Category</label><select id="pCategory"><option>Reels</option><option>YouTube</option><option>Real Estate</option><option>Social Media Ads</option></select></div>
-                <div><label>Footage Link</label><input type="url" id="pFootage" placeholder="http://drive..."></div>
-                <div><label>Script Link</label><input type="url" id="pScript" placeholder="http://docs..."></div>
-            </div>
-            <div>
-  <label>Website (Optional)</label>
-  <input type="url" id="pWebsite" placeholder="http://example.com">
-</div>
-            <div class="md:col-span-1 space-y-5">
-                <div><label>Deadline</label><input type="date" id="pDeadline" required></div>
-                <div><label>Priority</label><select id="pPriority"><option>Normal</option><option>High</option><option value="URGENT">URGENT</option></select></div>
-                <div><label>Budget (USD)</label><input type="number" id="pBudget" placeholder="Project Rate ($)"></div>
-            </div>
-            <div class="col-span-full">
-                <label>Detailed Instructions</label>
-                <textarea id="pNotes" rows="3" placeholder="Explain your vision..."></textarea>
-            </div>
-            <button type="submit" id="submitBtn" class="col-span-full bg-cyan-500 text-black py-5 rounded-[24px] font-black uppercase tracking-[4px] hover:bg-cyan-400 transition-all active:scale-95 shadow-lg shadow-cyan-500/20">Launch Project</button>
-        </form>
-    </div>
-</div>
-
-<div id="detailsModal" class="fixed inset-0 bg-black/95 backdrop-blur-2xl hidden z-[150] items-center justify-center p-4">
-    <div class="glass w-full max-w-6xl rounded-[40px] flex flex-col shadow-2xl overflow-hidden max-h-[90vh]">
-        <div class="p-8 border-b border-white/5 flex justify-between items-center bg-white/5">
-            <div class="flex-1">
-                <input id="editPName" class="bg-transparent border-none text-xl sm:text-2xl md:text-3xl font-black italic text-white uppercase focus:ring-0 p-0 w-full mb-1" placeholder="Project Name">
-                <p id="detProjectID" class="text-cyan-400 font-mono text-xs tracking-widest italic">ID: ---</p>
-            </div>
-            <div class="flex gap-3">
-                <button id="saveUpdateBtn" onclick="saveProjectUpdate()" class="bg-cyan-500 hover:bg-cyan-400 text-black px-4 py-2 sm:px-6 sm:py-3 md:px-6 md:py-3 rounded-xl font-bold text-xs flex items-center gap-2 transition-all active:scale-95">
-                    <i data-lucide="refresh-cw" size="14"></i> Update Project
-                </button>
-                <button id="deleteBtn" onclick="deleteProject()" class="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-xl font-bold text-xs transition-all active:scale-95">
-                    <i data-lucide="trash-2" size="14"></i> Delete
-                </button>
-                <button onclick="toggleModal('detailsModal', false)" class="text-slate-400 hover:text-white p-2 glass rounded-full"><i data-lucide="x"></i></button>
-            </div>
-        </div>
-
-        <div class="flex-1 p-8 overflow-y-auto">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-                <div class="space-y-5">
-                    <h5 class="text-cyan-500 text-[10px] font-black uppercase tracking-[3px]">Production Core</h5>
-                    <div><label>Client Email</label><input type="email" id="editClientEmail"></div>
-                    <div><label>Assigned Editor</label>
-                        <select id="editEditor">
-                            <option value="juwel|Juwelhossain103@gmail.com">Juwel</option>
-                            <option value="Mahabur|mahabur1in4@gmail.com">Mahabur</option>
-                        </select>
-                    </div>
-                    <div><label>Project Status</label>
-                        <select id="editStatus">
-                            <option value="Pending">Pending</option><option value="Editing">InProgress</option><option value="Review">Review</option><option value="Delivered">Delivered</option>
-                        </select>
-                    </div>
-                    <div><label>Approval Status</label>
-                        <select id="editApproval">
-                            <option value="Pending">Pending</option><option value="Approved">Approved</option><option value="Rejected">Rejected</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="space-y-5">
-                    <h5 class="text-cyan-500 text-[10px] font-black uppercase tracking-[3px]">Files & Logistics</h5>
-                    <div><label>Footage Link</label><input type="url" id="editFootage"></div>
-                    <div><label>Final Files Link</label><input type="url" id="editFilesLink"></div>
-                    <div><label>Reference Link</label><input type="url" id="editRef1"></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label>Priority</label><select id="editPriority"><option>Normal</option><option>High</option><option>URGENT</option></select></div>
-                        <div><label>Budget BDT</label><input type="number" id="editBudget"></div>
-                    </div>
-                    <div><label>Deadline</label><input type="date" id="editDeadline"></div>
-                </div>
-
-                <div class="space-y-5 bg-white/5 p-6 rounded-3xl border border-white/10">
-                    <h5 class="text-orange-500 text-[10px] font-black uppercase tracking-[3px]">Revision Control</h5>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label>Rev Number</label><input type="number" id="editRevNum"></div>
-                        <div><label>Version</label><input type="text" id="editVersion" placeholder="v1.0"></div>
-                    </div>
-                    <div><label>Request Type</label>
-                        <select id="editReqType">
-                            <option value="General">General</option><option value="Visual">Visual</option><option value="Audio">Audio</option><option value="Graphics">Graphics</option>
-                        </select>
-                    </div>
-                    <div><label>Client Notes</label><textarea id="editClientNotes" rows="3"></textarea></div>
-                    <div><label>Editor Notes</label><textarea id="editEditorNotes" rows="2"></textarea></div>
-                </div>
-            </div>
-
-            <div class="mt-8 pt-8 border-t border-white/5 grid grid-cols-2 md:grid-cols-4 gap-6 text-[9px] uppercase font-bold text-slate-500">
-                <div><p>Uploaded By</p><p id="dispUploadedBy" class="text-white mt-1">---</p></div>
-                <div><p>User Role</p><p id="dispUserRole" class="text-white mt-1">---</p></div>
-                <div><p>Last Updated</p><p id="dispLastUpdated" class="text-white mt-1">---</p></div>
-                <div><label class="m-0 text-[9px]">Client Visible</label>
-                    <select id="editVisible" class="h-8 py-0 px-2 mt-1 text-[9px] w-20">
-                        <option value="Yes">Yes</option><option value="No">No</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    lucide.createIcons();
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
-    const ADMIN_EMAIL = "naimur582582@gmail.com"; 
-    const EDITORS_EMAILS = ["shafin@mail.com"]; 
-
-    let ALL_PROJECTS = [];
-
-    function handleCredentialResponse(response) {
-        const payload = parseJwt(response.credential);
-        localStorage.setItem('studio_logged_in', 'true');
-        localStorage.setItem('user_name', payload.name);
-        localStorage.setItem('user_pic', payload.picture);
-        localStorage.setItem('user_email', payload.email); 
-        checkAuth();
-    }
-
-    function parseJwt (token) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        return JSON.parse(window.atob(base64));
-    };
-
-    function checkAuth() {
-        const isLoggedIn = localStorage.getItem('studio_logged_in');
-        const overlay = document.getElementById('loginOverlay');
-        const main = document.getElementById('mainContent');
-        const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
-
-        if (isLoggedIn === 'true') {
-            overlay.style.display = 'none';
-            main.style.opacity = '1';
-            document.getElementById('userNameDisplay').innerText = localStorage.getItem('user_name');
-            
-            if(userEmail === ADMIN_EMAIL.toLowerCase()) {
-                document.getElementById('userRoleDisplay').innerText = "Agency Owner";
-            } else if (EDITORS_EMAILS.includes(userEmail)) {
-                document.getElementById('userRoleDisplay').innerText = "Editor";
-            } else {
-                document.getElementById('userRoleDisplay').innerText = "Client";
-            }
-
-            const pic = localStorage.getItem('user_pic');
-            if(pic) document.getElementById('userAvatar').innerHTML = `<img src="${pic}" class="w-full h-full object-cover">`;
-            initDashboard();
-        } else {
-            overlay.style.display = 'flex';
-            main.style.opacity = '0';
-        }
-    }
-
-    function handleLogout() {
-        if(confirm("Sign out from Studio?")) {
-            localStorage.clear();
-            location.reload();
-        }
-    }
-
-    function toggleModal(id, show) { 
-        document.getElementById(id).style.display = show ? 'flex' : 'none'; 
-        if(id === 'pModal' && show) {
-            generateTempID();
-            document.getElementById('pClientEmail').value = localStorage.getItem('user_email');
-        }
-    }
-
-    function generateTempID() {
-        const nextID = ALL_PROJECTS.length > 0 ? parseInt(ALL_PROJECTS[0][1].split('-')[1]) + 1 : 101;
-        document.getElementById('pID_display').value = "MN-" + nextID;
-    }
-
-    async function initDashboard() {
-        const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
-        const loader = document.getElementById('loader');
-        const grid = document.getElementById('projectGrid');
-        loader.classList.remove('hidden'); 
-        grid.innerHTML = '';
-        try {
-            const res = await fetch(WEB_APP_URL);
-            const response = await res.json();
-            const rawData = response.data || [];
-            
-            if (userEmail === ADMIN_EMAIL.toLowerCase()) {
-                ALL_PROJECTS = rawData;
-            } else {
-                ALL_PROJECTS = rawData.filter(p => {
-                    const cEmail = p[2] ? p[2].toLowerCase() : "";
-                    const eEmail = p[9] ? p[9].toLowerCase() : "";
-                    return cEmail === userEmail || eEmail === userEmail;
-                });
-            }
-            renderUI(ALL_PROJECTS);
-        } catch (err) {
-            grid.innerHTML = `<div class="col-span-full py-20 text-center text-red-500">Sync Error.</div>`;
-        } finally { loader.classList.add('hidden'); }
-    }
-
-  function renderUI(data) {
-    const grid = document.getElementById('projectGrid');
-
-    if (!data || data.length === 0) { 
-        grid.innerHTML = "<p class='col-span-full text-center py-20 text-slate-500 italic'>Pipeline empty.</p>"; 
-        return; 
-    }
-
-    const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
-    const isAdmin = userEmail === ADMIN_EMAIL.toLowerCase();
-    const isEditor = EDITORS_EMAILS.includes(userEmail);
-    const showPriority = isAdmin || isEditor;
-
-    grid.innerHTML = data.map((p, index) => {
-        const statusClass = (p[10] || 'Pending').replace(/\s+/g, '');
-        const revNum = parseInt(p[23] || 0);
-
-        const borderClass = showPriority && p[11] === 'URGENT'
-            ? 'border-red-500'
-            : 'border-transparent';
-
-        return `
-            <div onclick="showProjectDetails(${index})" class="glass glass-card p-8 rounded-[40px] border-l-4 ${borderClass}">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <span class="text-[10px] font-mono text-cyan-400 tracking-widest">${p[1]}</span>
-                        <h4 class="text-lg sm:text-xl md:text-xl font-bold text-white italic mt-1 truncate w-full max-w-full">${p[3]}</h4>
-                    </div>
-
-                    <span class="status-${statusClass} px-4 py-1.5 rounded-xl text-[10px] font-black uppercase italic">
-                        ${p[10] || 'Pending'}
-                    </span>
-                </div>
-
-                <div class="progress-bar mb-3">
-                    <div class="progress-fill" 
-                    style="width: ${p[10] === 'Delivered' ? '100%' : (revNum * 20 + 10) + '%'}">
-                    </div>
-                </div>
-
-                <div class="flex justify-between text-[9px] uppercase font-bold text-slate-600 tracking-widest">
-                    <span>${p[24] || 'v1.0'}</span>
-                    <span>Rev: ${revNum}</span>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    lucide.createIcons();
-    updateStats(data);
-}
-
-function showProjectDetails(index) {
-    const p = ALL_PROJECTS[index];
-    const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
-    if(!p) return;
-    
-    document.getElementById('detProjectID').innerText = p[1];
-    document.getElementById('editPName').value = p[3] || '';
-    document.getElementById('editClientEmail').value = p[2] || '';
-    document.getElementById('editEditor').value = (p[8] || 'Naimur Rahman') + "|" + (p[9] || 'naimur582582@gmail.com');
-    document.getElementById('editStatus').value = p[10] || 'Pending';
-    document.getElementById('editApproval').value = p[29] || 'Pending';
-    
-    document.getElementById('editFootage').value = p[13] || '';
-    document.getElementById('editFilesLink').value = p[14] || '';
-    document.getElementById('editRef1').value = p[16] || '';
-    document.getElementById('editPriority').value = p[11] || 'Normal';
-    document.getElementById('editBudget').value = p[28] || 0;
-    if(p[20]) document.getElementById('editDeadline').value = new Date(p[20]).toISOString().split('T')[0];
-    
-    document.getElementById('editRevNum').value = p[23] || 0;
-    document.getElementById('editVersion').value = p[24] || 'v1.0';
-    document.getElementById('editReqType').value = p[25] || 'General';
-    document.getElementById('editClientNotes').value = p[27] || '';
-    document.getElementById('editEditorNotes').value = p[26] || '';
-    
-    document.getElementById('dispUploadedBy').innerText = p[30] || '---';
-    document.getElementById('dispUserRole').innerText = p[31] || '---';
-    document.getElementById('dispLastUpdated').innerText = p[34] || '---';
-    document.getElementById('editVisible').value = p[32] || 'Yes';
-
-    // 🔐 ADMIN CONTROL
-    const isAdmin = userEmail === ADMIN_EMAIL.toLowerCase();
-
-    document.getElementById('saveUpdateBtn').style.display = isAdmin ? 'flex' : 'none';
-    document.getElementById('deleteBtn').style.display = isAdmin ? 'flex' : 'none';
-
-    // 🔒 lock সব field যদি client হয়
-    document.querySelectorAll('#detailsModal input, #detailsModal textarea, #detailsModal select')
-    .forEach(el => {
-        if(!isAdmin){
-            el.setAttribute("disabled", true);
-            el.style.opacity = "0.6";
-            el.style.cursor = "not-allowed";
-        }else{
-            el.removeAttribute("disabled");
-            el.style.opacity = "1";
-            el.style.cursor = "auto";
-        }
-    });
-
-    toggleModal('detailsModal', true);
-}
-
-    async function handleNewProject(event) {
-        event.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        btn.innerText = "LAUNCHING..."; btn.disabled = true;
-        
-        const pData = {
-            action: "addProject", 
-            projectName: document.getElementById('pName').value, 
-            clientEmail: document.getElementById('pClientEmail').value,
-            category: document.getElementById('pCategory').value,
-            footage: document.getElementById('pFootage').value, 
-            scriptLink: document.getElementById('pScript').value,
-            deadline: document.getElementById('pDeadline').value, 
-            priority: document.getElementById('pPriority').value,
-            notes: document.getElementById('pNotes').value, 
-            budget: document.getElementById('pBudget').value,
-            uploadedBy: localStorage.getItem('user_name'),
-            userRole: "Client"
-        };
-
-        try {
-            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(pData) });
-            alert("Project Launched!");
-            document.getElementById('projectForm').reset();
-            toggleModal('pModal', false);
-            setTimeout(initDashboard, 1500);
-        } catch (err) { alert("Error."); } finally { btn.innerText = "Launch Project"; btn.disabled = false; }
-    }
-
-    async function saveProjectUpdate() {
-        const btn = document.getElementById('saveUpdateBtn');
-        btn.innerText = "SAVING..."; btn.disabled = true;
-        const editorParts = document.getElementById('editEditor').value.split('|');
-        
-        const formData = {
-            action: "updateProject", 
-            projectID: document.getElementById('detProjectID').innerText,
-            projectName: document.getElementById('editPName').value,
-            clientEmail: document.getElementById('editClientEmail').value,
-            editor: editorParts[0], editorEmail: editorParts[1],
-            status: document.getElementById('editStatus').value,
-            approvalStatus: document.getElementById('editApproval').value,
-            footage: document.getElementById('editFootage').value,
-            filesLink: document.getElementById('editFilesLink').value,
-            ref1: document.getElementById('editRef1').value,
-            priority: document.getElementById('editPriority').value,
-            budget: document.getElementById('editBudget').value,
-            deadline: document.getElementById('editDeadline').value,
-            revisionNumber: document.getElementById('editRevNum').value,
-            version: document.getElementById('editVersion').value,
-            requestType: document.getElementById('editReqType').value,
-            clientNotes: document.getElementById('editClientNotes').value,
-            editorNotes: document.getElementById('editEditorNotes').value,
-            clientVisible: document.getElementById('editVisible').value,
-            lastUpdated: new Date().toLocaleString()
-        };
-
-        try {
-            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(formData) });
-            alert("Updated!"); 
-            toggleModal('detailsModal', false);
-            setTimeout(initDashboard, 1000);
-        } catch (err) { alert("Error."); } finally { btn.innerText = "Update Project"; btn.disabled = false; }
-    }
-
-    async function deleteProject() {
-        if(!confirm("DELETE?")) return;
-        try {
-            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "deleteProject", projectID: document.getElementById('detProjectID').innerText}) });
-            alert("Deleted."); toggleModal('detailsModal', false);
-            setTimeout(initDashboard, 1000);
-        } catch (err) { location.reload(); }
-    }
-
-    function updateStats(data) {
-        document.getElementById('stat-active').innerText = data.filter(p => p[10] !== 'Delivered').length;
-        document.getElementById('stat-done').innerText = data.filter(p => p[10] === 'Delivered').length;
-        document.getElementById('stat-rev').innerText = data.reduce((acc, p) => acc + (parseInt(p[23] || 0)), 0);
-        const totalRev = data.reduce((acc, p) => acc + (parseFloat(p[28] || 0)), 0);
-        document.getElementById('stat-revenue').innerText = "BDT " + totalRev.toLocaleString();
-    }
-
-    window.onload = checkAuth;
-    
-</script>
-<!-- Mobile Logout Button -->
-<button onclick="handleLogout()" 
-        class="md:hidden fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2">
-    <i data-lucide="log-out" size="16"></i> Logout
-</button>
+<script src="api.js"></script>
+<script src="portal-script.js"></script>
 
 </body>
 </html>

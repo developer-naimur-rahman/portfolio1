@@ -65,15 +65,47 @@
             } catch (e) { return null; }
         }
 
-        function handleCredentialResponse(response) {
-            const data = parseJwt(response.credential);
-            if(data) {
-                localStorage.setItem('clientEmail', data.email);
-                localStorage.setItem('clientName', data.name);
-                localStorage.setItem('clientPic', data.picture);
-                window.location.href = 'dashboard.html';
-            }
-        }
+      function handleCredentialResponse(response) {
+    const data = parseJwt(response.credential);
+
+    if (!data) return;
+
+    const email = data.email;
+
+    // =========================
+    // ROLE SYSTEM (AUTO DETECT)
+    // =========================
+    let role = "client";
+
+    if (email === "naimur582582@gmail.com") {
+        role = "admin";
+    } 
+    else if (
+        email === "mahabur1in4@gmail.com" ||
+        email === "Juwelhossain103@gmail.com"
+    ) {
+        role = "editor";
+    } 
+    else {
+        role = "client";
+    }
+
+    // =========================
+    // SAVE TO LOCAL STORAGE
+    // =========================
+    localStorage.setItem("clientEmail", email);
+    localStorage.setItem("clientName", data.name);
+    localStorage.setItem("clientPic", data.picture);
+    localStorage.setItem("currentRole", role);
+
+    // =========================
+    // GO DASHBOARD
+    // =========================
+    window.location.href = "dashboard.html";
+}
+
+
     </script>
+    <script src="api.js"></script>  
 </body>
 </html>
