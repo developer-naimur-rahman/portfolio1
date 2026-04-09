@@ -76,6 +76,25 @@ th{color:#94a3b8;}
 
 <body>
 
+    <button onclick="openProjectModal()">+ New Project</button>
+
+    <div id="projectModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7);">
+    
+    <div style="background:#111; padding:20px; width:400px; margin:100px auto; border-radius:10px;">
+        
+        <h3>Create New Project</h3>
+
+        <input id="projectName" placeholder="Project Name" /><br><br>
+        <input id="category" placeholder="Category" /><br><br>
+        <input id="budget" placeholder="Budget" /><br><br>
+        <input id="deadline" placeholder="Deadline" /><br><br>
+
+        <button onclick="submitProject()">Create</button>
+        <button onclick="closeProjectModal()">Close</button>
+
+    </div>
+</div>
+
 <!-- SIDEBAR -->
 <div class="sidebar">
     <h3>AgencyOS</h3>
