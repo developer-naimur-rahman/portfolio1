@@ -287,52 +287,37 @@
     }
 
     function generateTempID() {
-        const lastID = ALL_PROJECTS.length > 0 ? ALL_PROJECTS[0][1] || '' : '';
-        const nextID = lastID.includes('-') && !isNaN(parseInt(lastID.split('-')[1]))
-            ? parseInt(lastID.split('-')[1]) + 1
-            : 101;
+        const nextID = ALL_PROJECTS.length > 0 ? parseInt(ALL_PROJECTS[0][1].split('-')[1]) + 1 : 101;
         document.getElementById('pID_display').value = "MN-" + nextID;
-    }
-
-    async function apiPost(body) {
-        const response = await fetch(WEB_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        if (!response.ok) {
-            throw new Error(`API request failed with status ${response.status}`);
-        }
-        const text = await response.text();
-        if (!text) return {};
-        try { return JSON.parse(text); } catch (err) { return {}; }
     }
 
     async function initDashboard() {
         const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
+        const role = getUserRole(userEmail);
         const loader = document.getElementById('loader');
         const grid = document.getElementById('projectGrid');
-        loader.classList.remove('hidden');
+        loader.classList.remove('hidden'); 
         grid.innerHTML = '';
         try {
-            const res = await fetch(WEB_APP_URL);
-            if (!res.ok) throw new Error(`Fetch failed ${res.status}`);
+            const res = await fetch(WEB_APP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'getProjects', email: userEmail, role: role })
+            });
             const response = await res.json();
             const rawData = response.data || [];
             
-            if (userEmail === ADMIN_EMAIL.toLowerCase()) {
-                ALL_PROJECTS = rawData;
-            } else {
-                ALL_PROJECTS = rawData.filter(p => {
-                    const cEmail = p[2] ? p[2].toLowerCase() : "";
-                    const eEmail = p[9] ? p[9].toLowerCase() : "";
-                    return cEmail === userEmail || eEmail === userEmail;
-                });
-            }
+            ALL_PROJECTS = rawData;
             renderUI(ALL_PROJECTS);
         } catch (err) {
             grid.innerHTML = `<div class="col-span-full py-20 text-center text-red-500">Sync Error.</div>`;
         } finally { loader.classList.add('hidden'); }
+    }
+
+    function getUserRole(email) {
+        if (email === ADMIN_EMAIL.toLowerCase()) return 'admin';
+        if (EDITORS_EMAILS.includes(email)) return 'editor';
+        return 'client';
     }
 
   function renderUI(data) {
@@ -349,10 +334,10 @@
     const showPriority = isAdmin || isEditor;
 
     grid.innerHTML = data.map((p, index) => {
-        const statusClass = (p[10] || 'Pending').replace(/\s+/g, '');
-        const revNum = parseInt(p[23] || 0);
+        const statusClass = (p[9] || 'Pending').replace(/\s+/g, '');
+        const revNum = 0; // Revisions are in separate sheet
 
-        const borderClass = showPriority && p[11] === 'URGENT'
+        const borderClass = showPriority && p[10] === 'URGENT'
             ? 'border-red-500'
             : 'border-transparent';
 
@@ -365,18 +350,18 @@
                     </div>
 
                     <span class="status-${statusClass} px-4 py-1.5 rounded-xl text-[10px] font-black uppercase italic">
-                        ${p[10] || 'Pending'}
+                        ${p[9] || 'Pending'}
                     </span>
                 </div>
 
                 <div class="progress-bar mb-3">
                     <div class="progress-fill" 
-                    style="width: ${p[10] === 'Completed' ? '100%' : (revNum * 20 + 10) + '%'}">
+                    style="width: ${p[9] === 'Completed' ? '100%' : '10%'}">
                     </div>
                 </div>
 
                 <div class="flex justify-between text-[9px] uppercase font-bold text-slate-600 tracking-widest">
-                    <span>${p[24] || 'v1.0'}</span>
+                    <span>v1.0</span>
                     <span>Rev: ${revNum}</span>
                 </div>
             </div>
@@ -395,27 +380,28 @@ function showProjectDetails(index) {
     document.getElementById('detProjectID').innerText = p[1];
     document.getElementById('editPName').value = p[3] || '';
     document.getElementById('editClientEmail').value = p[2] || '';
-    document.getElementById('editEditor').value = (p[8] || 'Naimur Rahman') + "|" + (p[9] || 'naimur582582@gmail.com');
-    document.getElementById('editStatus').value = p[10] || 'Pending';
-    document.getElementById('editApproval').value = p[29] || 'Pending';
+    document.getElementById('editEditor').value = (p[7] || 'Naimur Rahman') + "|" + (p[8] || 'naimur582582@gmail.com');
+    document.getElementById('editStatus').value = p[9] || 'Pending';
+    document.getElementById('editApproval').value = p[11] || 'Pending';
     
-    document.getElementById('editFootage').value = p[13] || '';
-    document.getElementById('editFilesLink').value = p[14] || '';
-    document.getElementById('editRef1').value = p[16] || '';
-    document.getElementById('editPriority').value = p[11] || 'Normal';
-    document.getElementById('editBudget').value = p[28] || 0;
-    if(p[20]) document.getElementById('editDeadline').value = new Date(p[20]).toISOString().split('T')[0];
+    document.getElementById('editFootage').value = p[12] || '';
+    document.getElementById('editFilesLink').value = p[17] || ''; // Delivery Link
+    document.getElementById('editRef1').value = p[15] || '';
+    document.getElementById('editPriority').value = p[10] || 'Normal';
+    document.getElementById('editBudget').value = p[22] || 0;
+    if(p[19]) document.getElementById('editDeadline').value = new Date(p[19]).toISOString().split('T')[0];
     
-    document.getElementById('editRevNum').value = p[23] || 0;
-    document.getElementById('editVersion').value = p[24] || 'v1.0';
-    document.getElementById('editReqType').value = p[25] || 'General';
-    document.getElementById('editClientNotes').value = p[27] || '';
-    document.getElementById('editEditorNotes').value = p[26] || '';
+    // Revision fields not in projects sheet, set defaults
+    document.getElementById('editRevNum').value = 0;
+    document.getElementById('editVersion').value = 'v1.0';
+    document.getElementById('editReqType').value = 'General';
+    document.getElementById('editClientNotes').value = '';
+    document.getElementById('editEditorNotes').value = '';
     
-    document.getElementById('dispUploadedBy').innerText = p[30] || '---';
-    document.getElementById('dispUserRole').innerText = p[31] || '---';
-    document.getElementById('dispLastUpdated').innerText = p[34] || '---';
-    document.getElementById('editVisible').value = p[32] || 'Yes';
+    document.getElementById('dispUploadedBy').innerText = p[23] || '---';
+    document.getElementById('dispUserRole').innerText = '---'; // Not in sheet
+    document.getElementById('dispLastUpdated').innerText = p[24] || '---';
+    document.getElementById('editVisible').value = 'Yes'; // Not in sheet
 
     // 🔐 ADMIN CONTROL
     const isAdmin = userEmail === ADMIN_EMAIL.toLowerCase();
@@ -423,7 +409,7 @@ function showProjectDetails(index) {
     document.getElementById('saveUpdateBtn').style.display = isAdmin ? 'flex' : 'none';
     document.getElementById('deleteBtn').style.display = isAdmin ? 'flex' : 'none';
 
-    // 🔒 lock সব field যদি client হয়
+    // 🔒 lock fields for non-admin
     document.querySelectorAll('#detailsModal input, #detailsModal textarea, #detailsModal select')
     .forEach(el => {
         if(!isAdmin){
@@ -447,94 +433,101 @@ function showProjectDetails(index) {
         
         const pData = {
             action: "addProject", 
-            projectName: document.getElementById('pName').value, 
             clientEmail: document.getElementById('pClientEmail').value,
+            projectName: document.getElementById('pName').value, 
             category: document.getElementById('pCategory').value,
             footage: document.getElementById('pFootage').value, 
             scriptLink: document.getElementById('pScript').value,
             deadline: document.getElementById('pDeadline').value, 
             priority: document.getElementById('pPriority').value,
-            notes: document.getElementById('pNotes').value, 
             budget: document.getElementById('pBudget').value,
-            uploadedBy: localStorage.getItem('user_name'),
-            userRole: "Client"
+            createdBy: localStorage.getItem('user_name')
         };
 
         try {
-            await apiPost(pData);
-            alert("Project Launched!");
-            document.getElementById('projectForm').reset();
-            toggleModal('pModal', false);
-            setTimeout(initDashboard, 1500);
-        } catch (err) {
-            console.error(err);
-            alert("Unable to launch project. Check the console for details.");
-        } finally {
-            btn.innerText = "Launch Project";
-            btn.disabled = false;
+            const res = await fetch(WEB_APP_URL, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pData) 
+            });
+            const response = await res.json();
+            if (response.success) {
+                alert("Project Launched!");
+                document.getElementById('projectForm').reset();
+                toggleModal('pModal', false);
+                setTimeout(initDashboard, 1500);
+            } else {
+                alert("Error: " + response.error);
+            }
+        } catch (err) { 
+            alert("Error: " + err.message); 
+        } finally { 
+            btn.innerText = "Launch Project"; 
+            btn.disabled = false; 
         }
     }
 
     async function saveProjectUpdate() {
         const btn = document.getElementById('saveUpdateBtn');
         btn.innerText = "SAVING..."; btn.disabled = true;
-        const editorParts = document.getElementById('editEditor').value.split('|');
         
         const formData = {
             action: "updateProject", 
             projectID: document.getElementById('detProjectID').innerText,
-            projectName: document.getElementById('editPName').value,
-            clientEmail: document.getElementById('editClientEmail').value,
-            editor: editorParts[0], editorEmail: editorParts[1],
             status: document.getElementById('editStatus').value,
-            approvalStatus: document.getElementById('editApproval').value,
-            footage: document.getElementById('editFootage').value,
-            filesLink: document.getElementById('editFilesLink').value,
-            ref1: document.getElementById('editRef1').value,
             priority: document.getElementById('editPriority').value,
-            budget: document.getElementById('editBudget').value,
-            deadline: document.getElementById('editDeadline').value,
-            revisionNumber: document.getElementById('editRevNum').value,
-            version: document.getElementById('editVersion').value,
-            requestType: document.getElementById('editReqType').value,
-            clientNotes: document.getElementById('editClientNotes').value,
-            editorNotes: document.getElementById('editEditorNotes').value,
-            clientVisible: document.getElementById('editVisible').value,
-            lastUpdated: new Date().toLocaleString()
+            approval: document.getElementById('editApproval').value
         };
 
         try {
-            await apiPost(formData);
-            alert("Updated!");
-            toggleModal('detailsModal', false);
-            setTimeout(initDashboard, 1000);
-        } catch (err) {
-            console.error(err);
-            alert("Unable to update project. Check the console for details.");
-        } finally {
-            btn.innerText = "Update Project";
-            btn.disabled = false;
+            const res = await fetch(WEB_APP_URL, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData) 
+            });
+            const response = await res.json();
+            if (response.success) {
+                alert("Updated!"); 
+                toggleModal('detailsModal', false);
+                setTimeout(initDashboard, 1000);
+            } else {
+                alert("Error: " + response.error);
+            }
+        } catch (err) { 
+            alert("Error: " + err.message); 
+        } finally { 
+            btn.innerText = "Update Project"; 
+            btn.disabled = false; 
         }
     }
 
     async function deleteProject() {
         if(!confirm("DELETE?")) return;
         try {
-            await apiPost({ action: "deleteProject", projectID: document.getElementById('detProjectID').innerText });
-            alert("Deleted.");
-            toggleModal('detailsModal', false);
-            setTimeout(initDashboard, 1000);
-        } catch (err) {
-            console.error(err);
-            alert("Unable to delete project. Check the console for details.");
+            const res = await fetch(WEB_APP_URL, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({action: "deleteProject", projectID: document.getElementById('detProjectID').innerText}) 
+            });
+            const response = await res.json();
+            if (response.success) {
+                alert("Deleted."); 
+                toggleModal('detailsModal', false);
+                setTimeout(initDashboard, 1000);
+            } else {
+                alert("Error: " + response.error);
+            }
+        } catch (err) { 
+            alert("Error: " + err.message); 
+            location.reload(); 
         }
     }
 
     function updateStats(data) {
-        document.getElementById('stat-active').innerText = data.filter(p => p[10] !== 'Completed').length;
-        document.getElementById('stat-done').innerText = data.filter(p => p[10] === 'Completed').length;
-        document.getElementById('stat-rev').innerText = data.reduce((acc, p) => acc + (parseInt(p[23] || 0)), 0);
-        const totalRev = data.reduce((acc, p) => acc + (parseFloat(p[28] || 0)), 0);
+        document.getElementById('stat-active').innerText = data.filter(p => p[9] !== 'Completed').length;
+        document.getElementById('stat-done').innerText = data.filter(p => p[9] === 'Completed').length;
+        document.getElementById('stat-rev').innerText = 0; // Revisions in separate sheet
+        const totalRev = data.reduce((acc, p) => acc + (parseFloat(p[22] || 0)), 0);
         document.getElementById('stat-revenue').innerText = "USD " + totalRev.toLocaleString();
     }
 
