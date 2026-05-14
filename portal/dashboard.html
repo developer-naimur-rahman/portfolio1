@@ -244,26 +244,31 @@
     };
 
     function checkAuth() {
-        const isLoggedIn = localStorage.getItem('studio_logged_in');
         const overlay = document.getElementById('loginOverlay');
         const main = document.getElementById('mainContent');
-        const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
+        const storedEmail = localStorage.getItem('user_email') || localStorage.getItem('clientEmail') || "";
+        const userEmail = storedEmail.toLowerCase();
+        const isLoggedIn = localStorage.getItem('studio_logged_in') === 'true' || !!storedEmail;
+        const userName = localStorage.getItem('user_name') || localStorage.getItem('clientName') || "User";
+        const userPic = localStorage.getItem('user_pic') || localStorage.getItem('clientPic') || "";
 
-        if (isLoggedIn === 'true') {
+        if (isLoggedIn) {
             overlay.style.display = 'none';
             main.style.opacity = '1';
-            document.getElementById('userNameDisplay').innerText = localStorage.getItem('user_name');
+            document.getElementById('userNameDisplay').innerText = userName;
             
-            if(userEmail === ADMIN_EMAIL.toLowerCase()) {
+            const role = getUserRole(userEmail);
+            localStorage.setItem('currentRole', role);
+
+            if(role === "admin") {
                 document.getElementById('userRoleDisplay').innerText = "Agency Owner";
-            } else if (EDITORS_EMAILS.includes(userEmail)) {
+            } else if (role === "editor") {
                 document.getElementById('userRoleDisplay').innerText = "Editor";
             } else {
                 document.getElementById('userRoleDisplay').innerText = "Client";
             }
 
-            const pic = localStorage.getItem('user_pic');
-            if(pic) document.getElementById('userAvatar').innerHTML = `<img src="${pic}" class="w-full h-full object-cover">`;
+            if(userPic) document.getElementById('userAvatar').innerHTML = `<img src="${userPic}" class="w-full h-full object-cover">`;
             initDashboard();
         } else {
             overlay.style.display = 'flex';
@@ -282,7 +287,7 @@
         document.getElementById(id).style.display = show ? 'flex' : 'none'; 
         if(id === 'pModal' && show) {
             generateTempID();
-            document.getElementById('pClientEmail').value = localStorage.getItem('user_email');
+            document.getElementById('pClientEmail').value = localStorage.getItem('user_email') || localStorage.getItem('clientEmail') || "";
         }
     }
 
@@ -292,7 +297,7 @@
     }
 
     async function initDashboard() {
-        const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
+        const userEmail = getStoredUserEmail();
         const role = getUserRole(userEmail);
         const loader = document.getElementById('loader');
         const grid = document.getElementById('projectGrid');
@@ -315,9 +320,15 @@
     }
 
     function getUserRole(email) {
+        const savedRole = localStorage.getItem('currentRole');
+        if (savedRole === 'admin' || savedRole === 'editor' || savedRole === 'client') return savedRole;
         if (email === ADMIN_EMAIL.toLowerCase()) return 'admin';
         if (EDITORS_EMAILS.includes(email)) return 'editor';
         return 'client';
+    }
+
+    function getStoredUserEmail() {
+        return (localStorage.getItem('user_email') || localStorage.getItem('clientEmail') || "").toLowerCase();
     }
 
   function renderUI(data) {
@@ -328,7 +339,7 @@
         return; 
     }
 
-    const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
+    const userEmail = getStoredUserEmail();
     const isAdmin = userEmail === ADMIN_EMAIL.toLowerCase();
     const isEditor = EDITORS_EMAILS.includes(userEmail);
     const showPriority = isAdmin || isEditor;
@@ -374,7 +385,7 @@
 
 function showProjectDetails(index) {
  const p = ALL_PROJECTS[index];
-    const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
+    const userEmail = getStoredUserEmail();
     if(!p) return;
     
     document.getElementById('detProjectID').innerText = p[1];
@@ -432,16 +443,26 @@ function showProjectDetails(index) {
         btn.innerText = "LAUNCHING..."; btn.disabled = true;
         
         const pData = {
-            action: "addProject", 
+            action: "addProject",
             clientEmail: document.getElementById('pClientEmail').value,
-            projectName: document.getElementById('pName').value, 
+            projectName: document.getElementById('pName').value,
             category: document.getElementById('pCategory').value,
-            footage: document.getElementById('pFootage').value, 
-            scriptLink: document.getElementById('pScript').value,
-            deadline: document.getElementById('pDeadline').value, 
+            projectType: document.getElementById('pCategory').value,
+            clientWebsite: "",
+            assignedEditor: "",
+            editorEmail: "",
+            status: "Pending",
             priority: document.getElementById('pPriority').value,
+            approval: "Pending",
+            footage: document.getElementById('pFootage').value,
+            script: "",
+            scriptLink: document.getElementById('pScript').value,
+            ref1: document.getElementById('pNotes').value,
+            ref2: "",
+            deliveryType: "",
+            deadline: document.getElementById('pDeadline').value,
             budget: document.getElementById('pBudget').value,
-            createdBy: localStorage.getItem('user_name')
+            createdBy: localStorage.getItem('user_name') || localStorage.getItem('clientName') || ""
         };
 
         try {
