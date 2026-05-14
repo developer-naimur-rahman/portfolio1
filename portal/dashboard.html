@@ -287,18 +287,36 @@
     }
 
     function generateTempID() {
-        const nextID = ALL_PROJECTS.length > 0 ? parseInt(ALL_PROJECTS[0][1].split('-')[1]) + 1 : 101;
+        const lastID = ALL_PROJECTS.length > 0 ? ALL_PROJECTS[0][1] || '' : '';
+        const nextID = lastID.includes('-') && !isNaN(parseInt(lastID.split('-')[1]))
+            ? parseInt(lastID.split('-')[1]) + 1
+            : 101;
         document.getElementById('pID_display').value = "MN-" + nextID;
+    }
+
+    async function apiPost(body) {
+        const response = await fetch(WEB_APP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+        const text = await response.text();
+        if (!text) return {};
+        try { return JSON.parse(text); } catch (err) { return {}; }
     }
 
     async function initDashboard() {
         const userEmail = (localStorage.getItem('user_email') || "").toLowerCase();
         const loader = document.getElementById('loader');
         const grid = document.getElementById('projectGrid');
-        loader.classList.remove('hidden'); 
+        loader.classList.remove('hidden');
         grid.innerHTML = '';
         try {
             const res = await fetch(WEB_APP_URL);
+            if (!res.ok) throw new Error(`Fetch failed ${res.status}`);
             const response = await res.json();
             const rawData = response.data || [];
             
@@ -443,12 +461,18 @@ function showProjectDetails(index) {
         };
 
         try {
-            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(pData) });
+            await apiPost(pData);
             alert("Project Launched!");
             document.getElementById('projectForm').reset();
             toggleModal('pModal', false);
             setTimeout(initDashboard, 1500);
-        } catch (err) { alert("Error."); } finally { btn.innerText = "Launch Project"; btn.disabled = false; }
+        } catch (err) {
+            console.error(err);
+            alert("Unable to launch project. Check the console for details.");
+        } finally {
+            btn.innerText = "Launch Project";
+            btn.disabled = false;
+        }
     }
 
     async function saveProjectUpdate() {
@@ -480,20 +504,30 @@ function showProjectDetails(index) {
         };
 
         try {
-            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(formData) });
-            alert("Updated!"); 
+            await apiPost(formData);
+            alert("Updated!");
             toggleModal('detailsModal', false);
             setTimeout(initDashboard, 1000);
-        } catch (err) { alert("Error."); } finally { btn.innerText = "Update Project"; btn.disabled = false; }
+        } catch (err) {
+            console.error(err);
+            alert("Unable to update project. Check the console for details.");
+        } finally {
+            btn.innerText = "Update Project";
+            btn.disabled = false;
+        }
     }
 
     async function deleteProject() {
         if(!confirm("DELETE?")) return;
         try {
-            await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "deleteProject", projectID: document.getElementById('detProjectID').innerText}) });
-            alert("Deleted."); toggleModal('detailsModal', false);
+            await apiPost({ action: "deleteProject", projectID: document.getElementById('detProjectID').innerText });
+            alert("Deleted.");
+            toggleModal('detailsModal', false);
             setTimeout(initDashboard, 1000);
-        } catch (err) { location.reload(); }
+        } catch (err) {
+            console.error(err);
+            alert("Unable to delete project. Check the console for details.");
+        }
     }
 
     function updateStats(data) {
