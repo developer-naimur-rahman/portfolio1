@@ -233,7 +233,14 @@
         localStorage.setItem('studio_logged_in', 'true');
         localStorage.setItem('user_name', payload.name);
         localStorage.setItem('user_pic', payload.picture);
-        localStorage.setItem('user_email', payload.email); 
+        localStorage.setItem('user_email', payload.email);
+        const loginEmail = (payload.email || '').toLowerCase();
+        const loginRole = loginEmail === ADMIN_EMAIL.toLowerCase()
+            ? 'admin'
+            : EDITORS_EMAILS.includes(loginEmail)
+                ? 'editor'
+                : 'client';
+        localStorage.setItem('currentRole', loginRole);
         checkAuth();
     }
 
