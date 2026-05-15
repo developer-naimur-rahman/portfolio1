@@ -315,6 +315,17 @@
         }
     }
 
+    // Quick health-check using GET to avoid preflight/CORS issues
+    async function testConnection() {
+        try {
+            const res = await fetch(CONFIG.WEB_APP_URL, { method: 'GET', mode: 'cors', cache: 'no-cache' });
+            if (!res.ok) return false;
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
     // ============================
     // AUTHENTICATION
     // ============================
@@ -377,6 +388,14 @@
                 localStorage.setItem('currentRole', CURRENT_USER.role);
                 localStorage.setItem('user_name', userData.name || CURRENT_USER.name);
                 CURRENT_USER.name = userData.name || CURRENT_USER.name;
+                // Health-check the Apps Script endpoint before loading dashboard
+                const ok = await testConnection();
+                if (!ok) {
+                    const grid = document.getElementById('projectGrid');
+                    document.getElementById('loader').classList.add('hidden');
+                    grid.innerHTML = `<div class="col-span-full py-20 text-center text-red-500">Sync Error: Failed to reach API. Ensure Apps Script is deployed (Anyone, even anonymous) and WEB_APP_URL is correct.</div>`;
+                    return;
+                }
             } catch (error) {
                 console.warn('Failed to refresh user role:', error);
                 CURRENT_USER.role = localStorage.getItem('currentRole') || 'client';
