@@ -242,3 +242,57 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+// Fiverr slider: load testimonials from JSON and initialize Owl carousel
+$(document).ready(function() {
+    function initFiverrSlider() {
+        if ($('.fiverr-slider').length > 0) {
+            $('.fiverr-slider').owlCarousel({
+                loop: true,
+                margin: 20,
+                items: 1,
+                dots: true,
+                nav: false,
+                autoplay: true,
+                autoplayTimeout: 5000,
+                smartSpeed: 800,
+                responsive: {
+                    0: { items: 1 },
+                    768: { items: 1 },
+                    992: { items: 1 }
+                }
+            });
+        }
+    }
+
+    function renderTestimonials(list) {
+        var $container = $('.fiverr-slider');
+        $container.empty();
+        list.forEach(function(item) {
+            var stars = '★★★★★'.slice(0, item.rating);
+            var card;
+            // Prefer full review screenshot if provided
+            if (item.screenshot) {
+                card = '\n<div class="fiverr-card">\n  <div class="fiverr-card-inner screenshot-layout">\n    <div class="fiverr-screenshot"><img src="' + item.screenshot + '" alt="' + (item.name || 'Review screenshot') + '"></div>\n    <div class="fiverr-content">\n      <h4 class="fiverr-name">' + (item.name || '') + '</h4>\n      <div class="fiverr-rating">' + stars + '</div>\n      <p class="fiverr-text">"' + (item.text || '') + '"</p>\n      <a class="fiverr-link" href="' + (item.link || '#') + '" target="_blank">View on Fiverr</a>\n    </div>\n  </div>\n</div>\n';
+            } else {
+                card = '\n<div class="fiverr-card">\n  <div class="fiverr-card-inner">\n    <div class="fiverr-photo"><img src="' + (item.image || 'img/testimonial/placeholder.png') + '" alt="' + (item.name || 'Client') + '"></div>\n    <div class="fiverr-content">\n      <h4 class="fiverr-name">' + (item.name || '') + '</h4>\n      <div class="fiverr-rating">' + stars + '</div>\n      <p class="fiverr-text">"' + (item.text || '') + '"</p>\n      <a class="fiverr-link" href="' + (item.link || '#') + '" target="_blank">View on Fiverr</a>\n    </div>\n  </div>\n</div>\n';
+            }
+            $container.append(card);
+        });
+        initFiverrSlider();
+    }
+
+    // Try to fetch testimonials JSON; if it fails, keep static HTML placeholders
+    fetch('static/fiverr-testimonials.json').then(function(resp) {
+        if (!resp.ok) throw new Error('No testimonials JSON');
+        return resp.json();
+    }).then(function(json) {
+        if (Array.isArray(json) && json.length) {
+            renderTestimonials(json);
+        } else {
+            initFiverrSlider();
+        }
+    }).catch(function() {
+        initFiverrSlider();
+    });
+});
