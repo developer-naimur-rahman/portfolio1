@@ -284,11 +284,12 @@
         const timeoutId = setTimeout(() => controller.abort(), CONFIG.API_TIMEOUT);
 
         try {
+            // Use text/plain to avoid CORS preflight (Apps Script will receive raw body)
             const response = await fetch(CONFIG.WEB_APP_URL, {
                 method: 'POST',
                 mode: 'cors',
                 cache: 'no-cache',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({ action, ...payload }),
                 signal: controller.signal
             });
