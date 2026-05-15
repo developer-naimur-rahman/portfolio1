@@ -10,6 +10,8 @@ async function apiRequest(action, payload = {}) {
     try {
         const res = await fetch(API_URL, {
             method: "POST",
+            mode: "cors",
+            cache: "no-cache",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -18,6 +20,11 @@ async function apiRequest(action, payload = {}) {
                 ...payload
             })
         });
+
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`API request failed (${res.status}): ${text}`);
+        }
 
         return await res.json();
     } catch (err) {
