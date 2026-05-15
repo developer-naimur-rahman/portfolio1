@@ -35,6 +35,12 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+        /* Enhanced modal animations */
+        .modal-enter { opacity: 0; transform: scale(0.95); transition: all 0.3s ease; }
+        .modal-enter-active { opacity: 1; transform: scale(1); }
+        .modal-exit { opacity: 1; transform: scale(1); transition: all 0.3s ease; }
+        .modal-exit-active { opacity: 0; transform: scale(0.95); }
     </style>
 </head>
 <body class="flex">
@@ -221,61 +227,158 @@
 </div>
 
 <script>
-    lucide.createIcons();
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
-    const ADMIN_EMAIL = "naimur582582@gmail.com"; 
-    const EDITORS_EMAILS = ["shafin@mail.com"]; 
+    // ============================
+    // CONFIGURATION
+    // ============================
+    const CONFIG = {
+        WEB_APP_URL: "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec",
+        ADMIN_EMAIL: "naimur582582@gmail.com",
+        EDITORS_EMAILS: ["shafin@mail.com"],
+        API_TIMEOUT: 10000 // 10 seconds
+    };
 
+    // ============================
+    // GLOBAL STATE
+    // ============================
+    let CURRENT_USER = {
+        email: null,
+        name: null,
+        role: null,
+        pic: null
+    };
     let ALL_PROJECTS = [];
+    let ICONS_RENDERED = false; // Prevent duplicate icon rendering
 
-    function handleCredentialResponse(response) {
-        const payload = parseJwt(response.credential);
-        localStorage.setItem('studio_logged_in', 'true');
-        localStorage.setItem('user_name', payload.name);
-        localStorage.setItem('user_pic', payload.picture);
-        localStorage.setItem('user_email', payload.email);
-        const loginEmail = (payload.email || '').toLowerCase();
-        const loginRole = loginEmail === ADMIN_EMAIL.toLowerCase()
-            ? 'admin'
-            : EDITORS_EMAILS.includes(loginEmail)
-                ? 'editor'
-                : 'client';
-        localStorage.setItem('currentRole', loginRole);
-        checkAuth();
+    // ============================
+    // UTILITY FUNCTIONS
+    // ============================
+    function sanitizeText(text) {
+        if (!text) return '';
+        return text.toString().replace(/[<>]/g, ''); // Basic XSS prevention
     }
 
-    function parseJwt (token) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        return JSON.parse(window.atob(base64));
-    };
+    function parseJwtSafe(token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            return JSON.parse(window.atob(base64));
+        } catch (e) {
+            console.error('JWT parsing failed:', e);
+            return null;
+        }
+    }
+
+    function getStoredUserEmail() {
+        return (localStorage.getItem('user_email') || localStorage.getItem('clientEmail') || '').toLowerCase();
+    }
+
+    function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    // ============================
+    // API UTILITIES
+    // ============================
+    async function appScriptRequest(action, payload = {}) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), CONFIG.API_TIMEOUT);
+
+        try {
+            const response = await fetch(CONFIG.WEB_APP_URL, {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, ...payload }),
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(`API request failed (${response.status}): ${text}`);
+            }
+
+            const json = await response.json();
+            if (!json || typeof json !== 'object') {
+                throw new Error('Invalid API response format');
+            }
+
+            return json;
+        } catch (error) {
+            clearTimeout(timeoutId);
+            if (error.name === 'AbortError') {
+                throw new Error('Request timed out');
+            }
+            throw error;
+        }
+    }
+
+    // ============================
+    // AUTHENTICATION
+    // ============================
+    async function handleCredentialResponse(response) {
+        try {
+            const payload = parseJwtSafe(response.credential);
+            if (!payload || !payload.email || !payload.name) {
+                throw new Error('Invalid Google response');
+            }
+
+            const email = payload.email.toLowerCase();
+            const name = sanitizeText(payload.name);
+            const pic = payload.picture || '';
+
+            // Store in localStorage
+            localStorage.setItem('user_email', email);
+            localStorage.setItem('user_name', name);
+            localStorage.setItem('user_pic', pic);
+            localStorage.setItem('studio_logged_in', 'true');
+
+            // Fetch role from backend
+            const userData = await appScriptRequest('getUser', { email });
+            if (!userData || !userData.role) {
+                throw new Error('Unable to verify user role');
+            }
+
+            CURRENT_USER = {
+                email,
+                name,
+                role: userData.role,
+                pic
+            };
+            localStorage.setItem('currentRole', CURRENT_USER.role);
+
+            checkAuth();
+        } catch (error) {
+            console.error('Login failed:', error);
+            alert('Login failed: ' + error.message);
+        }
+    }
 
     function checkAuth() {
         const overlay = document.getElementById('loginOverlay');
         const main = document.getElementById('mainContent');
-        const storedEmail = localStorage.getItem('user_email') || localStorage.getItem('clientEmail') || "";
-        const userEmail = storedEmail.toLowerCase();
-        const isLoggedIn = localStorage.getItem('studio_logged_in') === 'true' || !!storedEmail;
-        const userName = localStorage.getItem('user_name') || localStorage.getItem('clientName') || "User";
-        const userPic = localStorage.getItem('user_pic') || localStorage.getItem('clientPic') || "";
+        const storedEmail = getStoredUserEmail();
+        const isLoggedIn = localStorage.getItem('studio_logged_in') === 'true' && !!storedEmail;
 
         if (isLoggedIn) {
             overlay.style.display = 'none';
             main.style.opacity = '1';
-            document.getElementById('userNameDisplay').innerText = userName;
-            
-            const role = getUserRole(userEmail);
-            localStorage.setItem('currentRole', role);
 
-            if(role === "admin") {
-                document.getElementById('userRoleDisplay').innerText = "Agency Owner";
-            } else if (role === "editor") {
-                document.getElementById('userRoleDisplay').innerText = "Editor";
-            } else {
-                document.getElementById('userRoleDisplay').innerText = "Client";
+            // Restore user data
+            CURRENT_USER.email = storedEmail;
+            CURRENT_USER.name = localStorage.getItem('user_name') || localStorage.getItem('clientName') || 'User';
+            CURRENT_USER.role = localStorage.getItem('currentRole') || 'client';
+            CURRENT_USER.pic = localStorage.getItem('user_pic') || localStorage.getItem('clientPic') || '';
+
+            document.getElementById('userNameDisplay').textContent = CURRENT_USER.name;
+            document.getElementById('userRoleDisplay').textContent = CURRENT_USER.role === 'admin' ? 'Agency Owner' : CURRENT_USER.role === 'editor' ? 'Editor' : 'Client';
+
+            if (CURRENT_USER.pic) {
+                document.getElementById('userAvatar').innerHTML = `<img src="${CURRENT_USER.pic}" class="w-full h-full object-cover" alt="Avatar">`;
             }
 
-            if(userPic) document.getElementById('userAvatar').innerHTML = `<img src="${userPic}" class="w-full h-full object-cover">`;
             initDashboard();
         } else {
             overlay.style.display = 'flex';
@@ -284,192 +387,185 @@
     }
 
     function handleLogout() {
-        if(confirm("Sign out from Studio?")) {
+        if (confirm("Sign out from Studio?")) {
+            // Clear all auth data
             localStorage.clear();
+            CURRENT_USER = { email: null, name: null, role: null, pic: null };
             location.reload();
         }
     }
 
-    function toggleModal(id, show) { 
-        document.getElementById(id).style.display = show ? 'flex' : 'none'; 
-        if(id === 'pModal' && show) {
-            generateTempID();
-            document.getElementById('pClientEmail').value = localStorage.getItem('user_email') || localStorage.getItem('clientEmail') || "";
+    // ============================
+    // MODAL MANAGEMENT
+    // ============================
+    function toggleModal(id, show) {
+        const modal = document.getElementById(id);
+        if (show) {
+            modal.style.display = 'flex';
+            modal.classList.add('modal-enter');
+            setTimeout(() => modal.classList.add('modal-enter-active'), 10);
+            if (id === 'pModal') {
+                generateTempID();
+                document.getElementById('pClientEmail').value = CURRENT_USER.email || '';
+            }
+        } else {
+            modal.classList.remove('modal-enter-active');
+            modal.classList.add('modal-exit-active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                modal.classList.remove('modal-exit-active');
+            }, 300);
         }
     }
 
+    // ============================
+    // PROJECT ID GENERATION
+    // ============================
     function generateTempID() {
-        const nextID = ALL_PROJECTS.length > 0 ? parseInt(ALL_PROJECTS[0][1].split('-')[1]) + 1 : 101;
-        document.getElementById('pID_display').value = "MN-" + nextID;
+        let maxId = 100; // Default starting ID
+        if (ALL_PROJECTS.length > 0) {
+            const ids = ALL_PROJECTS.map(p => {
+                const match = p[1]?.match(/MN-(\d+)/);
+                return match ? parseInt(match[1], 10) : 0;
+            }).filter(id => id > 0);
+            maxId = Math.max(...ids, 100);
+        }
+        document.getElementById('pID_display').value = `MN-${maxId + 1}`;
     }
 
+    // ============================
+    // DASHBOARD INITIALIZATION
+    // ============================
     async function initDashboard() {
-        const userEmail = getStoredUserEmail();
-        const role = getUserRole(userEmail);
         const loader = document.getElementById('loader');
         const grid = document.getElementById('projectGrid');
-        loader.classList.remove('hidden'); 
+        loader.classList.remove('hidden');
         grid.innerHTML = '';
-        try {
-            const response = await appScriptRequest('getProjects', { email: userEmail, role });
-            const rawData = response.data || [];
 
+        try {
+            const response = await appScriptRequest('getProjects', { email: CURRENT_USER.email, role: CURRENT_USER.role });
+            const rawData = response.data || [];
             ALL_PROJECTS = rawData;
             renderUI(ALL_PROJECTS);
         } catch (err) {
             console.error('Dashboard load failed:', err);
-            grid.innerHTML = `<div class="col-span-full py-20 text-center text-red-500">Sync Error: ${err.message}</div>`;
-        } finally { loader.classList.add('hidden'); }
+            grid.innerHTML = `<div class="col-span-full py-20 text-center text-red-500">Sync Error: ${sanitizeText(err.message)}</div>`;
+        } finally {
+            loader.classList.add('hidden');
+        }
     }
 
-    function getUserRole(email) {
-        const savedRole = localStorage.getItem('currentRole');
-        if (savedRole === 'admin' || savedRole === 'editor' || savedRole === 'client') return savedRole;
-        if (email === ADMIN_EMAIL.toLowerCase()) return 'admin';
-        if (EDITORS_EMAILS.includes(email)) return 'editor';
-        return 'client';
+    // ============================
+    // UI RENDERING
+    // ============================
+    function renderUI(data) {
+        const grid = document.getElementById('projectGrid');
+
+        if (!data || data.length === 0) {
+            grid.innerHTML = "<p class='col-span-full text-center py-20 text-slate-500 italic'>Pipeline empty. Launch your first project!</p>";
+            return;
+        }
+
+        const isAdmin = CURRENT_USER.role === 'admin';
+        const isEditor = CURRENT_USER.role === 'editor';
+        const showPriority = isAdmin || isEditor;
+
+        grid.innerHTML = data.map((p, index) => {
+            const statusClass = sanitizeText((p[9] || 'Pending')).replace(/\s+/g, '');
+            const revNum = 0; // Revisions handled separately
+            const borderClass = showPriority && p[10] === 'URGENT' ? 'border-red-500' : 'border-transparent';
+
+            return `
+                <div onclick="showProjectDetails(${index})" class="glass glass-card p-8 rounded-[40px] border-l-4 ${borderClass}">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <span class="text-[10px] font-mono text-cyan-400 tracking-widest">${sanitizeText(p[1])}</span>
+                            <h4 class="text-xl font-bold text-white italic mt-1 truncate w-40">${sanitizeText(p[3])}</h4>
+                        </div>
+                        <span class="status-${statusClass} px-4 py-1.5 rounded-xl text-[10px] font-black uppercase italic">
+                            ${sanitizeText(p[9] || 'Pending')}
+                        </span>
+                    </div>
+                    <div class="progress-bar mb-3">
+                        <div class="progress-fill" style="width: ${p[9] === 'Completed' ? '100%' : '10%'}"></div>
+                    </div>
+                    <div class="flex justify-between text-[9px] uppercase font-bold text-slate-600 tracking-widest">
+                        <span>v1.0</span>
+                        <span>Rev: ${revNum}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        if (!ICONS_RENDERED) {
+            lucide.createIcons();
+            ICONS_RENDERED = true;
+        }
+        updateStats(data);
     }
 
-    function getStoredUserEmail() {
-        return (localStorage.getItem('user_email') || localStorage.getItem('clientEmail') || "").toLowerCase();
-    }
+    function showProjectDetails(index) {
+        const p = ALL_PROJECTS[index];
+        if (!p) return;
 
-    async function appScriptRequest(action, payload = {}) {
-        const response = await fetch(WEB_APP_URL, {
-            method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action, ...payload })
+        document.getElementById('detProjectID').textContent = sanitizeText(p[1]);
+        document.getElementById('editPName').value = sanitizeText(p[3] || '');
+        document.getElementById('editClientEmail').value = sanitizeText(p[2] || '');
+        document.getElementById('editEditor').value = `${sanitizeText(p[7] || 'Naimur Rahman')}|${sanitizeText(p[8] || 'naimur582582@gmail.com')}`;
+        document.getElementById('editStatus').value = sanitizeText(p[9] || 'Pending');
+        document.getElementById('editApproval').value = sanitizeText(p[11] || 'Pending');
+        document.getElementById('editFootage').value = sanitizeText(p[12] || '');
+        document.getElementById('editFilesLink').value = sanitizeText(p[17] || '');
+        document.getElementById('editRef1').value = sanitizeText(p[15] || '');
+        document.getElementById('editPriority').value = sanitizeText(p[10] || 'Normal');
+        document.getElementById('editBudget').value = p[22] || 0;
+        if (p[19]) document.getElementById('editDeadline').value = new Date(p[19]).toISOString().split('T')[0];
+
+        // Revision fields (defaults)
+        document.getElementById('editRevNum').value = 0;
+        document.getElementById('editVersion').value = 'v1.0';
+        document.getElementById('editReqType').value = 'General';
+        document.getElementById('editClientNotes').value = '';
+        document.getElementById('editEditorNotes').value = '';
+
+        document.getElementById('dispUploadedBy').textContent = sanitizeText(p[23] || '---');
+        document.getElementById('dispUserRole').textContent = '---';
+        document.getElementById('dispLastUpdated').textContent = sanitizeText(p[24] || '---');
+        document.getElementById('editVisible').value = 'Yes';
+
+        // Role-based access
+        const isAdmin = CURRENT_USER.role === 'admin';
+        document.getElementById('saveUpdateBtn').style.display = isAdmin ? 'flex' : 'none';
+        document.getElementById('deleteBtn').style.display = isAdmin ? 'flex' : 'none';
+
+        // Lock fields for non-admins
+        document.querySelectorAll('#detailsModal input, #detailsModal textarea, #detailsModal select').forEach(el => {
+            if (!isAdmin) {
+                el.setAttribute('disabled', 'true');
+                el.style.opacity = '0.6';
+                el.style.cursor = 'not-allowed';
+            } else {
+                el.removeAttribute('disabled');
+                el.style.opacity = '1';
+                el.style.cursor = 'auto';
+            }
         });
 
-        if (!response.ok) {
-            const text = await response.text();
-            throw new Error(`API request failed (${response.status}): ${text}`);
-        }
-
-        const json = await response.json();
-        if (!json || typeof json !== 'object') {
-            throw new Error('Invalid API response');
-        }
-
-        return json;
+        toggleModal('detailsModal', true);
     }
 
-  function renderUI(data) {
-    const grid = document.getElementById('projectGrid');
-
-    if (!data || data.length === 0) { 
-        grid.innerHTML = "<p class='col-span-full text-center py-20 text-slate-500 italic'>Pipeline empty.</p>"; 
-        return; 
-    }
-
-    const userEmail = getStoredUserEmail();
-    const isAdmin = userEmail === ADMIN_EMAIL.toLowerCase();
-    const isEditor = EDITORS_EMAILS.includes(userEmail);
-    const showPriority = isAdmin || isEditor;
-
-    grid.innerHTML = data.map((p, index) => {
-        const statusClass = (p[9] || 'Pending').replace(/\s+/g, '');
-        const revNum = 0; // Revisions are in separate sheet
-
-        const borderClass = showPriority && p[10] === 'URGENT'
-            ? 'border-red-500'
-            : 'border-transparent';
-
-        return `
-            <div onclick="showProjectDetails(${index})" class="glass glass-card p-8 rounded-[40px] border-l-4 ${borderClass}">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <span class="text-[10px] font-mono text-cyan-400 tracking-widest">${p[1]}</span>
-                        <h4 class="text-xl font-bold text-white italic mt-1 truncate w-40">${p[3]}</h4>
-                    </div>
-
-                    <span class="status-${statusClass} px-4 py-1.5 rounded-xl text-[10px] font-black uppercase italic">
-                        ${p[9] || 'Pending'}
-                    </span>
-                </div>
-
-                <div class="progress-bar mb-3">
-                    <div class="progress-fill" 
-                    style="width: ${p[9] === 'Completed' ? '100%' : '10%'}">
-                    </div>
-                </div>
-
-                <div class="flex justify-between text-[9px] uppercase font-bold text-slate-600 tracking-widest">
-                    <span>v1.0</span>
-                    <span>Rev: ${revNum}</span>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    lucide.createIcons();
-    updateStats(data);
-}
-
-function showProjectDetails(index) {
- const p = ALL_PROJECTS[index];
-    const userEmail = getStoredUserEmail();
-    if(!p) return;
-    
-    document.getElementById('detProjectID').innerText = p[1];
-    document.getElementById('editPName').value = p[3] || '';
-    document.getElementById('editClientEmail').value = p[2] || '';
-    document.getElementById('editEditor').value = (p[7] || 'Naimur Rahman') + "|" + (p[8] || 'naimur582582@gmail.com');
-    document.getElementById('editStatus').value = p[9] || 'Pending';
-    document.getElementById('editApproval').value = p[11] || 'Pending';
-    
-    document.getElementById('editFootage').value = p[12] || '';
-    document.getElementById('editFilesLink').value = p[17] || ''; // Delivery Link
-    document.getElementById('editRef1').value = p[15] || '';
-    document.getElementById('editPriority').value = p[10] || 'Normal';
-    document.getElementById('editBudget').value = p[22] || 0;
-    if(p[19]) document.getElementById('editDeadline').value = new Date(p[19]).toISOString().split('T')[0];
-    
-    // Revision fields not in projects sheet, set defaults
-    document.getElementById('editRevNum').value = 0;
-    document.getElementById('editVersion').value = 'v1.0';
-    document.getElementById('editReqType').value = 'General';
-    document.getElementById('editClientNotes').value = '';
-    document.getElementById('editEditorNotes').value = '';
-    
-    document.getElementById('dispUploadedBy').innerText = p[23] || '---';
-    document.getElementById('dispUserRole').innerText = '---'; // Not in sheet
-    document.getElementById('dispLastUpdated').innerText = p[24] || '---';
-    document.getElementById('editVisible').value = 'Yes'; // Not in sheet
-
-    // 🔐 ADMIN CONTROL
-    const isAdmin = userEmail === ADMIN_EMAIL.toLowerCase();
-
-    document.getElementById('saveUpdateBtn').style.display = isAdmin ? 'flex' : 'none';
-    document.getElementById('deleteBtn').style.display = isAdmin ? 'flex' : 'none';
-
-    // 🔒 lock fields for non-admin
-    document.querySelectorAll('#detailsModal input, #detailsModal textarea, #detailsModal select')
-    .forEach(el => {
-        if(!isAdmin){
-            el.setAttribute("disabled", true);
-            el.style.opacity = "0.6";
-            el.style.cursor = "not-allowed";
-        }else{
-            el.removeAttribute("disabled");
-            el.style.opacity = "1";
-            el.style.cursor = "auto";
-        }
-    });
-
-    toggleModal('detailsModal', true);
-}
-
+    // ============================
+    // PROJECT OPERATIONS
+    // ============================
     async function handleNewProject(event) {
         event.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.innerText = "LAUNCHING..."; btn.disabled = true;
-        
+        btn.disabled = true;
+        btn.textContent = "LAUNCHING...";
+
         const pData = {
-            clientEmail: document.getElementById('pClientEmail').value,
-            projectName: document.getElementById('pName').value,
+            clientEmail: CURRENT_USER.email,
+            projectName: sanitizeText(document.getElementById('pName').value),
             category: document.getElementById('pCategory').value,
             projectType: document.getElementById('pCategory').value,
             clientWebsite: "",
@@ -477,15 +573,15 @@ function showProjectDetails(index) {
             editorEmail: "",
             priority: document.getElementById('pPriority').value,
             approval: "Pending",
-            footage: document.getElementById('pFootage').value,
+            footage: sanitizeText(document.getElementById('pFootage').value),
             script: "",
-            scriptLink: document.getElementById('pScript').value,
-            ref1: document.getElementById('pNotes').value,
+            scriptLink: sanitizeText(document.getElementById('pScript').value),
+            ref1: sanitizeText(document.getElementById('pNotes').value),
             ref2: "",
             deliveryType: "",
             deadline: document.getElementById('pDeadline').value,
-            budget: document.getElementById('pBudget').value,
-            createdBy: localStorage.getItem('user_name') || localStorage.getItem('clientName') || ""
+            budget: parseFloat(document.getElementById('pBudget').value) || 0,
+            createdBy: CURRENT_USER.name
         };
 
         try {
@@ -496,22 +592,23 @@ function showProjectDetails(index) {
                 toggleModal('pModal', false);
                 setTimeout(initDashboard, 1500);
             } else {
-                alert("Error: " + response.error);
+                alert("Error: " + sanitizeText(response.error));
             }
-        } catch (err) { 
-            alert("Error: " + err.message); 
-        } finally { 
-            btn.innerText = "Launch Project"; 
-            btn.disabled = false; 
+        } catch (err) {
+            alert("Error: " + sanitizeText(err.message));
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Launch Project";
         }
     }
 
     async function saveProjectUpdate() {
         const btn = document.getElementById('saveUpdateBtn');
-        btn.innerText = "SAVING..."; btn.disabled = true;
-        
+        btn.disabled = true;
+        btn.textContent = "SAVING...";
+
         const formData = {
-            projectID: document.getElementById('detProjectID').innerText,
+            projectID: document.getElementById('detProjectID').textContent,
             status: document.getElementById('editStatus').value,
             priority: document.getElementById('editPriority').value,
             approval: document.getElementById('editApproval').value
@@ -520,45 +617,59 @@ function showProjectDetails(index) {
         try {
             const response = await appScriptRequest('updateProject', formData);
             if (response.success) {
-                alert("Updated!"); 
+                alert("Updated!");
                 toggleModal('detailsModal', false);
                 setTimeout(initDashboard, 1000);
             } else {
-                alert("Error: " + response.error);
+                alert("Error: " + sanitizeText(response.error));
             }
-        } catch (err) { 
-            alert("Error: " + err.message); 
-        } finally { 
-            btn.innerText = "Update Project"; 
-            btn.disabled = false; 
+        } catch (err) {
+            alert("Error: " + sanitizeText(err.message));
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Update Project";
         }
     }
 
     async function deleteProject() {
-        if(!confirm("DELETE?")) return;
+        if (!confirm("DELETE?")) return;
+        const btn = document.getElementById('deleteBtn');
+        btn.disabled = true;
+
         try {
-            const response = await appScriptRequest('deleteProject', { projectID: document.getElementById('detProjectID').innerText });
+            const response = await appScriptRequest('deleteProject', { projectID: document.getElementById('detProjectID').textContent });
             if (response.success) {
-                alert("Deleted."); 
+                alert("Deleted.");
                 toggleModal('detailsModal', false);
                 setTimeout(initDashboard, 1000);
             } else {
-                alert("Error: " + response.error);
+                alert("Error: " + sanitizeText(response.error));
             }
-        } catch (err) { 
-            alert("Error: " + err.message); 
-            location.reload(); 
+        } catch (err) {
+            alert("Error: " + sanitizeText(err.message));
+        } finally {
+            btn.disabled = false;
         }
     }
 
+    // ============================
+    // STATS UPDATE
+    // ============================
     function updateStats(data) {
-        document.getElementById('stat-active').innerText = data.filter(p => p[9] !== 'Completed').length;
-        document.getElementById('stat-done').innerText = data.filter(p => p[9] === 'Completed').length;
-        document.getElementById('stat-rev').innerText = 0; // Revisions in separate sheet
-        const totalRev = data.reduce((acc, p) => acc + (parseFloat(p[22] || 0)), 0);
-        document.getElementById('stat-revenue').innerText = "USD " + totalRev.toLocaleString();
+        const active = data.filter(p => p[9] !== 'Completed').length;
+        const done = data.filter(p => p[9] === 'Completed').length;
+        const rev = 0; // Placeholder for revisions
+        const revenue = data.reduce((acc, p) => acc + (parseFloat(p[22] || 0)), 0);
+
+        document.getElementById('stat-active').textContent = active;
+        document.getElementById('stat-done').textContent = done;
+        document.getElementById('stat-rev').textContent = rev;
+        document.getElementById('stat-revenue').textContent = "USD " + revenue.toLocaleString();
     }
 
+    // ============================
+    // INITIALIZATION
+    // ============================
     window.onload = checkAuth;
 </script>
 </body>
