@@ -7,6 +7,9 @@
 // ----------------------------
 // CONFIGURATION
 // ----------------------------
+// If your Apps Script project is standalone, set SPREADSHEET_ID to your sheet's id.
+const SPREADSHEET_ID = '1T7DINM4kEqLUjRePq4ML5z0AYpnkpS5LlMulixgez8k';
+
 const CONFIG = {
   SHEETS: {
     PROJECTS: 'Projects',
@@ -79,8 +82,19 @@ function normalizeEmail(email) {
 function safeGetSheet(name) {
   try {
     if (!name) return null;
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    if (!ss) return null;
+    // Prefer explicit spreadsheet ID when provided (standalone script)
+    var ss = null;
+    try {
+      if (typeof SPREADSHEET_ID !== 'undefined' && SPREADSHEET_ID) ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    } catch (e) {
+      // fall back to active spreadsheet
+      ss = null;
+    }
+    if (!ss) ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (!ss) {
+      Logger.log('safeGetSheet: no spreadsheet available');
+      return null;
+    }
     const sh = ss.getSheetByName(name);
     if (!sh) Logger.log('safeGetSheet: missing sheet -> ' + name);
     return sh;
