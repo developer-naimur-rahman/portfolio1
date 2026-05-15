@@ -356,7 +356,7 @@
         }
     }
 
-    function checkAuth() {
+    async function checkAuth() {
         const overlay = document.getElementById('loginOverlay');
         const main = document.getElementById('mainContent');
         const storedEmail = getStoredUserEmail();
@@ -369,8 +369,18 @@
             // Restore user data
             CURRENT_USER.email = storedEmail;
             CURRENT_USER.name = localStorage.getItem('user_name') || localStorage.getItem('clientName') || 'User';
-            CURRENT_USER.role = localStorage.getItem('currentRole') || 'client';
             CURRENT_USER.pic = localStorage.getItem('user_pic') || localStorage.getItem('clientPic') || '';
+
+            try {
+                const userData = await appScriptRequest('getUser', { email: CURRENT_USER.email });
+                CURRENT_USER.role = userData.role || localStorage.getItem('currentRole') || 'client';
+                localStorage.setItem('currentRole', CURRENT_USER.role);
+                localStorage.setItem('user_name', userData.name || CURRENT_USER.name);
+                CURRENT_USER.name = userData.name || CURRENT_USER.name;
+            } catch (error) {
+                console.warn('Failed to refresh user role:', error);
+                CURRENT_USER.role = localStorage.getItem('currentRole') || 'client';
+            }
 
             document.getElementById('userNameDisplay').textContent = CURRENT_USER.name;
             document.getElementById('userRoleDisplay').textContent = CURRENT_USER.role === 'admin' ? 'Agency Owner' : CURRENT_USER.role === 'editor' ? 'Editor' : 'Client';
@@ -379,7 +389,7 @@
                 document.getElementById('userAvatar').innerHTML = `<img src="${CURRENT_USER.pic}" class="w-full h-full object-cover" alt="Avatar">`;
             }
 
-            initDashboard();
+            await initDashboard();
         } else {
             overlay.style.display = 'flex';
             main.style.opacity = '0';
@@ -535,21 +545,36 @@
 
         // Role-based access
         const isAdmin = CURRENT_USER.role === 'admin';
-        document.getElementById('saveUpdateBtn').style.display = isAdmin ? 'flex' : 'none';
+        const isAssignedEditor = CURRENT_USER.role === 'editor' && (p[8] || '').toString().toLowerCase() === CURRENT_USER.email;
+        const canEdit = isAdmin || isAssignedEditor;
+
+        document.getElementById('saveUpdateBtn').style.display = canEdit ? 'flex' : 'none';
         document.getElementById('deleteBtn').style.display = isAdmin ? 'flex' : 'none';
 
-        // Lock fields for non-admins
-        document.querySelectorAll('#detailsModal input, #detailsModal textarea, #detailsModal select').forEach(el => {
-            if (!isAdmin) {
-                el.setAttribute('disabled', 'true');
-                el.style.opacity = '0.6';
-                el.style.cursor = 'not-allowed';
-            } else {
+        // Enable only editable fields for permitted roles
+        const editableFields = [
+            document.getElementById('editStatus'),
+            document.getElementById('editPriority'),
+            document.getElementById('editApproval')
+        ];
+        const allFields = document.querySelectorAll('#detailsModal input, #detailsModal textarea, #detailsModal select');
+
+        allFields.forEach(el => {
+            if (editableFields.includes(el) && canEdit) {
                 el.removeAttribute('disabled');
                 el.style.opacity = '1';
                 el.style.cursor = 'auto';
+            } else {
+                el.setAttribute('disabled', 'true');
+                el.style.opacity = '0.6';
+                el.style.cursor = 'not-allowed';
             }
         });
+
+        // Always keep save button enabled for permitted update roles
+        if (canEdit) {
+            editableFields.forEach(el => el.removeAttribute('disabled'));
+        }
 
         toggleModal('detailsModal', true);
     }
@@ -563,14 +588,21 @@
         btn.disabled = true;
         btn.textContent = "LAUNCHING...";
 
+        if (!['admin', 'editor'].includes(CURRENT_USER.role)) {
+            alert('You do not have permission to create a project.');
+            btn.disabled = false;
+            btn.textContent = "Launch Project";
+            return;
+        }
+
         const pData = {
-            clientEmail: CURRENT_USER.email,
+            clientEmail: sanitizeText(document.getElementById('pClientEmail').value) || CURRENT_USER.email,
             projectName: sanitizeText(document.getElementById('pName').value),
             category: document.getElementById('pCategory').value,
             projectType: document.getElementById('pCategory').value,
             clientWebsite: "",
-            assignedEditor: "",
-            editorEmail: "",
+            assignedEditor: CURRENT_USER.name,
+            editorEmail: CURRENT_USER.email,
             priority: document.getElementById('pPriority').value,
             approval: "Pending",
             footage: sanitizeText(document.getElementById('pFootage').value),
@@ -611,7 +643,8 @@
             projectID: document.getElementById('detProjectID').textContent,
             status: document.getElementById('editStatus').value,
             priority: document.getElementById('editPriority').value,
-            approval: document.getElementById('editApproval').value
+            approval: document.getElementById('editApproval').value,
+            updaterEmail: CURRENT_USER.email
         };
 
         try {
@@ -637,7 +670,10 @@
         btn.disabled = true;
 
         try {
-            const response = await appScriptRequest('deleteProject', { projectID: document.getElementById('detProjectID').textContent });
+            const response = await appScriptRequest('deleteProject', {
+                projectID: document.getElementById('detProjectID').textContent,
+                deleterEmail: CURRENT_USER.email
+            });
             if (response.success) {
                 alert("Deleted.");
                 toggleModal('detailsModal', false);
@@ -670,7 +706,7 @@
     // ============================
     // INITIALIZATION
     // ============================
-    window.onload = checkAuth;
+    window.onload = () => checkAuth();
 </script>
 </body>
 </html>
