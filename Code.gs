@@ -57,6 +57,26 @@ function createResponse(data, success = true) {
 }
 
 // ============================
+// SHEET ACCESS HELPER
+// ============================
+function safeGetSheet(name) {
+  try {
+    if (!name) return null;
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (!ss) {
+      Logger.log('No active spreadsheet');
+      return null;
+    }
+    const sheet = ss.getSheetByName(name);
+    if (!sheet) Logger.log('Sheet not found: ' + name);
+    return sheet;
+  } catch (err) {
+    Logger.log('safeGetSheet error for ' + name + ': ' + err.message);
+    return null;
+  }
+}
+
+// ============================
 // CORS HANDLER
 // ============================
 function doOptions(e) {
@@ -174,11 +194,8 @@ function handleGetUser(requestData) {
 
 function getUserByEmail(email) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEETS.USERS);
-    if (!sheet) {
-      Logger.log('Users sheet not found');
-      return null;
-    }
+    const sheet = safeGetSheet(CONFIG.SHEETS.USERS);
+    if (!sheet) return null;
 
     const data = sheet.getDataRange().getValues();
 
@@ -235,11 +252,8 @@ function handleGetProjects(requestData) {
 
 function getProjectsForUser(email, role) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEETS.PROJECTS);
-    if (!sheet) {
-      Logger.log('Projects sheet not found');
-      return [];
-    }
+    const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
+    if (!sheet) return [];
 
     const data = sheet.getDataRange().getValues();
     const projects = [];
@@ -302,7 +316,7 @@ function handleAddProject(requestData) {
 
 function generateProjectId() {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEETS.PROJECTS);
+    const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
     if (!sheet) return 'MN-101';
 
     const data = sheet.getDataRange().getValues();
@@ -360,11 +374,8 @@ function createProjectData(requestData, projectId, user) {
 
 function addProjectToSheet(projectData) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEETS.PROJECTS);
-    if (!sheet) {
-      Logger.log('Projects sheet not found');
-      return false;
-    }
+    const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
+    if (!sheet) return false;
 
     sheet.appendRow(projectData);
     return true;
@@ -411,7 +422,7 @@ function handleUpdateProject(requestData) {
 
 function updateProjectInSheet(projectId, updateData) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEETS.PROJECTS);
+    const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
     if (!sheet) return false;
 
     const data = sheet.getDataRange().getValues();
@@ -474,7 +485,7 @@ function handleDeleteProject(requestData) {
 
 function deleteProjectFromSheet(projectId) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEETS.PROJECTS);
+    const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
     if (!sheet) return false;
 
     const data = sheet.getDataRange().getValues();
@@ -528,7 +539,7 @@ function handleCreateRevision(requestData) {
 
 function createRevisionInSheet(requestData) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEETS.REVISIONS);
+    const sheet = safeGetSheet(CONFIG.SHEETS.REVISIONS);
     if (!sheet) {
       Logger.log('Revisions sheet not found');
       return false;
@@ -601,7 +612,7 @@ function handleSendMessage(requestData) {
 
 function sendMessageToSheet(requestData) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEETS.MESSAGES);
+    const sheet = safeGetSheet(CONFIG.SHEETS.MESSAGES);
     if (!sheet) {
       Logger.log('Messages sheet not found');
       return false;
@@ -663,7 +674,7 @@ function handleGetMessages(requestData) {
 
 function getMessagesForProject(projectId, user) {
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEETS.MESSAGES);
+    const sheet = safeGetSheet(CONFIG.SHEETS.MESSAGES);
     if (!sheet) {
       Logger.log('Messages sheet not found');
       return [];
