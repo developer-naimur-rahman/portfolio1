@@ -284,7 +284,8 @@ function handleGetUser(request) {
     const email = normalizeEmail(request.email);
     if (!email) return createResponse({ error: 'Invalid email' }, false);
     if (email === CONFIG.ADMIN_EMAIL.toString().trim().toLowerCase()) {
-      return createResponse({ role: CONFIG.ROLES.ADMIN, name: 'Admin User', email: email });
+      const adminUser = createOrUpdateUser(email, request.name || 'Admin User', CONFIG.ROLES.ADMIN);
+      return createResponse({ role: CONFIG.ROLES.ADMIN, name: adminUser?.name || 'Admin User', email: email });
     }
     
     // Try to get user, create if doesn't exist

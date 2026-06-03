@@ -756,6 +756,7 @@
                 toggleModal('pModal', false);
                 setTimeout(initDashboard, 1500);
             } else {
+                console.error('Project creation failed', response);
                 alert("Error: " + sanitizeText(response.error || 'Failed to create project'));
             }
         } catch (err) {

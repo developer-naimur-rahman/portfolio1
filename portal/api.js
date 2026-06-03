@@ -5,7 +5,15 @@ function getStoredApiUrl() {
     return localStorage.getItem('portal_api_url') || "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
 }
 
-let MOCK_MODE = localStorage.getItem('portal_mock_mode') === 'true';
+let MOCK_MODE = false;
+
+// Clear stale mock-mode state so the real backend is used by default.
+if (localStorage.getItem('portal_mock_mode') === 'true') {
+    localStorage.removeItem('portal_mock_mode');
+}
+if (localStorage.getItem('portal_admin_email')) {
+    localStorage.removeItem('portal_admin_email');
+}
 
 function setApiUrl(url) {
     localStorage.setItem('portal_api_url', url);
@@ -19,11 +27,12 @@ function setMockMode(enabled) {
 async function apiRequest(action, payload = {}) {
     try {
         if (MOCK_MODE) {
-            // handle mock actions locally
+            console.warn('[API] MOCK_MODE active - using mock handler');
             return await mockHandler(action, payload);
         }
 
         const API_URL = getStoredApiUrl();
+        console.log('[API] request', { action, payload, API_URL });
         const res = await fetch(API_URL, {
             method: "POST",
             mode: "cors",
