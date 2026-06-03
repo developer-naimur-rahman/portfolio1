@@ -675,6 +675,12 @@
         }
 
         const currentEmail = requesterEmail;
+        const fallbackEditorEmail = (CONFIG.EDITORS_EMAILS && CONFIG.EDITORS_EMAILS.length)
+            ? CONFIG.EDITORS_EMAILS[0]
+            : 'shafin@mail.com';
+
+        const fallbackEditorName = 'Shafin';
+
         const pData = {
             projectName: projectName,
             clientEmail: document.getElementById('pClientEmail')?.value || '',
@@ -686,8 +692,8 @@
             createdBy: CURRENT_USER.name || 'Guest User',
             name: CURRENT_USER.name || 'Guest User',
             userName: CURRENT_USER.name || 'Guest User',
-            assignedEditor: '',
-            editorEmail: '',
+            assignedEditor: fallbackEditorName,
+            editorEmail: fallbackEditorEmail,
             role: CURRENT_USER.role || 'client',
             userRole: CURRENT_USER.role || 'client',
             deadline: document.getElementById('pDeadline').value,
