@@ -89,6 +89,39 @@
         <div>
             <h2 class="text-4xl font-extrabold tracking-tight text-white mb-2 italic">Studio Hub<span class="text-cyan-500">.</span></h2>
             <p class="text-slate-500 font-medium flex items-center gap-2 text-sm">
+        // Settings widget: set API URL or enable mock mode
+        (function(){
+            const btn = document.createElement('button');
+            btn.id = 'portalSettingsBtn';
+            btn.title = 'Portal settings';
+            btn.style.position = 'fixed';
+            btn.style.right = '18px';
+            btn.style.bottom = '18px';
+            btn.style.zIndex = '99999';
+            btn.style.background = '#0ea5a3';
+            btn.style.color = '#001219';
+            btn.style.border = 'none';
+            btn.style.padding = '12px 14px';
+            btn.style.borderRadius = '999px';
+            btn.style.boxShadow = '0 10px 30px rgba(2,6,23,0.6)';
+            btn.style.cursor = 'pointer';
+            btn.textContent = '⚙';
+            document.body.appendChild(btn);
+
+            btn.addEventListener('click', async () => {
+                const current = (window.APP_API && window.APP_API.getStoredApiUrl) ? window.APP_API.getStoredApiUrl() : CONFIG.WEB_APP_URL;
+                const newUrl = prompt('Enter Apps Script /exec URL (leave blank to keep current):', current);
+                if (newUrl !== null && newUrl.trim() !== '') {
+                    if (window.APP_API && window.APP_API.setApiUrl) window.APP_API.setApiUrl(newUrl.trim());
+                    alert('Saved API URL. You can Test Connection from the console or reload.');
+                }
+
+                const mockChoice = confirm('Enable Mock Mode? OK = Enable, Cancel = Disable');
+                if (window.APP_API && window.APP_API.setMockMode) window.APP_API.setMockMode(mockChoice);
+                alert('Settings updated. Mock mode: ' + (mockChoice ? 'ON' : 'OFF'));
+                location.reload();
+            });
+        })();
                 <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Production Pipeline Active
             </p>
         </div>
@@ -225,13 +258,13 @@
         </div>
     </div>
 </div>
-
+<script src="api.js"></script>
 <script>
     // ============================
     // CONFIGURATION
     // ============================
     const CONFIG = {
-        WEB_APP_URL: "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec",
+        WEB_APP_URL: (window.APP_API && window.APP_API.getStoredApiUrl) ? window.APP_API.getStoredApiUrl() : "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec",
         ADMIN_EMAIL: "naimur582582@gmail.com",
         EDITORS_EMAILS: ["shafin@mail.com"],
         API_TIMEOUT: 10000 // 10 seconds
@@ -280,11 +313,16 @@
     // API UTILITIES
     // ============================
     async function appScriptRequest(action, payload = {}) {
+        // Delegate to APP_API if available (supports mock mode and dynamic URL)
+        if (window.APP_API && typeof window.APP_API.apiRequest === 'function') {
+            return window.APP_API.apiRequest(action, payload);
+        }
+
+        // Fallback to original behavior
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), CONFIG.API_TIMEOUT);
 
         try {
-            // Use text/plain to avoid CORS preflight (Apps Script will receive raw body)
             const response = await fetch(CONFIG.WEB_APP_URL, {
                 method: 'POST',
                 mode: 'cors',
@@ -316,8 +354,11 @@
         }
     }
 
-    // Quick health-check using GET to avoid preflight/CORS issues
+    // Quick health-check using APP_API when possible
     async function testConnection() {
+        if (window.APP_API && typeof window.APP_API.testConnection === 'function') {
+            return await window.APP_API.testConnection();
+        }
         try {
             const res = await fetch(CONFIG.WEB_APP_URL, { method: 'GET', mode: 'cors', cache: 'no-cache' });
             if (!res.ok) return false;
@@ -727,6 +768,21 @@
     // INITIALIZATION
     // ============================
     window.onload = () => checkAuth();
+</script>
+<!-- Auto-set the provided /exec URL and disable mock mode -->
+<script>
+    (function(){
+        const URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
+        // If APP_API exists, store URL and disable mock mode
+        if (window.APP_API && typeof window.APP_API.setApiUrl === 'function') {
+            window.APP_API.setApiUrl(URL);
+            window.APP_API.setMockMode(false);
+            // optional quick check
+            window.APP_API.testConnection().then(ok => console.log('Apps Script reachable:', ok));
+        } else if (typeof CONFIG !== 'undefined') {
+            CONFIG.WEB_APP_URL = URL;
+        }
+    })();
 </script>
 </body>
 </html>

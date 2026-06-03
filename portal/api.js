@@ -1,24 +1,37 @@
 // ===============================
-// API ENDPOINT
+// API ENDPOINT (dynamic + mock support)
 // ===============================
-const API_URL = "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
+function getStoredApiUrl() {
+    return localStorage.getItem('portal_api_url') || "https://script.google.com/macros/s/AKfycbylKkKbbLkP8-M4_8Yi6eYFJF3V4gW4sLOeZ7sUyl1pCImSzFEGkFkdeEKnyhCYQgx8uA/exec";
+}
 
-// ===============================
-// CORE REQUEST
-// ===============================
+let MOCK_MODE = localStorage.getItem('portal_mock_mode') === 'true';
+
+function setApiUrl(url) {
+    localStorage.setItem('portal_api_url', url);
+}
+
+function setMockMode(enabled) {
+    MOCK_MODE = !!enabled;
+    localStorage.setItem('portal_mock_mode', MOCK_MODE ? 'true' : 'false');
+}
+
 async function apiRequest(action, payload = {}) {
     try {
+        if (MOCK_MODE) {
+            // handle mock actions locally
+            return await mockHandler(action, payload);
+        }
+
+        const API_URL = getStoredApiUrl();
         const res = await fetch(API_URL, {
             method: "POST",
             mode: "cors",
             cache: "no-cache",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "text/plain"
             },
-            body: JSON.stringify({
-                action,
-                ...payload
-            })
+            body: JSON.stringify({ action, ...payload })
         });
 
         if (!res.ok) {
@@ -32,6 +45,88 @@ async function apiRequest(action, payload = {}) {
         return { success: false, error: err.message };
     }
 }
+
+async function testConnection() {
+    if (MOCK_MODE) return true;
+    try {
+        const res = await fetch(getStoredApiUrl(), { method: 'GET', mode: 'cors', cache: 'no-cache' });
+        return res.ok;
+    } catch (e) {
+        return false;
+    }
+}
+
+// ============ Mock handler ============
+async function mockHandler(action, payload) {
+    // simple in-memory mock data stored in localStorage
+    const key = 'portal_mock_projects';
+    let projects = JSON.parse(localStorage.getItem(key) || '[]');
+
+    switch (action) {
+        case 'health':
+        case 'getHealth':
+            return { success: true, status: 'ok' };
+        case 'getUser':
+            return { success: true, data: { role: payload.email === localStorage.getItem('portal_admin_email') ? 'admin' : 'client', name: payload.email.split('@')[0] } };
+        case 'getProjects':
+            return { success: true, data: projects };
+        case 'addProject':
+        case 'createProject':
+        case 'add_project':
+            const id = `MN-${Date.now()}`;
+            const row = [id, id, payload.clientEmail || 'client@example.com', payload.projectName || 'Untitled', '', '', '', payload.editorEmail || '', payload.editorEmail || '', payload.status || 'Pending', payload.priority || 'Normal', payload.approval || 'Pending', payload.footage || '', '', payload.ref1 || '', '', '', payload.files || '', '', payload.deadline || '', '', '', payload.budget || 0, payload.createdBy || 'mock'];
+            projects.push(row);
+            localStorage.setItem(key, JSON.stringify(projects));
+            return { success: true, data: row };
+        case 'updateProject':
+            // payload.projectID, status, priority, approval
+            projects = projects.map(p => {
+                if (p[1] === payload.projectID) {
+                    p[9] = payload.status || p[9];
+                    p[10] = payload.priority || p[10];
+                    p[11] = payload.approval || p[11];
+                }
+                return p;
+            });
+            localStorage.setItem(key, JSON.stringify(projects));
+            return { success: true };
+        case 'deleteProject':
+            projects = projects.filter(p => p[1] !== payload.projectID);
+            localStorage.setItem(key, JSON.stringify(projects));
+            return { success: true };
+        case 'getDropdownOptions':
+            return { success: true, data: ['Option A', 'Option B'] };
+        default:
+            return { success: false, error: 'Unknown action (mock)' };
+    }
+}
+
+// expose
+window.APP_API = {
+    apiRequest,
+    testConnection,
+    setApiUrl,
+    setMockMode,
+    getStoredApiUrl: getStoredApiUrl,
+    isMockMode: () => MOCK_MODE
+};
+
+// Auto-seed mock data when mock mode is enabled and no projects exist
+function seedMockDataIfNeeded() {
+    if (!MOCK_MODE) return;
+    const key = 'portal_mock_projects';
+    let projects = JSON.parse(localStorage.getItem(key) || '[]');
+    if (projects.length > 0) return;
+
+    const sample = [];
+    for (let i = 1; i <= 4; i++) {
+        const id = `MN-${100 + i}`;
+        sample.push([id, id, `client${i}@example.com`, `Sample Project ${i}`, '', '', '', 'Naimur Rahman', 'naimur582582@gmail.com', i % 4 === 0 ? 'Completed' : 'Pending', i % 3 === 0 ? 'High' : 'Normal', 'Pending', '', '', '', '', '', '', '', '', '', '', (i * 150).toString(), `MockUser`]);
+    }
+    localStorage.setItem(key, JSON.stringify(sample));
+}
+
+seedMockDataIfNeeded();
 
 // ===============================
 // AUTH / USER
