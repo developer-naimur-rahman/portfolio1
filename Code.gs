@@ -79,6 +79,22 @@ function normalizeEmail(email) {
   return re.test(e) ? e : null;
 }
 
+function normalizeRole(role) {
+  if (!role || typeof role !== 'string') return null;
+  const r = role.trim().toLowerCase();
+  return ['admin', 'editor', 'client'].includes(r) ? r : null;
+}
+
+function getEffectiveRole(request, user) {
+  const email = normalizeEmail(request.email || request.editorEmail || request.requesterEmail || request.email);
+  if (email && email === (CONFIG.ADMIN_EMAIL || '').toString().trim().toLowerCase()) {
+    return CONFIG.ROLES.ADMIN;
+  }
+  if (user && user.role) return user.role;
+  const fallback = normalizeRole(request.role);
+  return fallback || CONFIG.ROLES.CLIENT;
+}
+
 function safeGetSheet(name) {
   try {
     if (!name) return null;
@@ -150,7 +166,7 @@ function getUserByEmail(email) {
           id: row[idIdx] || '',
           name: row[nameIdx] || '',
           email: rowEmail,
-          role: (row[roleIdx] || CONFIG.ROLES.CLIENT).toString().toLowerCase(),
+          role: row[roleIdx] ? row[roleIdx].toString().trim().toLowerCase() : null,
           status: row[statusIdx] || 'active'
         };
       }
@@ -214,12 +230,15 @@ function handleGetUser(request) {
   try {
     const email = normalizeEmail(request.email);
     if (!email) return createResponse({ error: 'Invalid email' }, false);
+    if (email === (CONFIG.ADMIN_EMAIL || '').toString().trim().toLowerCase()) {
+      return createResponse({ role: CONFIG.ROLES.ADMIN, name: 'Admin User', email: email });
+    }
     const user = getUserByEmail(email);
     if (!user) {
-      // Unknown users still get a client fallback so the portal can load
-      return createResponse({ role: CONFIG.ROLES.CLIENT, name: 'Unknown User', email: email });
+      const fallbackRole = normalizeRole(request.role) || CONFIG.ROLES.CLIENT;
+      return createResponse({ role: fallbackRole, name: 'Unknown User', email: email });
     }
-    return createResponse({ role: user.role, name: user.name, email: user.email });
+    return createResponse({ role: user.role || normalizeRole(request.role) || CONFIG.ROLES.CLIENT, name: user.name, email: user.email });
   } catch (err) {
     Logger.log('handleGetUser error: ' + err.message);
     return createResponse({ error: 'Failed to get user' }, false);
@@ -230,8 +249,9 @@ function handleGetProjects(request) {
   try {
     const email = normalizeEmail(request.email);
     if (!email) return createResponse({ error: 'Missing email' }, false);
-    const user = getUserByEmail(email) || { role: CONFIG.ROLES.CLIENT, email };
-    if (!checkPermission('getProjects', user.role)) return createResponse({ error: 'Insufficient permissions' }, false);
+    const user = getUserByEmail(email);
+    const role = getEffectiveRole(request, user);
+    if (!checkPermission('getProjects', role)) return createResponse({ error: 'Insufficient permissions' }, false);
 
     const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
     if (!sheet) return createResponse({ data: [] });
@@ -244,10 +264,10 @@ function handleGetProjects(request) {
 
     for (let i = 1; i < cap; i++) {
       const row = rows[i];
-      if (user.role === CONFIG.ROLES.CLIENT) {
+      if (role === CONFIG.ROLES.CLIENT) {
         if ((row[clientEmailIdx] || '').toString().trim().toLowerCase() !== email) continue;
       }
-      if (user.role === CONFIG.ROLES.EDITOR) {
+      if (role === CONFIG.ROLES.EDITOR) {
         if ((row[editorEmailIdx] || '').toString().trim().toLowerCase() !== email) continue;
       }
       out.push(row);
@@ -265,8 +285,9 @@ function handleAddProject(request) {
     const requester = normalizeEmail(request.editorEmail || request.requesterEmail || request.email);
     if (!requester) return createResponse({ error: 'Missing requester email' }, false);
     const user = getUserByEmail(requester);
-    if (!user) return createResponse({ error: 'Requester not found' }, false);
-    if (!checkPermission('addProject', user.role)) return createResponse({ error: 'Insufficient permissions' }, false);
+    const role = getEffectiveRole(request, user);
+    if (!checkPermission('addProject', role)) return createResponse({ error: 'Insufficient permissions' }, false);
+    if (!user && role === CONFIG.ROLES.CLIENT) return createResponse({ error: 'Requester not found' }, false);
 
     // Minimal validation for required fields
     const projectName = (request.projectName || '').toString().trim();
@@ -274,6 +295,8 @@ function handleAddProject(request) {
 
     const projectId = generateProjectId();
     const now = new Date();
+    const createdBy = request.createdBy || (user && user.name) || requester;
+    const editorEmail = normalizeEmail(request.editorEmail) || requester;
     const row = [
       now, // Timestamp A
       projectId, // Project ID B
@@ -282,8 +305,8 @@ function handleAddProject(request) {
       request.category || '', // Category E
       request.projectType || '', // Project Type F
       request.clientWebsite || '', // G
-      request.assignedEditor || user.name || '', // H
-      user.email || requester, // I: Editor Email
+      request.assignedEditor || createdBy || '', // H
+      editorEmail, // I: Editor Email
       request.status || 'Pending', // J: Status
       request.priority || 'Normal', // K
       request.approval || 'Pending', // L
@@ -298,7 +321,7 @@ function handleAddProject(request) {
       now, // U Start Date
       '', // V Completed Date
       Number(request.budget) || 0, // W Budget
-      user.name || '', // X Created By
+      createdBy, // X Created By
       now, // Y Last Updated
       false // Z Archive
     ];
@@ -306,7 +329,7 @@ function handleAddProject(request) {
     const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
     if (!sheet) return createResponse({ error: 'Projects sheet not found' }, false);
     sheet.appendRow(row);
-    logAction('addProject', { projectId: projectId, by: user.email });
+    logAction('addProject', { projectId: projectId, by: editorEmail, role: role });
     return createResponse({ success: true, projectID: projectId });
   } catch (err) {
     Logger.log('handleAddProject error: ' + err.message);
