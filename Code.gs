@@ -373,16 +373,17 @@ function handleAddProject(request) {
     const now = new Date();
     
     // Build row data with proper email handling - FIX INVALID EDITOR EMAIL
-    const clientEmail = normalizeEmail(request.clientEmail) || requesterEmail || '';
+    const clientEmail = (request.clientEmail || requesterEmail || '').toString().trim();
     
-    // For ADMIN/EDITOR: assign themselves, for CLIENT: leave empty
-    let editorEmail = '';
-    let assignedEditor = '';
-    if (role === CONFIG.ROLES.ADMIN || role === CONFIG.ROLES.EDITOR) {
+    // Allow the frontend to supply editor assignment when needed and keep all users able to add projects.
+    let editorEmail = (request.editorEmail || '').toString().trim();
+    let assignedEditor = (request.assignedEditor || '').toString().trim();
+    if (!editorEmail && (role === CONFIG.ROLES.ADMIN || role === CONFIG.ROLES.EDITOR)) {
       editorEmail = requesterEmail;
+    }
+    if (!assignedEditor && (role === CONFIG.ROLES.ADMIN || role === CONFIG.ROLES.EDITOR)) {
       assignedEditor = user ? user.name : requesterEmail;
     }
-    // For CLIENT: editorEmail and assignedEditor remain empty
     
     const createdBy = user ? user.name : requesterEmail;
     
@@ -452,13 +453,13 @@ function handleUpdateProject(request) {
     const range = sheet.getRange(found.index, 1, 1, found.row.length);
     const current = found.row.slice();
 
-    if (updates.clientEmail) current[2] = normalizeEmail(updates.clientEmail) || current[2];
+    if (updates.clientEmail !== undefined) current[2] = updates.clientEmail || current[2];
     if (updates.projectName) current[3] = updates.projectName;
     if (updates.category !== undefined) current[4] = updates.category;
     if (updates.projectType !== undefined) current[5] = updates.projectType;
     if (updates.clientWebsite !== undefined) current[6] = updates.clientWebsite;
     if (updates.assignedEditor !== undefined) current[7] = updates.assignedEditor;
-    if (updates.editorEmail !== undefined) current[8] = normalizeEmail(updates.editorEmail) || current[8];
+    if (updates.editorEmail !== undefined) current[8] = updates.editorEmail || '';
     if (updates.status) current[9] = updates.status;
     if (updates.priority) current[10] = updates.priority;
     if (updates.approval) current[11] = updates.approval;
