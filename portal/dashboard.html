@@ -733,6 +733,7 @@
             projectType: document.getElementById('pCategory').value,
             requesterEmail: CURRENT_USER.email,
             createdBy: CURRENT_USER.name,
+            name: CURRENT_USER.name,
             assignedEditor: CURRENT_USER.role === 'client' ? '' : CURRENT_USER.name,
             editorEmail: CURRENT_USER.role === 'client' ? '' : CURRENT_USER.email,
             role: CURRENT_USER.role,

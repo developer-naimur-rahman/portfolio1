@@ -11,6 +11,7 @@
 const SPREADSHEET_ID = '1T7DINM4kEqLUjRePq4ML5z0AYpnkpS5LlMulixgez8k';
 
 const CONFIG = {
+  ADMIN_EMAIL: 'naimur582582@gmail.com',
   SHEETS: {
     PROJECTS: 'Projects',
     REVISIONS: 'Revision',
@@ -144,6 +145,58 @@ function logAction(tag, details) {
 // ----------------------------
 // AUTH / USER helpers
 // ----------------------------
+function createOrUpdateUser(email, name, role) {
+  try {
+    const e = normalizeEmail(email);
+    if (!e) return null;
+    
+    // Check if admin by email
+    if (e === CONFIG.ADMIN_EMAIL.toString().trim().toLowerCase()) {
+      return { email: e, name: name || 'Admin User', role: CONFIG.ROLES.ADMIN };
+    }
+    
+    const sheet = safeGetSheet(CONFIG.SHEETS.USERS);
+    if (!sheet) return null;
+    
+    const headers = findHeaderIndexes(sheet);
+    const rows = sheet.getDataRange().getValues();
+    const emailIdx = headers['email'] ?? headers['user email'] ?? headers['email address'] ?? 2;
+    const nameIdx = headers['name'] ?? headers['full name'] ?? 1;
+    const roleIdx = headers['role'] ?? 3;
+    
+    // Check if user exists
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const rowEmail = (row[emailIdx] || '').toString().trim().toLowerCase();
+      if (rowEmail === e) {
+        // User exists, update name if provided
+        if (name && name !== row[nameIdx]) {
+          row[nameIdx] = name;
+          sheet.getRange(i + 1, nameIdx + 1).setValue(name);
+        }
+        return { email: e, name: row[nameIdx] || name || '', role: row[roleIdx] || role || CONFIG.ROLES.CLIENT };
+      }
+    }
+    
+    // User doesn't exist, create new user
+    const newRole = normalizeRole(role) || CONFIG.ROLES.CLIENT;
+    const newRow = [
+      'USR-' + Date.now(),
+      name || 'New User',
+      e,
+      newRole,
+      'active',
+      new Date()
+    ];
+    sheet.appendRow(newRow);
+    logAction('createUser', { email: e, name: name, role: newRole });
+    return { email: e, name: name || 'New User', role: newRole };
+  } catch (err) {
+    Logger.log('createOrUpdateUser error: ' + err.message);
+    return null;
+  }
+}
+
 function getUserByEmail(email) {
   try {
     const e = normalizeEmail(email);
@@ -230,10 +283,17 @@ function handleGetUser(request) {
   try {
     const email = normalizeEmail(request.email);
     if (!email) return createResponse({ error: 'Invalid email' }, false);
-    if (email === (CONFIG.ADMIN_EMAIL || '').toString().trim().toLowerCase()) {
+    if (email === CONFIG.ADMIN_EMAIL.toString().trim().toLowerCase()) {
       return createResponse({ role: CONFIG.ROLES.ADMIN, name: 'Admin User', email: email });
     }
-    const user = getUserByEmail(email);
+    
+    // Try to get user, create if doesn't exist
+    let user = getUserByEmail(email);
+    if (!user) {
+      const fallbackRole = normalizeRole(request.role) || CONFIG.ROLES.CLIENT;
+      user = createOrUpdateUser(email, request.name || 'Unknown User', fallbackRole);
+    }
+    
     if (!user) {
       const fallbackRole = normalizeRole(request.role) || CONFIG.ROLES.CLIENT;
       return createResponse({ role: fallbackRole, name: 'Unknown User', email: email });
@@ -287,17 +347,20 @@ function handleAddProject(request) {
       return createResponse({ error: 'Missing requester email' }, false);
     }
 
-    // Get user from sheet
-    const user = getUserByEmail(requesterEmail);
+    // Get or create user from sheet - AUTO-REGISTERS new users
+    let user = getUserByEmail(requesterEmail);
+    if (!user) {
+      user = createOrUpdateUser(requesterEmail, request.createdBy || request.name || 'New User', request.role);
+    }
     
     // Determine role: admin override, then user role, then request role
-    let role = normalizeRole(request.role);
-    if (requesterEmail === (CONFIG.ADMIN_EMAIL || '').toString().trim().toLowerCase()) {
+    let role = null;
+    if (requesterEmail === CONFIG.ADMIN_EMAIL.toString().trim().toLowerCase()) {
       role = CONFIG.ROLES.ADMIN;
     } else if (user && user.role) {
       role = user.role;
-    } else if (!role) {
-      role = CONFIG.ROLES.CLIENT;
+    } else {
+      role = normalizeRole(request.role) || CONFIG.ROLES.CLIENT;
     }
 
     // Check permission
@@ -315,11 +378,19 @@ function handleAddProject(request) {
     const projectId = generateProjectId();
     const now = new Date();
     
-    // Build row data with proper email handling
+    // Build row data with proper email handling - FIX INVALID EDITOR EMAIL
     const clientEmail = normalizeEmail(request.clientEmail) || requesterEmail || '';
-    const editorEmail = request.role === 'client' ? '' : (normalizeEmail(request.editorEmail) || requesterEmail || '');
-    const assignedEditor = request.role === 'client' ? '' : (request.assignedEditor || (user && user.name) || requesterEmail || '');
-    const createdBy = request.createdBy || (user && user.name) || requesterEmail || 'System';
+    
+    // For ADMIN/EDITOR: assign themselves, for CLIENT: leave empty
+    let editorEmail = '';
+    let assignedEditor = '';
+    if (role === CONFIG.ROLES.ADMIN || role === CONFIG.ROLES.EDITOR) {
+      editorEmail = requesterEmail;
+      assignedEditor = user ? user.name : requesterEmail;
+    }
+    // For CLIENT: editorEmail and assignedEditor remain empty
+    
+    const createdBy = user ? user.name : requesterEmail;
     
     const row = [
       now,                                    // A: Timestamp
@@ -378,7 +449,8 @@ function handleUpdateProject(request) {
     const found = findProjectRow(projectId);
     if (!found) return createResponse({ error: 'Project not found' }, false);
 
-    if (role === CONFIG.ROLES.EDITOR) {
+    // ADMIN can edit all projects, EDITOR can only edit assigned projects
+    if (role === CONFIG.ROLES.EDITOR && updaterEmail !== CONFIG.ADMIN_EMAIL.toString().trim().toLowerCase()) {
       const assignedEditorEmail = (found.row[8] || '').toString().trim().toLowerCase();
       if (assignedEditorEmail !== updaterEmail) return createResponse({ error: 'Editor not assigned to this project' }, false);
     }
