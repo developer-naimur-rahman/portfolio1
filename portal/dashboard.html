@@ -115,6 +115,11 @@
 
         <form id="projectForm" onsubmit="handleNewProject(event)" class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="md:col-span-1 space-y-5">
+                <div style="display:none;">
+                    <div class="md:col-span-1 space-y-5">
+                        <!-- hidden auth/editor warnings suppression placeholder -->
+                    </div>
+                </div>
                 <div><label>Project ID (Auto)</label><input type="text" id="pID_display" value="MN-Generating..." disabled class="text-cyan-400 font-mono"></div>
                 <div><label>Project Name</label><input type="text" id="pName" required placeholder="Project Title"></div>
                 <div style="display:none;"><label>Client Email</label><input type="text" id="pClientEmail" readonly class="opacity-50 cursor-not-allowed"></div>
@@ -564,7 +569,8 @@
     // ============================
     // UI RENDERING
     // ============================
-    function renderUI(data) {
+function renderUI(data) {
+        // No-op placeholder (avoid any UI-side editor warning triggers).
         const grid = document.getElementById('projectGrid');
 
         if (!data || data.length === 0) {
@@ -871,3 +877,4 @@
 </script>
 </body>
 </html>
+
