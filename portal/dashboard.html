@@ -335,7 +335,7 @@
                 method: 'POST',
                 mode: 'cors',
                 cache: 'no-cache',
-                headers: { 'Content-Type': 'text/plain' },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action, ...payload }),
                 signal: controller.signal
             });
@@ -729,14 +729,18 @@
         const pData = {
             projectName: projectName,
             clientEmail: CURRENT_USER.email,
+            email: CURRENT_USER.email,
+            userEmail: CURRENT_USER.email,
             category: document.getElementById('pCategory').value,
             projectType: document.getElementById('pCategory').value,
             requesterEmail: CURRENT_USER.email,
             createdBy: CURRENT_USER.name,
             name: CURRENT_USER.name,
+            userName: CURRENT_USER.name,
             assignedEditor: CURRENT_USER.role === 'client' ? '' : CURRENT_USER.name,
             editorEmail: CURRENT_USER.role === 'client' ? '' : CURRENT_USER.email,
             role: CURRENT_USER.role,
+            userRole: CURRENT_USER.role,
             deadline: document.getElementById('pDeadline').value,
             priority: document.getElementById('pPriority')?.value || 'Normal',
             budget: parseFloat(document.getElementById('pBudget').value) || 0,

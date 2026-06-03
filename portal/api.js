@@ -29,7 +29,7 @@ async function apiRequest(action, payload = {}) {
             mode: "cors",
             cache: "no-cache",
             headers: {
-                "Content-Type": "text/plain"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({ action, ...payload })
         });
