@@ -267,14 +267,14 @@
     }
 
     function getEffectiveLoginRole(email) {
-        const selectedRole = getSelectedLoginRole();
-        if (email && email.trim().toLowerCase() === CONFIG.ADMIN_EMAIL.toLowerCase()) {
+        if (!email) return 'client';
+        const normalized = email.trim().toLowerCase();
+        const adminEmail = CONFIG.ADMIN_EMAIL.trim().toLowerCase();
+        if (normalized === adminEmail) {
             return 'admin';
         }
-        if (selectedRole === 'editor' || selectedRole === 'client') {
-            return selectedRole;
-        }
-        return 'client';
+        const selectedRole = getSelectedLoginRole();
+        return (selectedRole === 'editor' || selectedRole === 'client') ? selectedRole : 'client';
     }
 
     // ============================
@@ -408,6 +408,9 @@
                 pic
             };
             localStorage.setItem('currentRole', CURRENT_USER.role);
+            localStorage.setItem('user_email', email);
+            localStorage.setItem('user_name', name);
+            localStorage.setItem('user_pic', pic);
 
             checkAuth();
         } catch (error) {
@@ -435,8 +438,9 @@
                 const selectedRole = getEffectiveLoginRole(CURRENT_USER.email);
                 let userData = await appScriptRequest('getUser', { email: CURRENT_USER.email, role: selectedRole });
                 userData = userData?.data || userData;
-                CURRENT_USER.role = userData?.role || localStorage.getItem('currentRole') || selectedRole;
-                localStorage.setItem('currentRole', CURRENT_USER.role);
+                const resolvedRole = userData?.role || selectedRole;
+                CURRENT_USER.role = resolvedRole;
+                localStorage.setItem('currentRole', resolvedRole);
                 localStorage.setItem('user_name', userData?.name || CURRENT_USER.name);
                 CURRENT_USER.name = userData?.name || CURRENT_USER.name;
                 // Health-check the Apps Script endpoint before loading dashboard
@@ -449,7 +453,9 @@
                 }
             } catch (error) {
                 console.warn('Failed to refresh user role:', error);
-                CURRENT_USER.role = localStorage.getItem('currentRole') || 'client';
+                const fallbackRole = getEffectiveLoginRole(CURRENT_USER.email);
+                CURRENT_USER.role = fallbackRole;
+                localStorage.setItem('currentRole', fallbackRole);
             }
 
             document.getElementById('userNameDisplay').textContent = CURRENT_USER.name;
