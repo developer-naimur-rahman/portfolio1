@@ -638,7 +638,7 @@
         if (p[19]) document.getElementById('editDeadline').value = new Date(p[19]).toISOString().split('T')[0];
 
         // Revision fields (defaults)
-        document.getElementById('editRevNum').value = 0;
+        document.getElementById('editRevNum').value = 1;
         document.getElementById('editVersion').value = 'v1.0';
         document.getElementById('editReqType').value = 'General';
         document.getElementById('editClientNotes').value = '';
@@ -651,32 +651,17 @@
 
         // Role-based access
         const isAdmin = CURRENT_USER.role === 'admin';
-        const isAssignedEditor = CURRENT_USER.role === 'editor' && (p[8] || '').toString().toLowerCase() === CURRENT_USER.email;
-        const canEdit = isAdmin || isAssignedEditor;
-        const canAssign = isAdmin || isAssignedEditor;
-        const canSubmitRevision = ['admin', 'editor', 'client'].includes(CURRENT_USER.role);
+        const canEdit = isAdmin;
+        const canAssign = isAdmin;
+        const canSubmitRevision = isAdmin;
 
         document.getElementById('saveUpdateBtn').style.display = canEdit ? 'flex' : 'none';
         document.getElementById('createRevisionBtn').style.display = canSubmitRevision ? 'flex' : 'none';
         document.getElementById('deleteBtn').style.display = isAdmin ? 'flex' : 'none';
 
-        // Enable only editable fields for permitted roles
-        const editableFields = [
-            document.getElementById('editStatus'),
-            document.getElementById('editPriority'),
-            document.getElementById('editApproval')
-        ];
-        if (canAssign) {
-            editableFields.push(document.getElementById('editEditor'));
-        }
         const allFields = document.querySelectorAll('#detailsModal input, #detailsModal textarea, #detailsModal select');
-
         allFields.forEach(el => {
-            if (editableFields.includes(el) && canEdit) {
-                el.removeAttribute('disabled');
-                el.style.opacity = '1';
-                el.style.cursor = 'auto';
-            } else if (el === document.getElementById('editEditor') && canAssign) {
+            if (canEdit) {
                 el.removeAttribute('disabled');
                 el.style.opacity = '1';
                 el.style.cursor = 'auto';
@@ -686,10 +671,6 @@
                 el.style.cursor = 'not-allowed';
             }
         });
-
-        if (canEdit) {
-            editableFields.forEach(el => el.removeAttribute('disabled'));
-        }
 
         toggleModal('detailsModal', true);
     }
@@ -711,8 +692,8 @@
             return;
         }
 
-        if (!['admin', 'editor', 'client'].includes(CURRENT_USER.role)) {
-            alert('You do not have permission to create a project.');
+        if (CURRENT_USER.role !== 'admin') {
+            alert('Only the admin can launch projects.');
             btn.disabled = false;
             btn.textContent = "Launch Project";
             return;
@@ -776,11 +757,18 @@
         const [assignedEditorName, assignedEditorEmail] = document.getElementById('editEditor').value.split('|');
         const formData = {
             projectID: document.getElementById('detProjectID').textContent,
+            clientEmail: document.getElementById('editClientEmail').value,
+            projectName: document.getElementById('editPName').value,
+            assignedEditor: assignedEditorName || '',
+            editorEmail: assignedEditorEmail || '',
             status: document.getElementById('editStatus').value,
             priority: document.getElementById('editPriority').value,
             approval: document.getElementById('editApproval').value,
-            assignedEditor: assignedEditorName || '',
-            editorEmail: assignedEditorEmail || '',
+            footage: document.getElementById('editFootage').value,
+            deliveryLink: document.getElementById('editFilesLink').value,
+            ref1: document.getElementById('editRef1').value,
+            deadline: document.getElementById('editDeadline').value,
+            budget: parseFloat(document.getElementById('editBudget').value) || 0,
             updaterEmail: CURRENT_USER.email,
             role: CURRENT_USER.role
         };
@@ -892,6 +880,9 @@
         const roleSelect = document.getElementById('loginRoleSelector');
         if (selectedRole && roleSelect) {
             roleSelect.value = selectedRole;
+        }
+        if (roleSelect) {
+            roleSelect.closest('div')?.style.setProperty('display', 'none', 'important');
         }
         checkAuth();
     };

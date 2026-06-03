@@ -26,12 +26,12 @@ const CONFIG = {
   // Permission map for actions. Values are allowed roles.
   PERMISSIONS: {
     getUser: ['admin', 'editor', 'client'],
-    getProjects: ['admin', 'editor', 'client'],
-    addProject: ['admin', 'editor', 'client'],
-    updateProject: ['admin', 'editor'],
+    getProjects: ['admin'],
+    addProject: ['admin'],
+    updateProject: ['admin'],
     deleteProject: ['admin'],
-    addRevision: ['admin', 'editor', 'client'],
-    getRevisions: ['admin', 'editor', 'client'],
+    addRevision: ['admin'],
+    getRevisions: ['admin'],
     addMessage: ['admin', 'editor', 'client'],
     getMessages: ['admin', 'editor', 'client']
   },
@@ -456,7 +456,7 @@ function handleUpdateProject(request) {
       if (assignedEditorEmail !== updaterEmail) return createResponse({ error: 'Editor not assigned to this project' }, false);
     }
 
-    const allowed = ['status', 'priority', 'approval', 'deliveryLink', 'deliveryType', 'deadline', 'footage', 'scriptLink', 'ref1', 'ref2', 'projectName', 'assignedEditor', 'editorEmail'];
+    const allowed = ['clientEmail','projectName','category','projectType','clientWebsite','assignedEditor','editorEmail','status', 'priority', 'approval', 'deliveryLink', 'deliveryType', 'deadline', 'footage', 'scriptLink', 'ref1', 'ref2', 'budget'];
     const updates = {};
     allowed.forEach(k => { if (request[k] !== undefined) updates[k] = request[k]; });
 
@@ -465,19 +465,24 @@ function handleUpdateProject(request) {
     const range = sheet.getRange(found.index, 1, 1, found.row.length);
     const current = found.row.slice();
 
+    if (updates.clientEmail) current[2] = normalizeEmail(updates.clientEmail) || current[2];
     if (updates.projectName) current[3] = updates.projectName;
+    if (updates.category !== undefined) current[4] = updates.category;
+    if (updates.projectType !== undefined) current[5] = updates.projectType;
+    if (updates.clientWebsite !== undefined) current[6] = updates.clientWebsite;
+    if (updates.assignedEditor !== undefined) current[7] = updates.assignedEditor;
+    if (updates.editorEmail !== undefined) current[8] = normalizeEmail(updates.editorEmail) || current[8];
     if (updates.status) current[9] = updates.status;
     if (updates.priority) current[10] = updates.priority;
     if (updates.approval) current[11] = updates.approval;
-    if (updates.footage) current[12] = updates.footage;
-    if (updates.scriptLink) current[14] = updates.scriptLink;
-    if (updates.ref1) current[15] = updates.ref1;
-    if (updates.ref2) current[16] = updates.ref2;
-    if (updates.deliveryLink) current[17] = updates.deliveryLink;
-    if (updates.deliveryType) current[18] = updates.deliveryType;
-    if (updates.deadline) current[19] = updates.deadline;
-    if (updates.assignedEditor !== undefined) current[7] = updates.assignedEditor;
-    if (updates.editorEmail !== undefined) current[8] = normalizeEmail(updates.editorEmail) || current[8];
+    if (updates.footage !== undefined) current[12] = updates.footage;
+    if (updates.scriptLink !== undefined) current[14] = updates.scriptLink;
+    if (updates.ref1 !== undefined) current[15] = updates.ref1;
+    if (updates.ref2 !== undefined) current[16] = updates.ref2;
+    if (updates.deliveryLink !== undefined) current[17] = updates.deliveryLink;
+    if (updates.deliveryType !== undefined) current[18] = updates.deliveryType;
+    if (updates.deadline !== undefined) current[19] = updates.deadline;
+    if (updates.budget !== undefined) current[22] = Number(updates.budget) || current[22];
 
     current[24] = new Date();
 
