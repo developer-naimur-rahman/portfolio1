@@ -161,6 +161,9 @@
                 <button id="saveUpdateBtn" onclick="saveProjectUpdate()" class="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all active:scale-95">
                     <i data-lucide="refresh-cw" size="14"></i> Update Project
                 </button>
+                <button id="createRevisionBtn" onclick="submitRevision()" class="bg-amber-500 hover:bg-amber-400 text-black px-6 py-2 rounded-xl font-bold text-xs flex items-center gap-2 transition-all active:scale-95">
+                    <i data-lucide="corner-up-left" size="14"></i> Submit Revision
+                </button>
                 <button id="deleteBtn" onclick="deleteProject()" class="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-xl font-bold text-xs transition-all active:scale-95">
                     <i data-lucide="trash-2" size="14"></i> Delete
                 </button>
@@ -528,10 +531,15 @@
                     : Array.isArray(response?.rows)
                         ? response.rows
                         : [];
+            const sortedData = rawData.slice().sort((a, b) => {
+                const da = new Date(a[0]);
+                const db = new Date(b[0]);
+                return (db.getTime() || 0) - (da.getTime() || 0);
+            });
 
             console.debug('getProjects response:', response);
-            ALL_PROJECTS = rawData;
-            if (!rawData.length && response && response.success === false) {
+            ALL_PROJECTS = sortedData;
+            if (!ALL_PROJECTS.length && response && response.success === false) {
                 grid.innerHTML = `<div class="col-span-full py-20 text-center text-red-500">Sync Error: ${sanitizeText(response.error || 'No projects returned')}</div>`;
             } else {
                 renderUI(ALL_PROJECTS);
@@ -618,7 +626,7 @@
         document.getElementById('editEditorNotes').value = '';
 
         document.getElementById('dispUploadedBy').textContent = sanitizeText(p[23] || '---');
-        document.getElementById('dispUserRole').textContent = '---';
+        document.getElementById('dispUserRole').textContent = CURRENT_USER.role ? CURRENT_USER.role.charAt(0).toUpperCase() + CURRENT_USER.role.slice(1) : '---';
         document.getElementById('dispLastUpdated').textContent = sanitizeText(p[24] || '---');
         document.getElementById('editVisible').value = 'Yes';
 
@@ -626,8 +634,11 @@
         const isAdmin = CURRENT_USER.role === 'admin';
         const isAssignedEditor = CURRENT_USER.role === 'editor' && (p[8] || '').toString().toLowerCase() === CURRENT_USER.email;
         const canEdit = isAdmin || isAssignedEditor;
+        const canAssign = isAdmin || isAssignedEditor;
+        const canSubmitRevision = ['admin', 'editor', 'client'].includes(CURRENT_USER.role);
 
         document.getElementById('saveUpdateBtn').style.display = canEdit ? 'flex' : 'none';
+        document.getElementById('createRevisionBtn').style.display = canSubmitRevision ? 'flex' : 'none';
         document.getElementById('deleteBtn').style.display = isAdmin ? 'flex' : 'none';
 
         // Enable only editable fields for permitted roles
@@ -636,10 +647,17 @@
             document.getElementById('editPriority'),
             document.getElementById('editApproval')
         ];
+        if (canAssign) {
+            editableFields.push(document.getElementById('editEditor'));
+        }
         const allFields = document.querySelectorAll('#detailsModal input, #detailsModal textarea, #detailsModal select');
 
         allFields.forEach(el => {
             if (editableFields.includes(el) && canEdit) {
+                el.removeAttribute('disabled');
+                el.style.opacity = '1';
+                el.style.cursor = 'auto';
+            } else if (el === document.getElementById('editEditor') && canAssign) {
                 el.removeAttribute('disabled');
                 el.style.opacity = '1';
                 el.style.cursor = 'auto';
@@ -650,7 +668,6 @@
             }
         });
 
-        // Always keep save button enabled for permitted update roles
         if (canEdit) {
             editableFields.forEach(el => el.removeAttribute('disabled'));
         }
@@ -667,7 +684,7 @@
         btn.disabled = true;
         btn.textContent = "LAUNCHING...";
 
-        if (!['admin', 'editor'].includes(CURRENT_USER.role)) {
+        if (!['admin', 'editor', 'client'].includes(CURRENT_USER.role)) {
             alert('You do not have permission to create a project.');
             btn.disabled = false;
             btn.textContent = "Launch Project";
@@ -680,9 +697,9 @@
             category: document.getElementById('pCategory').value,
             projectType: document.getElementById('pCategory').value,
             clientWebsite: "",
-            assignedEditor: CURRENT_USER.name,
-            editorEmail: CURRENT_USER.email,
-                role: CURRENT_USER.role,
+            assignedEditor: CURRENT_USER.role === 'client' ? '' : CURRENT_USER.name,
+            editorEmail: CURRENT_USER.role === 'client' ? '' : CURRENT_USER.email,
+            role: CURRENT_USER.role,
             deadline: document.getElementById('pDeadline').value,
             budget: parseFloat(document.getElementById('pBudget').value) || 0,
             createdBy: CURRENT_USER.name
@@ -711,12 +728,16 @@
         btn.disabled = true;
         btn.textContent = "SAVING...";
 
+        const [assignedEditorName, assignedEditorEmail] = document.getElementById('editEditor').value.split('|');
         const formData = {
             projectID: document.getElementById('detProjectID').textContent,
             status: document.getElementById('editStatus').value,
             priority: document.getElementById('editPriority').value,
             approval: document.getElementById('editApproval').value,
-            updaterEmail: CURRENT_USER.email
+            assignedEditor: assignedEditorName || '',
+            editorEmail: assignedEditorEmail || '',
+            updaterEmail: CURRENT_USER.email,
+            role: CURRENT_USER.role
         };
 
         try {
@@ -736,6 +757,48 @@
         }
     }
 
+    async function submitRevision() {
+        const btn = document.getElementById('createRevisionBtn');
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+        const [assignedEditorName, assignedEditorEmail] = document.getElementById('editEditor').value.split('|');
+        const request = {
+            projectID: document.getElementById('detProjectID').textContent,
+            projectName: document.getElementById('editPName').value,
+            clientEmail: document.getElementById('editClientEmail').value,
+            assignedEditor: assignedEditorName || '',
+            editorEmail: assignedEditorEmail || '',
+            requesterEmail: CURRENT_USER.email,
+            role: CURRENT_USER.role,
+            revisionNumber: parseInt(document.getElementById('editRevNum').value, 10) || 1,
+            version: document.getElementById('editVersion').value || 'v1.0',
+            requestType: document.getElementById('editReqType').value || 'General',
+            revisionNotes: document.getElementById('editClientNotes').value || '',
+            editorNotes: document.getElementById('editEditorNotes').value || '',
+            status: 'Pending',
+            approval: 'Pending',
+            clientVisible: 'Yes'
+        };
+
+        try {
+            const response = await appScriptRequest('addRevision', request);
+            if (response.success) {
+                alert('Revision submitted.');
+                document.getElementById('editClientNotes').value = '';
+                document.getElementById('editEditorNotes').value = '';
+                toggleModal('detailsModal', false);
+                setTimeout(initDashboard, 1000);
+            } else {
+                alert('Error: ' + sanitizeText(response.error));
+            }
+        } catch (err) {
+            alert('Error: ' + sanitizeText(err.message));
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Submit Revision';
+        }
+    }
+
     async function deleteProject() {
         if (!confirm("DELETE?")) return;
         const btn = document.getElementById('deleteBtn');
@@ -744,7 +807,8 @@
         try {
             const response = await appScriptRequest('deleteProject', {
                 projectID: document.getElementById('detProjectID').textContent,
-                deleterEmail: CURRENT_USER.email
+                deleterEmail: CURRENT_USER.email,
+                role: CURRENT_USER.role
             });
             if (response.success) {
                 alert("Deleted.");

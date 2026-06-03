@@ -29,7 +29,7 @@ const CONFIG = {
     addProject: ['admin', 'editor', 'client'],
     updateProject: ['admin', 'editor'],
     deleteProject: ['admin'],
-    addRevision: ['admin', 'editor'],
+    addRevision: ['admin', 'editor', 'client'],
     getRevisions: ['admin', 'editor', 'client'],
     addMessage: ['admin', 'editor', 'client'],
     getMessages: ['admin', 'editor', 'client']
@@ -287,7 +287,6 @@ function handleAddProject(request) {
     const user = getUserByEmail(requester);
     const role = getEffectiveRole(request, user);
     if (!checkPermission('addProject', role)) return createResponse({ error: 'Insufficient permissions' }, false);
-    if (!user && role === CONFIG.ROLES.CLIENT) return createResponse({ error: 'Requester not found' }, false);
 
     // Minimal validation for required fields
     const projectName = (request.projectName || '').toString().trim();
@@ -296,7 +295,8 @@ function handleAddProject(request) {
     const projectId = generateProjectId();
     const now = new Date();
     const createdBy = request.createdBy || (user && user.name) || requester;
-    const editorEmail = normalizeEmail(request.editorEmail) || requester;
+    const editorEmail = role === CONFIG.ROLES.CLIENT ? '' : (normalizeEmail(request.editorEmail) || requester);
+    const assignedEditor = request.assignedEditor !== undefined ? request.assignedEditor : (role === CONFIG.ROLES.CLIENT ? '' : createdBy);
     const row = [
       now, // Timestamp A
       projectId, // Project ID B
@@ -305,7 +305,7 @@ function handleAddProject(request) {
       request.category || '', // Category E
       request.projectType || '', // Project Type F
       request.clientWebsite || '', // G
-      request.assignedEditor || createdBy || '', // H
+      assignedEditor, // H
       editorEmail, // I: Editor Email
       request.status || 'Pending', // J: Status
       request.priority || 'Normal', // K
@@ -341,27 +341,24 @@ function handleUpdateProject(request) {
   try {
     const projectId = request.projectID;
     if (!projectId) return createResponse({ error: 'Missing projectID' }, false);
-    const updater = normalizeEmail(request.updaterEmail || request.email);
-    if (!updater) return createResponse({ error: 'Missing updater email' }, false);
-    const user = getUserByEmail(updater);
-    if (!user) return createResponse({ error: 'Updater not found' }, false);
-    if (!checkPermission('updateProject', user.role)) return createResponse({ error: 'Insufficient permissions' }, false);
+    const updaterEmail = normalizeEmail(request.updaterEmail || request.email || request.requesterEmail);
+    if (!updaterEmail) return createResponse({ error: 'Missing updater email' }, false);
+    const user = getUserByEmail(updaterEmail);
+    const role = getEffectiveRole(request, user);
+    if (!checkPermission('updateProject', role)) return createResponse({ error: 'Insufficient permissions' }, false);
 
     const found = findProjectRow(projectId);
     if (!found) return createResponse({ error: 'Project not found' }, false);
 
-    // If editor, must be assigned to project to update
-    if (user.role === CONFIG.ROLES.EDITOR) {
+    if (role === CONFIG.ROLES.EDITOR) {
       const assignedEditorEmail = (found.row[8] || '').toString().trim().toLowerCase();
-      if (assignedEditorEmail !== user.email) return createResponse({ error: 'Editor not assigned to this project' }, false);
+      if (assignedEditorEmail !== updaterEmail) return createResponse({ error: 'Editor not assigned to this project' }, false);
     }
 
-    // Only allow specific updatable fields for safety
-    const allowed = ['status', 'priority', 'approval', 'deliveryLink', 'deliveryType', 'deadline', 'footage', 'scriptLink', 'ref1', 'ref2', 'projectName'];
+    const allowed = ['status', 'priority', 'approval', 'deliveryLink', 'deliveryType', 'deadline', 'footage', 'scriptLink', 'ref1', 'ref2', 'projectName', 'assignedEditor', 'editorEmail'];
     const updates = {};
     allowed.forEach(k => { if (request[k] !== undefined) updates[k] = request[k]; });
 
-    // Load sheet and update the row array, then write back
     const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
     if (!sheet) return createResponse({ error: 'Projects sheet not found' }, false);
     const range = sheet.getRange(found.index, 1, 1, found.row.length);
@@ -378,12 +375,13 @@ function handleUpdateProject(request) {
     if (updates.deliveryLink) current[17] = updates.deliveryLink;
     if (updates.deliveryType) current[18] = updates.deliveryType;
     if (updates.deadline) current[19] = updates.deadline;
+    if (updates.assignedEditor !== undefined) current[7] = updates.assignedEditor;
+    if (updates.editorEmail !== undefined) current[8] = normalizeEmail(updates.editorEmail) || current[8];
 
-    // Last updated
     current[24] = new Date();
 
     range.setValues([current]);
-    logAction('updateProject', { projectId: projectId, by: user.email, updates: Object.keys(updates) });
+    logAction('updateProject', { projectId: projectId, by: updaterEmail, updates: Object.keys(updates) });
     return createResponse({ success: true });
   } catch (err) {
     Logger.log('handleUpdateProject error: ' + err.message);
@@ -395,18 +393,18 @@ function handleDeleteProject(request) {
   try {
     const projectId = request.projectID;
     if (!projectId) return createResponse({ error: 'Missing projectID' }, false);
-    const deleter = normalizeEmail(request.deleterEmail || request.email);
+    const deleter = normalizeEmail(request.deleterEmail || request.email || request.requesterEmail);
     if (!deleter) return createResponse({ error: 'Missing deleter email' }, false);
     const user = getUserByEmail(deleter);
-    if (!user) return createResponse({ error: 'Deleter not found' }, false);
-    if (!checkPermission('deleteProject', user.role)) return createResponse({ error: 'Insufficient permissions' }, false);
+    const role = getEffectiveRole(request, user);
+    if (!checkPermission('deleteProject', role)) return createResponse({ error: 'Insufficient permissions' }, false);
 
     const found = findProjectRow(projectId);
     if (!found) return createResponse({ error: 'Project not found' }, false);
     const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
     if (!sheet) return createResponse({ error: 'Projects sheet not found' }, false);
     sheet.deleteRow(found.index);
-    logAction('deleteProject', { projectId: projectId, by: user.email });
+    logAction('deleteProject', { projectId: projectId, by: deleter });
     return createResponse({ success: true });
   } catch (err) {
     Logger.log('handleDeleteProject error: ' + err.message);
@@ -419,8 +417,8 @@ function handleAddRevision(request) {
     const requester = normalizeEmail(request.requesterEmail || request.editorEmail || request.email);
     if (!requester) return createResponse({ error: 'Missing requester email' }, false);
     const user = getUserByEmail(requester);
-    if (!user) return createResponse({ error: 'Requester not found' }, false);
-    if (!checkPermission('addRevision', user.role)) return createResponse({ error: 'Insufficient permissions' }, false);
+    const role = getEffectiveRole(request, user);
+    if (!checkPermission('addRevision', role)) return createResponse({ error: 'Insufficient permissions' }, false);
 
     const projectId = request.projectID;
     if (!projectId) return createResponse({ error: 'Missing projectID' }, false);
@@ -436,7 +434,7 @@ function handleAddRevision(request) {
       projectId,
       request.projectName || found.row[3] || '',
       normalizeEmail(request.clientEmail) || found.row[2] || '',
-      request.assignedEditor || found.row[7] || user.name || '',
+      request.assignedEditor || found.row[7] || (user && user.name) || '',
       Number(request.revisionNumber) || 1,
       request.version || 'v1.0',
       request.requestType || '',
@@ -446,8 +444,8 @@ function handleAddRevision(request) {
       request.revisionNotes || '',
       request.editorNotes || '',
       request.clientNotes || '',
-      user.email || requester,
-      user.role || '',
+      requester,
+      role || (user && user.role) || '',
       request.status || 'Pending',
       request.approval || 'Pending',
       request.clientVisible || 'Yes',
@@ -455,7 +453,7 @@ function handleAddRevision(request) {
       now
     ];
     sheet.appendRow(revRow);
-    logAction('addRevision', { projectId: projectId, by: user.email });
+    logAction('addRevision', { projectId: projectId, by: requester, role: role });
     return createResponse({ success: true });
   } catch (err) {
     Logger.log('handleAddRevision error: ' + err.message);
@@ -470,8 +468,8 @@ function handleGetRevisions(request) {
     const viewer = normalizeEmail(request.viewerEmail || request.email);
     if (!viewer) return createResponse({ error: 'Missing viewer email' }, false);
     const user = getUserByEmail(viewer);
-    if (!user) return createResponse({ error: 'Viewer not found' }, false);
-    if (!checkPermission('getRevisions', user.role)) return createResponse({ error: 'Insufficient permissions' }, false);
+    const role = getEffectiveRole(request, user);
+    if (!checkPermission('getRevisions', role)) return createResponse({ error: 'Insufficient permissions' }, false);
 
     const sheet = safeGetSheet(CONFIG.SHEETS.REVISIONS);
     if (!sheet) return createResponse({ data: [] });
@@ -479,8 +477,7 @@ function handleGetRevisions(request) {
     const out = [];
     for (let i = 1; i < rows.length; i++) {
       if ((rows[i][1] || '') === projectId) {
-        // clients should only see client-visible revisions
-        if (user.role === CONFIG.ROLES.CLIENT) {
+        if (role === CONFIG.ROLES.CLIENT) {
           const vis = (rows[i][18] || '').toString().toLowerCase();
           if (vis !== 'yes') continue;
         }
