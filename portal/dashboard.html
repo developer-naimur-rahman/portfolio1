@@ -679,7 +679,8 @@
             ? CONFIG.EDITORS_EMAILS[0]
             : 'shafin@mail.com';
 
-        const fallbackEditorName = 'Shafin';
+        // Use a generic editor name; backend should rely on editorEmail.
+        const fallbackEditorName = 'Editor';
 
         const pData = {
             projectName: projectName,
