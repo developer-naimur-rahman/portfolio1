@@ -49,13 +49,9 @@
     <div class="glass p-10 rounded-[40px] w-full max-w-md text-center shadow-2xl border-cyan-500/20">
         <div class="w-16 h-16 bg-cyan-500 rounded-2xl flex items-center justify-center font-bold text-black italic text-3xl mx-auto mb-6 shadow-[0_0_30px_rgba(6,182,212,0.4)]">M</div>
         <h2 class="text-2xl font-black italic text-white uppercase tracking-tighter mb-2">Studio Access</h2>
-        <p class="text-slate-500 text-sm mb-8 italic">Admin is fixed by email. For all other users, select editor or client before signing in.</p>
+        <p class="text-slate-500 text-sm mb-8 italic">Everyone can sign in, launch projects, and edit projects. No admin step is required.</p>
         <div class="mb-6 text-left">
-            <label for="loginRoleSelector" class="text-[10px] uppercase tracking-[2px] text-slate-500 font-bold mb-2 inline-block">Select Role</label>
-            <select id="loginRoleSelector" class="w-full text-white">
-                <option value="client">Client</option>
-                <option value="editor">Editor</option>
-            </select>
+            <p class="text-[10px] uppercase tracking-[2px] text-slate-500 font-bold mb-2 inline-block">All users can add and edit projects.</p>
         </div>
         <div class="flex justify-center">
             <div id="g_id_onload" data-client_id="388867750902-263hniv7d8v31m3l5pkphokg0scb9tos.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
@@ -255,15 +251,11 @@
     }
 
     function getSelectedLoginRole() {
-        const select = document.getElementById('loginRoleSelector');
-        const role = select ? select.value : null;
-        return role || localStorage.getItem('selected_role') || 'client';
+        return 'client';
     }
 
     function persistSelectedLoginRole() {
-        const role = getSelectedLoginRole();
-        localStorage.setItem('selected_role', role);
-        return role;
+        return 'client';
     }
 
     function getEffectiveLoginRole(email) {
@@ -273,8 +265,7 @@
         if (normalized === adminEmail) {
             return 'admin';
         }
-        const selectedRole = getSelectedLoginRole();
-        return (selectedRole === 'editor' || selectedRole === 'client') ? selectedRole : 'client';
+        return 'client';
     }
 
     // ============================
@@ -859,14 +850,6 @@
     // INITIALIZATION
     // ============================
     window.onload = () => {
-        const selectedRole = localStorage.getItem('selected_role');
-        const roleSelect = document.getElementById('loginRoleSelector');
-        if (selectedRole && roleSelect) {
-            roleSelect.value = selectedRole;
-        }
-        if (roleSelect) {
-            roleSelect.closest('div')?.style.setProperty('display', 'none', 'important');
-        }
         checkAuth();
     };
 </script>
