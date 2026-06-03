@@ -649,28 +649,16 @@
         document.getElementById('dispLastUpdated').textContent = sanitizeText(p[24] || '---');
         document.getElementById('editVisible').value = 'Yes';
 
-        // Role-based access
-        const isAdmin = CURRENT_USER.role === 'admin';
-        const canEdit = isAdmin;
-        const canAssign = isAdmin;
-        const canSubmitRevision = isAdmin;
-
-        document.getElementById('saveUpdateBtn').style.display = canEdit ? 'flex' : 'none';
-        document.getElementById('createRevisionBtn').style.display = canSubmitRevision ? 'flex' : 'none';
-        document.getElementById('deleteBtn').style.display = isAdmin ? 'flex' : 'none';
-
+        // Open editing for all users
         const allFields = document.querySelectorAll('#detailsModal input, #detailsModal textarea, #detailsModal select');
         allFields.forEach(el => {
-            if (canEdit) {
-                el.removeAttribute('disabled');
-                el.style.opacity = '1';
-                el.style.cursor = 'auto';
-            } else {
-                el.setAttribute('disabled', 'true');
-                el.style.opacity = '0.6';
-                el.style.cursor = 'not-allowed';
-            }
+            el.removeAttribute('disabled');
+            el.style.opacity = '1';
+            el.style.cursor = 'auto';
         });
+        document.getElementById('saveUpdateBtn').style.display = 'flex';
+        document.getElementById('createRevisionBtn').style.display = 'flex';
+        document.getElementById('deleteBtn').style.display = 'flex';
 
         toggleModal('detailsModal', true);
     }
@@ -692,12 +680,7 @@
             return;
         }
 
-        if (CURRENT_USER.role !== 'admin') {
-            alert('Only the admin can launch projects.');
-            btn.disabled = false;
-            btn.textContent = "Launch Project";
-            return;
-        }
+        // All authenticated users can launch projects in this open edit mode.
 
         const projectName = sanitizeText(document.getElementById('pName').value).trim();
         if (!projectName) {

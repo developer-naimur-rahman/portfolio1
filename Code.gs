@@ -26,12 +26,12 @@ const CONFIG = {
   // Permission map for actions. Values are allowed roles.
   PERMISSIONS: {
     getUser: ['admin', 'editor', 'client'],
-    getProjects: ['admin'],
-    addProject: ['admin'],
-    updateProject: ['admin'],
-    deleteProject: ['admin'],
-    addRevision: ['admin'],
-    getRevisions: ['admin'],
+    getProjects: ['admin', 'editor', 'client'],
+    addProject: ['admin', 'editor', 'client'],
+    updateProject: ['admin', 'editor', 'client'],
+    deleteProject: ['admin', 'editor', 'client'],
+    addRevision: ['admin', 'editor', 'client'],
+    getRevisions: ['admin', 'editor', 'client'],
     addMessage: ['admin', 'editor', 'client'],
     getMessages: ['admin', 'editor', 'client']
   },
@@ -324,14 +324,7 @@ function handleGetProjects(request) {
     const editorEmailIdx = headers['editor email'] ?? headers['assigned editor email'] ?? headers['assigned editor'] ?? 8;
 
     for (let i = 1; i < cap; i++) {
-      const row = rows[i];
-      if (role === CONFIG.ROLES.CLIENT) {
-        if ((row[clientEmailIdx] || '').toString().trim().toLowerCase() !== email) continue;
-      }
-      if (role === CONFIG.ROLES.EDITOR) {
-        if ((row[editorEmailIdx] || '').toString().trim().toLowerCase() !== email) continue;
-      }
-      out.push(row);
+      out.push(rows[i]);
     }
     return createResponse({ data: out });
   } catch (err) {
@@ -449,12 +442,6 @@ function handleUpdateProject(request) {
 
     const found = findProjectRow(projectId);
     if (!found) return createResponse({ error: 'Project not found' }, false);
-
-    // ADMIN can edit all projects, EDITOR can only edit assigned projects
-    if (role === CONFIG.ROLES.EDITOR && updaterEmail !== CONFIG.ADMIN_EMAIL.toString().trim().toLowerCase()) {
-      const assignedEditorEmail = (found.row[8] || '').toString().trim().toLowerCase();
-      if (assignedEditorEmail !== updaterEmail) return createResponse({ error: 'Editor not assigned to this project' }, false);
-    }
 
     const allowed = ['clientEmail','projectName','category','projectType','clientWebsite','assignedEditor','editorEmail','status', 'priority', 'approval', 'deliveryLink', 'deliveryType', 'deadline', 'footage', 'scriptLink', 'ref1', 'ref2', 'budget'];
     const updates = {};
@@ -649,8 +636,6 @@ function handleGetMessages(request) {
     for (let i = 1; i < rows.length; i++) {
       const r = rows[i];
       if ((r[1] || '') === projectId) {
-        const clientVisible = (r[9] || '').toString().toLowerCase() === 'yes';
-        if (user.role === CONFIG.ROLES.CLIENT && !clientVisible) continue;
         out.push(r);
       }
     }
