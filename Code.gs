@@ -349,18 +349,18 @@ function handleGetProjects(request) {
 
 function handleAddProject(request) {
   try {
-    // Get requester email - try multiple keys for compatibility
+    // Always allow guest/client to add projects.
     const requesterEmail = getRequestEmail(request);
 
-    // Get or create user from sheet - AUTO-REGISTERS new users
+    // AUTO-register requester as user (no hard-fail)
     let user = getUserByEmail(requesterEmail);
     if (!user) {
       user = createOrUpdateUser(requesterEmail, request.createdBy || request.name || 'New User', request.role);
     }
-    
-    // Determine role: admin override, then user role, then request role
-    let role = null;
-    if (requesterEmail === CONFIG.ADMIN_EMAIL.toString().trim().toLowerCase()) {
+
+    // Determine role (admin override > user role > request role > client)
+    let role = CONFIG.ROLES.CLIENT;
+    if (requesterEmail === (CONFIG.ADMIN_EMAIL || '').toString().trim().toLowerCase()) {
       role = CONFIG.ROLES.ADMIN;
     } else if (user && user.role) {
       role = user.role;
@@ -368,79 +368,77 @@ function handleAddProject(request) {
       role = normalizeRole(request.role) || CONFIG.ROLES.CLIENT;
     }
 
-    // Check permission
+    // Permission check (do not require editorEmail validity)
     if (!checkPermission('addProject', role)) {
-      return createResponse({ error: 'Insufficient permissions for action: addProject' }, false);
+      return createResponse({ error: 'Insufficient permissions for addProject' }, false);
     }
 
-    // Validate project name
     const projectName = (request.projectName || '').toString().trim();
     if (!projectName) {
       return createResponse({ error: 'Missing or invalid projectName' }, false);
     }
 
-    // Generate project ID
     const projectId = generateProjectId();
     const now = new Date();
-    
-    // Build row data with proper email handling - FIX INVALID EDITOR EMAIL
+
     const clientEmail = (request.clientEmail || requesterEmail || '').toString().trim();
-    
-    // Allow the frontend to supply editor assignment when needed and keep all users able to add projects.
+
+    // Editor fields: NEVER hard-fail. If missing/invalid, store empty and let editor assignment happen later.
     let editorEmail = (request.editorEmail || '').toString().trim();
+    editorEmail = normalizeEmail(editorEmail) || '';
+
     let assignedEditor = (request.assignedEditor || '').toString().trim();
+
+    // If role is admin/editor and editorEmail missing, fallback to requesterEmail.
     if (!editorEmail && (role === CONFIG.ROLES.ADMIN || role === CONFIG.ROLES.EDITOR)) {
-      editorEmail = requesterEmail;
+      editorEmail = normalizeEmail(requesterEmail) || '';
+      assignedEditor = assignedEditor || (user && user.name) || requesterEmail;
     }
-    if (!assignedEditor && (role === CONFIG.ROLES.ADMIN || role === CONFIG.ROLES.EDITOR)) {
-      assignedEditor = user ? user.name : requesterEmail;
-    }
-    
-    const createdBy = user ? user.name : requesterEmail;
-    
+
+    const createdBy = (user && user.name) ? user.name : requesterEmail;
+
+    // Row mapping (keep consistent with frontend indices)
     const row = [
-      now,                                    // A: Timestamp
-      projectId,                              // B: Project ID
-      clientEmail,                            // C: Client Email
-      projectName,                            // D: Project Name
-      request.category || '',                 // E: Category
-      request.projectType || '',              // F: Project Type
-      request.clientWebsite || '',            // G: Client Website
-      assignedEditor,                         // H: Assigned Editor
-      editorEmail,                            // I: Editor Email
-      request.status || 'Pending',            // J: Status
-      request.priority || 'Normal',           // K: Priority
-      request.approval || 'Pending',          // L: Approval
-      request.footage || '',                  // M: Footage
-      request.script || '',                   // N: Script
-      request.scriptLink || '',               // O: Script Link
-      request.ref1 || '',                     // P: Reference 1
-      request.ref2 || '',                     // Q: Reference 2
-      request.deliveryLink || '',             // R: Delivery Link
-      request.deliveryType || '',             // S: Delivery Type
-      request.deadline || '',                 // T: Deadline
-      now,                                    // U: Start Date
-      '',                                     // V: Completed Date
-      Number(request.budget) || 0,            // W: Budget
-      createdBy,                              // X: Created By
-      now,                                    // Y: Last Updated
-      false                                   // Z: Archive
+      now, // A Timestamp
+      projectId, // B Project ID
+      clientEmail, // C Client Email
+      projectName, // D Project Name
+      request.category || '', // E Category
+      request.projectType || '', // F Project Type
+      request.clientWebsite || '', // G Client Website
+      assignedEditor || '', // H Assigned Editor
+      editorEmail || '', // I Editor Email
+      request.status || 'Pending', // J Status
+      request.priority || 'Normal', // K Priority
+      request.approval || 'Pending', // L Approval
+      request.footage || '', // M Footage
+      request.script || '', // N Script
+      request.scriptLink || '', // O Script Link
+      request.ref1 || '', // P Reference 1
+      request.ref2 || '', // Q Reference 2
+      request.deliveryLink || '', // R Delivery Link
+      request.deliveryType || '', // S Delivery Type
+      request.deadline || '', // T Deadline
+      now, // U Start Date
+      '', // V Completed Date
+      Number(request.budget) || 0, // W Budget
+      createdBy || '', // X Created By
+      now, // Y Last Updated
+      false // Z Archive
     ];
 
-    // Append to projects sheet
     const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
-    if (!sheet) {
-      return createResponse({ error: 'Projects sheet not found' }, false);
-    }
-    
+    if (!sheet) return createResponse({ error: 'Projects sheet not found' }, false);
+
     sheet.appendRow(row);
-    logAction('addProject', { projectId: projectId, by: requesterEmail, role: role });
+    logAction('addProject', { projectId, by: requesterEmail, role });
     return createResponse({ success: true, projectID: projectId });
   } catch (err) {
     Logger.log('handleAddProject error: ' + err.message);
-    return createResponse({ error: 'Failed to add project: ' + err.message }, false);
+    return createResponse({ error: 'Failed to add project' }, false);
   }
 }
+
 
 function handleUpdateProject(request) {
   try {
