@@ -12,6 +12,7 @@ const SPREADSHEET_ID = '1T7DINM4kEqLUjRePq4ML5z0AYpnkpS5LlMulixgez8k';
 
 const CONFIG = {
   ADMIN_EMAIL: 'naimur582582@gmail.com',
+  GUEST_EMAIL: 'guest@studio.local',
   SHEETS: {
     PROJECTS: 'Projects',
     REVISIONS: 'Revision',
@@ -86,9 +87,18 @@ function normalizeRole(role) {
   return ['admin', 'editor', 'client'].includes(r) ? r : null;
 }
 
+function getGuestEmail() {
+  return (CONFIG.GUEST_EMAIL || 'guest@studio.local').toString().trim().toLowerCase();
+}
+
+function getRequestEmail(request) {
+  if (!request || typeof request !== 'object') return getGuestEmail();
+  return normalizeEmail(request.requesterEmail || request.deleterEmail || request.viewerEmail || request.senderEmail || request.editorEmail || request.email) || getGuestEmail();
+}
+
 function getEffectiveRole(request, user) {
-  const email = normalizeEmail(request.email || request.editorEmail || request.requesterEmail || request.email);
-  if (email && email === (CONFIG.ADMIN_EMAIL || '').toString().trim().toLowerCase()) {
+  const email = normalizeEmail(request.email || request.viewerEmail || request.senderEmail || request.requesterEmail || request.editorEmail) || getGuestEmail();
+  if (email === (CONFIG.ADMIN_EMAIL || '').toString().trim().toLowerCase()) {
     return CONFIG.ROLES.ADMIN;
   }
   if (user && user.role) return user.role;
@@ -147,10 +157,13 @@ function logAction(tag, details) {
 // ----------------------------
 function createOrUpdateUser(email, name, role) {
   try {
-    const e = normalizeEmail(email);
+    const e = normalizeEmail(email) || getGuestEmail();
     if (!e) return null;
     
-    // Check if admin by email
+    // Check if guest or admin by email
+    if (e === getGuestEmail()) {
+      return { email: e, name: 'Guest User', role: CONFIG.ROLES.CLIENT };
+    }
     if (e === CONFIG.ADMIN_EMAIL.toString().trim().toLowerCase()) {
       return { email: e, name: name || 'Admin User', role: CONFIG.ROLES.ADMIN };
     }
@@ -199,8 +212,11 @@ function createOrUpdateUser(email, name, role) {
 
 function getUserByEmail(email) {
   try {
-    const e = normalizeEmail(email);
+    const e = normalizeEmail(email) || getGuestEmail();
     if (!e) return null;
+    if (e === getGuestEmail()) {
+      return { id: 'GUEST', name: 'Guest User', email: e, role: CONFIG.ROLES.CLIENT, status: 'active' };
+    }
     const sheet = safeGetSheet(CONFIG.SHEETS.USERS);
     if (!sheet) return null;
     const headers = findHeaderIndexes(sheet);
@@ -281,8 +297,7 @@ function generateProjectId() {
 // ----------------------------
 function handleGetUser(request) {
   try {
-    const email = normalizeEmail(request.email);
-    if (!email) return createResponse({ error: 'Invalid email' }, false);
+    const email = normalizeEmail(request.email) || getGuestEmail();
     if (email === CONFIG.ADMIN_EMAIL.toString().trim().toLowerCase()) {
       const adminUser = createOrUpdateUser(email, request.name || 'Admin User', CONFIG.ROLES.ADMIN);
       return createResponse({ role: CONFIG.ROLES.ADMIN, name: adminUser?.name || 'Admin User', email: email });
@@ -308,8 +323,7 @@ function handleGetUser(request) {
 
 function handleGetProjects(request) {
   try {
-    const email = normalizeEmail(request.email);
-    if (!email) return createResponse({ error: 'Missing email' }, false);
+    const email = getRequestEmail(request);
     const user = getUserByEmail(email);
     const role = getEffectiveRole(request, user);
     if (!checkPermission('getProjects', role)) return createResponse({ error: 'Insufficient permissions' }, false);
@@ -336,10 +350,7 @@ function handleGetProjects(request) {
 function handleAddProject(request) {
   try {
     // Get requester email - try multiple keys for compatibility
-    const requesterEmail = normalizeEmail(request.requesterEmail || request.editorEmail || request.email);
-    if (!requesterEmail) {
-      return createResponse({ error: 'Missing requester email' }, false);
-    }
+    const requesterEmail = getRequestEmail(request);
 
     // Get or create user from sheet - AUTO-REGISTERS new users
     let user = getUserByEmail(requesterEmail);
@@ -435,8 +446,7 @@ function handleUpdateProject(request) {
   try {
     const projectId = request.projectID;
     if (!projectId) return createResponse({ error: 'Missing projectID' }, false);
-    const updaterEmail = normalizeEmail(request.updaterEmail || request.email || request.requesterEmail);
-    if (!updaterEmail) return createResponse({ error: 'Missing updater email' }, false);
+    const updaterEmail = getRequestEmail(request);
     const user = getUserByEmail(updaterEmail);
     const role = getEffectiveRole(request, user);
     if (!checkPermission('updateProject', role)) return createResponse({ error: 'Insufficient permissions' }, false);
@@ -487,8 +497,7 @@ function handleDeleteProject(request) {
   try {
     const projectId = request.projectID;
     if (!projectId) return createResponse({ error: 'Missing projectID' }, false);
-    const deleter = normalizeEmail(request.deleterEmail || request.email || request.requesterEmail);
-    if (!deleter) return createResponse({ error: 'Missing deleter email' }, false);
+    const deleter = getRequestEmail(request);
     const user = getUserByEmail(deleter);
     const role = getEffectiveRole(request, user);
     if (!checkPermission('deleteProject', role)) return createResponse({ error: 'Insufficient permissions' }, false);
@@ -508,8 +517,7 @@ function handleDeleteProject(request) {
 
 function handleAddRevision(request) {
   try {
-    const requester = normalizeEmail(request.requesterEmail || request.editorEmail || request.email);
-    if (!requester) return createResponse({ error: 'Missing requester email' }, false);
+    const requester = getRequestEmail(request);
     const user = getUserByEmail(requester);
     const role = getEffectiveRole(request, user);
     if (!checkPermission('addRevision', role)) return createResponse({ error: 'Insufficient permissions' }, false);
@@ -559,8 +567,7 @@ function handleGetRevisions(request) {
   try {
     const projectId = request.projectID;
     if (!projectId) return createResponse({ error: 'Missing projectID' }, false);
-    const viewer = normalizeEmail(request.viewerEmail || request.email);
-    if (!viewer) return createResponse({ error: 'Missing viewer email' }, false);
+    const viewer = getRequestEmail(request);
     const user = getUserByEmail(viewer);
     const role = getEffectiveRole(request, user);
     if (!checkPermission('getRevisions', role)) return createResponse({ error: 'Insufficient permissions' }, false);
@@ -587,8 +594,7 @@ function handleGetRevisions(request) {
 
 function handleAddMessage(request) {
   try {
-    const sender = normalizeEmail(request.senderEmail || request.email);
-    if (!sender) return createResponse({ error: 'Missing sender email' }, false);
+    const sender = getRequestEmail(request);
     const user = getUserByEmail(sender);
     if (!user) return createResponse({ error: 'Sender not found' }, false);
     if (!checkPermission('addMessage', user.role)) return createResponse({ error: 'Insufficient permissions' }, false);
@@ -624,8 +630,7 @@ function handleGetMessages(request) {
   try {
     const projectId = request.projectID;
     if (!projectId) return createResponse({ error: 'Missing projectID' }, false);
-    const viewer = normalizeEmail(request.viewerEmail || request.email);
-    if (!viewer) return createResponse({ error: 'Missing viewer email' }, false);
+    const viewer = getRequestEmail(request);
     const user = getUserByEmail(viewer);
     if (!user) return createResponse({ error: 'Viewer not found' }, false);
     if (!checkPermission('getMessages', user.role)) return createResponse({ error: 'Insufficient permissions' }, false);

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Motion Of Naimur | Agency OS</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -45,18 +44,11 @@
 </head>
 <body class="flex">
 
-<div id="loginOverlay">
+<div id="loginOverlay" style="display:none;">
     <div class="glass p-10 rounded-[40px] w-full max-w-md text-center shadow-2xl border-cyan-500/20">
         <div class="w-16 h-16 bg-cyan-500 rounded-2xl flex items-center justify-center font-bold text-black italic text-3xl mx-auto mb-6 shadow-[0_0_30px_rgba(6,182,212,0.4)]">M</div>
         <h2 class="text-2xl font-black italic text-white uppercase tracking-tighter mb-2">Studio Access</h2>
-        <p class="text-slate-500 text-sm mb-8 italic">Everyone can sign in, launch projects, and edit projects. No admin step is required.</p>
-        <div class="mb-6 text-left">
-            <p class="text-[10px] uppercase tracking-[2px] text-slate-500 font-bold mb-2 inline-block">All users can add and edit projects.</p>
-        </div>
-        <div class="flex justify-center">
-            <div id="g_id_onload" data-client_id="388867750902-263hniv7d8v31m3l5pkphokg0scb9tos.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
-            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
-        </div>
+        <p class="text-slate-500 text-sm mb-8 italic">No login needed — anyone can start and edit projects.</p>
     </div>
 </div>
 
@@ -125,7 +117,7 @@
             <div class="md:col-span-1 space-y-5">
                 <div><label>Project ID (Auto)</label><input type="text" id="pID_display" value="MN-Generating..." disabled class="text-cyan-400 font-mono"></div>
                 <div><label>Project Name</label><input type="text" id="pName" required placeholder="Project Title"></div>
-                <div><label>Client Email</label><input type="text" id="pClientEmail" readonly class="opacity-50 cursor-not-allowed"></div>
+                <div style="display:none;"><label>Client Email</label><input type="text" id="pClientEmail" readonly class="opacity-50 cursor-not-allowed"></div>
             </div>
             <div class="md:col-span-1 space-y-5">
                 <div><label>Category</label><select id="pCategory"><option>Reels</option><option>YouTube</option><option>Real Estate</option><option>Social Media Ads</option></select></div>
@@ -171,7 +163,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="space-y-5">
                     <h5 class="text-cyan-500 text-[10px] font-black uppercase tracking-[3px]">Production Core</h5>
-                    <div><label>Client Email</label><input type="text" id="editClientEmail"></div>
+                    <div style="display:none;"><label>Client Email</label><input type="text" id="editClientEmail"></div>
                     <div><label>Assigned Editor</label>
                         <select id="editEditor">
                             <option value="Naimur Rahman|naimur582582@gmail.com">Naimur Rahman</option>
@@ -425,17 +417,9 @@
             overlay.style.display = 'none';
             main.style.opacity = '1';
 
-            // Restore user data from localStorage with validation
-            const email = getStoredUserEmail();
-            if (!email) {
-                console.error('No valid email in localStorage');
-                handleLogout();
-                return;
-            }
-
-            CURRENT_USER.email = email;
-            CURRENT_USER.name = localStorage.getItem('user_name') || localStorage.getItem('clientName') || 'User';
-            CURRENT_USER.pic = localStorage.getItem('user_pic') || localStorage.getItem('clientPic') || '';
+            CURRENT_USER.email = storedEmail;
+            CURRENT_USER.name = localStorage.getItem('user_name') || 'User';
+            CURRENT_USER.pic = localStorage.getItem('user_pic') || '';
 
             try {
                 const selectedRole = getEffectiveLoginRole(CURRENT_USER.email);
@@ -447,7 +431,6 @@
                 localStorage.setItem('user_name', userData?.name || CURRENT_USER.name);
                 CURRENT_USER.name = userData?.name || CURRENT_USER.name;
                 console.log('Auth restored:', { email: CURRENT_USER.email, role: CURRENT_USER.role });
-                // Health-check the Apps Script endpoint before loading dashboard
                 const ok = await testConnection();
                 if (!ok) {
                     const grid = document.getElementById('projectGrid');
@@ -471,8 +454,24 @@
 
             await initDashboard();
         } else {
-            overlay.style.display = 'flex';
-            main.style.opacity = '0';
+            // Guest mode: no login required
+            overlay.style.display = 'none';
+            main.style.opacity = '1';
+
+            CURRENT_USER = {
+                email: 'guest@studio.local',
+                name: 'Guest User',
+                role: 'client',
+                pic: ''
+            };
+            localStorage.setItem('user_email', CURRENT_USER.email);
+            localStorage.setItem('user_name', CURRENT_USER.name);
+            localStorage.setItem('currentRole', CURRENT_USER.role);
+            localStorage.setItem('studio_logged_in', 'false');
+
+            document.getElementById('userNameDisplay').textContent = CURRENT_USER.name;
+            document.getElementById('userRoleDisplay').textContent = 'Client';
+            await initDashboard();
         }
     }
 
@@ -663,15 +662,9 @@
         btn.disabled = true;
         btn.textContent = "LAUNCHING...";
 
-        // Validate current user is authenticated
-        if (!CURRENT_USER.email) {
-            alert('You must be logged in to create a project.');
-            btn.disabled = false;
-            btn.textContent = "Launch Project";
-            return;
-        }
+        const requesterEmail = CURRENT_USER.email || 'guest@studio.local';
 
-        // All authenticated users can launch projects in this open edit mode.
+        // All users can launch projects in guest mode.
 
         const projectName = sanitizeText(document.getElementById('pName').value).trim();
         if (!projectName) {
@@ -681,21 +674,22 @@
             return;
         }
 
+        const currentEmail = requesterEmail;
         const pData = {
             projectName: projectName,
-            clientEmail: CURRENT_USER.email,
-            email: CURRENT_USER.email,
-            userEmail: CURRENT_USER.email,
+            clientEmail: document.getElementById('pClientEmail')?.value || '',
+            email: currentEmail,
+            userEmail: currentEmail,
             category: document.getElementById('pCategory').value,
             projectType: document.getElementById('pCategory').value,
-            requesterEmail: CURRENT_USER.email,
-            createdBy: CURRENT_USER.name,
-            name: CURRENT_USER.name,
-            userName: CURRENT_USER.name,
-            assignedEditor: CURRENT_USER.role === 'client' ? '' : CURRENT_USER.name,
-            editorEmail: CURRENT_USER.role === 'client' ? '' : CURRENT_USER.email,
-            role: CURRENT_USER.role,
-            userRole: CURRENT_USER.role,
+            requesterEmail: currentEmail,
+            createdBy: CURRENT_USER.name || 'Guest User',
+            name: CURRENT_USER.name || 'Guest User',
+            userName: CURRENT_USER.name || 'Guest User',
+            assignedEditor: '',
+            editorEmail: '',
+            role: CURRENT_USER.role || 'client',
+            userRole: CURRENT_USER.role || 'client',
             deadline: document.getElementById('pDeadline').value,
             priority: document.getElementById('pPriority')?.value || 'Normal',
             budget: parseFloat(document.getElementById('pBudget').value) || 0,
@@ -731,7 +725,7 @@
         const [assignedEditorName, assignedEditorEmail] = document.getElementById('editEditor').value.split('|');
         const formData = {
             projectID: document.getElementById('detProjectID').textContent,
-            clientEmail: document.getElementById('editClientEmail').value,
+            clientEmail: document.getElementById('editClientEmail')?.value || '',
             projectName: document.getElementById('editPName').value,
             assignedEditor: assignedEditorName || '',
             editorEmail: assignedEditorEmail || '',
@@ -743,8 +737,8 @@
             ref1: document.getElementById('editRef1').value,
             deadline: document.getElementById('editDeadline').value,
             budget: parseFloat(document.getElementById('editBudget').value) || 0,
-            updaterEmail: CURRENT_USER.email,
-            role: CURRENT_USER.role
+            updaterEmail: CURRENT_USER.email || 'guest@studio.local',
+            role: CURRENT_USER.role || 'client'
         };
 
         try {
@@ -775,8 +769,8 @@
             clientEmail: document.getElementById('editClientEmail').value,
             assignedEditor: assignedEditorName || '',
             editorEmail: assignedEditorEmail || '',
-            requesterEmail: CURRENT_USER.email,
-            role: CURRENT_USER.role,
+            requesterEmail: CURRENT_USER.email || 'guest@studio.local',
+            role: CURRENT_USER.role || 'client',
             revisionNumber: parseInt(document.getElementById('editRevNum').value, 10) || 1,
             version: document.getElementById('editVersion').value || 'v1.0',
             requestType: document.getElementById('editReqType').value || 'General',
