@@ -89,39 +89,6 @@
         <div>
             <h2 class="text-4xl font-extrabold tracking-tight text-white mb-2 italic">Studio Hub<span class="text-cyan-500">.</span></h2>
             <p class="text-slate-500 font-medium flex items-center gap-2 text-sm">
-        // Settings widget: set API URL or enable mock mode
-        (function(){
-            const btn = document.createElement('button');
-            btn.id = 'portalSettingsBtn';
-            btn.title = 'Portal settings';
-            btn.style.position = 'fixed';
-            btn.style.right = '18px';
-            btn.style.bottom = '18px';
-            btn.style.zIndex = '99999';
-            btn.style.background = '#0ea5a3';
-            btn.style.color = '#001219';
-            btn.style.border = 'none';
-            btn.style.padding = '12px 14px';
-            btn.style.borderRadius = '999px';
-            btn.style.boxShadow = '0 10px 30px rgba(2,6,23,0.6)';
-            btn.style.cursor = 'pointer';
-            btn.textContent = '⚙';
-            document.body.appendChild(btn);
-
-            btn.addEventListener('click', async () => {
-                const current = (window.APP_API && window.APP_API.getStoredApiUrl) ? window.APP_API.getStoredApiUrl() : CONFIG.WEB_APP_URL;
-                const newUrl = prompt('Enter Apps Script /exec URL (leave blank to keep current):', current);
-                if (newUrl !== null && newUrl.trim() !== '') {
-                    if (window.APP_API && window.APP_API.setApiUrl) window.APP_API.setApiUrl(newUrl.trim());
-                    alert('Saved API URL. You can Test Connection from the console or reload.');
-                }
-
-                const mockChoice = confirm('Enable Mock Mode? OK = Enable, Cancel = Disable');
-                if (window.APP_API && window.APP_API.setMockMode) window.APP_API.setMockMode(mockChoice);
-                alert('Settings updated. Mock mode: ' + (mockChoice ? 'ON' : 'OFF'));
-                location.reload();
-            });
-        })();
                 <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Production Pipeline Active
             </p>
         </div>
@@ -389,7 +356,8 @@
             localStorage.setItem('studio_logged_in', 'true');
 
             // Fetch role from backend
-            const userData = await appScriptRequest('getUser', { email });
+            let userData = await appScriptRequest('getUser', { email });
+            userData = userData?.data || userData;
             if (!userData || !userData.role) {
                 throw new Error('Unable to verify user role');
             }
@@ -425,11 +393,12 @@
             CURRENT_USER.pic = localStorage.getItem('user_pic') || localStorage.getItem('clientPic') || '';
 
             try {
-                const userData = await appScriptRequest('getUser', { email: CURRENT_USER.email });
-                CURRENT_USER.role = userData.role || localStorage.getItem('currentRole') || 'client';
+                let userData = await appScriptRequest('getUser', { email: CURRENT_USER.email });
+                userData = userData?.data || userData;
+                CURRENT_USER.role = userData?.role || localStorage.getItem('currentRole') || 'client';
                 localStorage.setItem('currentRole', CURRENT_USER.role);
-                localStorage.setItem('user_name', userData.name || CURRENT_USER.name);
-                CURRENT_USER.name = userData.name || CURRENT_USER.name;
+                localStorage.setItem('user_name', userData?.name || CURRENT_USER.name);
+                CURRENT_USER.name = userData?.name || CURRENT_USER.name;
                 // Health-check the Apps Script endpoint before loading dashboard
                 const ok = await testConnection();
                 if (!ok) {
@@ -515,9 +484,21 @@
 
         try {
             const response = await appScriptRequest('getProjects', { email: CURRENT_USER.email, role: CURRENT_USER.role });
-            const rawData = response.data || [];
+            const rawData = Array.isArray(response)
+                ? response
+                : Array.isArray(response?.data)
+                    ? response.data
+                    : Array.isArray(response?.rows)
+                        ? response.rows
+                        : [];
+
+            console.debug('getProjects response:', response);
             ALL_PROJECTS = rawData;
-            renderUI(ALL_PROJECTS);
+            if (!rawData.length && response && response.success === false) {
+                grid.innerHTML = `<div class="col-span-full py-20 text-center text-red-500">Sync Error: ${sanitizeText(response.error || 'No projects returned')}</div>`;
+            } else {
+                renderUI(ALL_PROJECTS);
+            }
         } catch (err) {
             console.error('Dashboard load failed:', err);
             grid.innerHTML = `<div class="col-span-full py-20 text-center text-red-500">Sync Error: ${sanitizeText(err.message)}</div>`;

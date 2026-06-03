@@ -104,6 +104,23 @@ function safeGetSheet(name) {
   }
 }
 
+function findHeaderIndexes(sheet, headerRowIndex = 1) {
+  const headers = {};
+  if (!sheet) return headers;
+  try {
+    const firstRow = sheet.getRange(headerRowIndex, 1, 1, sheet.getLastColumn()).getValues()[0] || [];
+    firstRow.forEach((value, idx) => {
+      if (!value) return;
+      const text = value.toString().trim().toLowerCase();
+      if (!text) return;
+      headers[text] = idx;
+    });
+  } catch (err) {
+    Logger.log('findHeaderIndexes error: ' + err.message);
+  }
+  return headers;
+}
+
 function logAction(tag, details) {
   try { Logger.log('[' + new Date().toISOString() + '] ' + tag + ' ' + JSON.stringify(details || {})); } catch (e) {}
 }
@@ -117,17 +134,24 @@ function getUserByEmail(email) {
     if (!e) return null;
     const sheet = safeGetSheet(CONFIG.SHEETS.USERS);
     if (!sheet) return null;
+    const headers = findHeaderIndexes(sheet);
     const rows = sheet.getDataRange().getValues();
+    const emailIdx = headers['email'] ?? headers['user email'] ?? headers['email address'] ?? 2;
+    const nameIdx = headers['name'] ?? headers['full name'] ?? 1;
+    const roleIdx = headers['role'] ?? 3;
+    const idIdx = headers['id'] ?? 0;
+    const statusIdx = headers['status'] ?? 4;
+
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
-      const rowEmail = (row[2] || '').toString().trim().toLowerCase();
+      const rowEmail = (row[emailIdx] || '').toString().trim().toLowerCase();
       if (rowEmail === e) {
         return {
-          id: row[0] || '',
-          name: row[1] || '',
+          id: row[idIdx] || '',
+          name: row[nameIdx] || '',
           email: rowEmail,
-          role: (row[3] || CONFIG.ROLES.CLIENT).toString().toLowerCase(),
-          status: row[4] || 'active'
+          role: (row[roleIdx] || CONFIG.ROLES.CLIENT).toString().toLowerCase(),
+          status: row[statusIdx] || 'active'
         };
       }
     }
@@ -191,8 +215,10 @@ function handleGetUser(request) {
     const email = normalizeEmail(request.email);
     if (!email) return createResponse({ error: 'Invalid email' }, false);
     const user = getUserByEmail(email);
-    if (!user) return createResponse({ error: 'User not found' }, false);
-    // Return role & name at top level (frontend expects this shape)
+    if (!user) {
+      // Unknown users still get a client fallback so the portal can load
+      return createResponse({ role: CONFIG.ROLES.CLIENT, name: 'Unknown User', email: email });
+    }
     return createResponse({ role: user.role, name: user.name, email: user.email });
   } catch (err) {
     Logger.log('handleGetUser error: ' + err.message);
@@ -209,14 +235,20 @@ function handleGetProjects(request) {
 
     const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
     if (!sheet) return createResponse({ data: [] });
+    const headers = findHeaderIndexes(sheet);
     const rows = sheet.getDataRange().getValues();
     const out = [];
     const cap = Math.min(rows.length, CONFIG.MAX_PROJECTS_SCAN);
+    const clientEmailIdx = headers['client email'] ?? headers['email'] ?? 2;
+    const editorEmailIdx = headers['editor email'] ?? headers['assigned editor email'] ?? headers['assigned editor'] ?? 8;
+
     for (let i = 1; i < cap; i++) {
       const row = rows[i];
-      // Clients only see their own projects
       if (user.role === CONFIG.ROLES.CLIENT) {
-        if ((row[2] || '').toString().trim().toLowerCase() !== email) continue;
+        if ((row[clientEmailIdx] || '').toString().trim().toLowerCase() !== email) continue;
+      }
+      if (user.role === CONFIG.ROLES.EDITOR) {
+        if ((row[editorEmailIdx] || '').toString().trim().toLowerCase() !== email) continue;
       }
       out.push(row);
     }
