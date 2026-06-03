@@ -281,59 +281,87 @@ function handleGetProjects(request) {
 
 function handleAddProject(request) {
   try {
-    // Determine requester email (support multiple payload keys)
-    const requester = normalizeEmail(request.editorEmail || request.requesterEmail || request.email);
-    if (!requester) return createResponse({ error: 'Missing requester email' }, false);
-    const user = getUserByEmail(requester);
-    const role = getEffectiveRole(request, user);
-    if (!checkPermission('addProject', role)) return createResponse({ error: 'Insufficient permissions' }, false);
+    // Get requester email - try multiple keys for compatibility
+    const requesterEmail = normalizeEmail(request.requesterEmail || request.editorEmail || request.email);
+    if (!requesterEmail) {
+      return createResponse({ error: 'Missing requester email' }, false);
+    }
 
-    // Minimal validation for required fields
+    // Get user from sheet
+    const user = getUserByEmail(requesterEmail);
+    
+    // Determine role: admin override, then user role, then request role
+    let role = normalizeRole(request.role);
+    if (requesterEmail === (CONFIG.ADMIN_EMAIL || '').toString().trim().toLowerCase()) {
+      role = CONFIG.ROLES.ADMIN;
+    } else if (user && user.role) {
+      role = user.role;
+    } else if (!role) {
+      role = CONFIG.ROLES.CLIENT;
+    }
+
+    // Check permission
+    if (!checkPermission('addProject', role)) {
+      return createResponse({ error: 'Insufficient permissions for action: addProject' }, false);
+    }
+
+    // Validate project name
     const projectName = (request.projectName || '').toString().trim();
-    if (!projectName) return createResponse({ error: 'Missing projectName' }, false);
+    if (!projectName) {
+      return createResponse({ error: 'Missing or invalid projectName' }, false);
+    }
 
+    // Generate project ID
     const projectId = generateProjectId();
     const now = new Date();
-    const createdBy = request.createdBy || (user && user.name) || requester;
-    const editorEmail = role === CONFIG.ROLES.CLIENT ? '' : (normalizeEmail(request.editorEmail) || requester);
-    const assignedEditor = request.assignedEditor !== undefined ? request.assignedEditor : (role === CONFIG.ROLES.CLIENT ? '' : createdBy);
+    
+    // Build row data with proper email handling
+    const clientEmail = normalizeEmail(request.clientEmail) || requesterEmail || '';
+    const editorEmail = request.role === 'client' ? '' : (normalizeEmail(request.editorEmail) || requesterEmail || '');
+    const assignedEditor = request.role === 'client' ? '' : (request.assignedEditor || (user && user.name) || requesterEmail || '');
+    const createdBy = request.createdBy || (user && user.name) || requesterEmail || 'System';
+    
     const row = [
-      now, // Timestamp A
-      projectId, // Project ID B
-      normalizeEmail(request.clientEmail) || '', // Client Email C
-      projectName, // Project Name D
-      request.category || '', // Category E
-      request.projectType || '', // Project Type F
-      request.clientWebsite || '', // G
-      assignedEditor, // H
-      editorEmail, // I: Editor Email
-      request.status || 'Pending', // J: Status
-      request.priority || 'Normal', // K
-      request.approval || 'Pending', // L
-      request.footage || '', // M
-      request.script || '', // N
-      request.scriptLink || '', // O
-      request.ref1 || '', // P
-      request.ref2 || '', // Q
-      request.deliveryLink || '', // R
-      request.deliveryType || '', // S
-      request.deadline || '', // T
-      now, // U Start Date
-      '', // V Completed Date
-      Number(request.budget) || 0, // W Budget
-      createdBy, // X Created By
-      now, // Y Last Updated
-      false // Z Archive
+      now,                                    // A: Timestamp
+      projectId,                              // B: Project ID
+      clientEmail,                            // C: Client Email
+      projectName,                            // D: Project Name
+      request.category || '',                 // E: Category
+      request.projectType || '',              // F: Project Type
+      request.clientWebsite || '',            // G: Client Website
+      assignedEditor,                         // H: Assigned Editor
+      editorEmail,                            // I: Editor Email
+      request.status || 'Pending',            // J: Status
+      request.priority || 'Normal',           // K: Priority
+      request.approval || 'Pending',          // L: Approval
+      request.footage || '',                  // M: Footage
+      request.script || '',                   // N: Script
+      request.scriptLink || '',               // O: Script Link
+      request.ref1 || '',                     // P: Reference 1
+      request.ref2 || '',                     // Q: Reference 2
+      request.deliveryLink || '',             // R: Delivery Link
+      request.deliveryType || '',             // S: Delivery Type
+      request.deadline || '',                 // T: Deadline
+      now,                                    // U: Start Date
+      '',                                     // V: Completed Date
+      Number(request.budget) || 0,            // W: Budget
+      createdBy,                              // X: Created By
+      now,                                    // Y: Last Updated
+      false                                   // Z: Archive
     ];
 
+    // Append to projects sheet
     const sheet = safeGetSheet(CONFIG.SHEETS.PROJECTS);
-    if (!sheet) return createResponse({ error: 'Projects sheet not found' }, false);
+    if (!sheet) {
+      return createResponse({ error: 'Projects sheet not found' }, false);
+    }
+    
     sheet.appendRow(row);
-    logAction('addProject', { projectId: projectId, by: editorEmail, role: role });
+    logAction('addProject', { projectId: projectId, by: requesterEmail, role: role });
     return createResponse({ success: true, projectID: projectId });
   } catch (err) {
     Logger.log('handleAddProject error: ' + err.message);
-    return createResponse({ error: 'Failed to add project' }, false);
+    return createResponse({ error: 'Failed to add project: ' + err.message }, false);
   }
 }
 

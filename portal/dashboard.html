@@ -309,7 +309,8 @@
     }
 
     function getStoredUserEmail() {
-        return (localStorage.getItem('user_email') || localStorage.getItem('clientEmail') || '').toLowerCase();
+        const email = (localStorage.getItem('user_email') || localStorage.getItem('clientEmail') || '').toLowerCase().trim();
+        return email && email.includes('@') ? email : '';
     }
 
     function isValidEmail(email) {
@@ -385,9 +386,14 @@
                 throw new Error('Invalid Google response');
             }
 
-            const email = payload.email.toLowerCase();
+            const email = payload.email.toLowerCase().trim();
             const name = sanitizeText(payload.name);
             const pic = payload.picture || '';
+
+            // Validate email format
+            if (!isValidEmail(email)) {
+                throw new Error('Invalid email format from Google');
+            }
 
             // Store in localStorage
             persistSelectedLoginRole();
@@ -401,17 +407,16 @@
             let userData = await appScriptRequest('getUser', { email, role: fallbackRole });
             userData = userData?.data || userData;
 
+            // Set CURRENT_USER immediately and persistently
             CURRENT_USER = {
-                email,
-                name,
+                email: email,
+                name: name,
                 role: userData?.role || fallbackRole,
-                pic
+                pic: pic
             };
             localStorage.setItem('currentRole', CURRENT_USER.role);
-            localStorage.setItem('user_email', email);
-            localStorage.setItem('user_name', name);
-            localStorage.setItem('user_pic', pic);
 
+            console.log('Login successful:', { email: CURRENT_USER.email, role: CURRENT_USER.role });
             checkAuth();
         } catch (error) {
             console.error('Login failed:', error);
@@ -429,8 +434,15 @@
             overlay.style.display = 'none';
             main.style.opacity = '1';
 
-            // Restore user data
-            CURRENT_USER.email = storedEmail;
+            // Restore user data from localStorage with validation
+            const email = getStoredUserEmail();
+            if (!email) {
+                console.error('No valid email in localStorage');
+                handleLogout();
+                return;
+            }
+
+            CURRENT_USER.email = email;
             CURRENT_USER.name = localStorage.getItem('user_name') || localStorage.getItem('clientName') || 'User';
             CURRENT_USER.pic = localStorage.getItem('user_pic') || localStorage.getItem('clientPic') || '';
 
@@ -443,6 +455,7 @@
                 localStorage.setItem('currentRole', resolvedRole);
                 localStorage.setItem('user_name', userData?.name || CURRENT_USER.name);
                 CURRENT_USER.name = userData?.name || CURRENT_USER.name;
+                console.log('Auth restored:', { email: CURRENT_USER.email, role: CURRENT_USER.role });
                 // Health-check the Apps Script endpoint before loading dashboard
                 const ok = await testConnection();
                 if (!ok) {
@@ -690,6 +703,14 @@
         btn.disabled = true;
         btn.textContent = "LAUNCHING...";
 
+        // Validate current user is authenticated
+        if (!CURRENT_USER.email) {
+            alert('You must be logged in to create a project.');
+            btn.disabled = false;
+            btn.textContent = "Launch Project";
+            return;
+        }
+
         if (!['admin', 'editor', 'client'].includes(CURRENT_USER.role)) {
             alert('You do not have permission to create a project.');
             btn.disabled = false;
@@ -697,18 +718,29 @@
             return;
         }
 
+        const projectName = sanitizeText(document.getElementById('pName').value).trim();
+        if (!projectName) {
+            alert('Project name is required.');
+            btn.disabled = false;
+            btn.textContent = "Launch Project";
+            return;
+        }
+
         const pData = {
-            clientEmail: sanitizeText(document.getElementById('pClientEmail').value) || CURRENT_USER.email,
-            projectName: sanitizeText(document.getElementById('pName').value),
+            projectName: projectName,
+            clientEmail: CURRENT_USER.email,
             category: document.getElementById('pCategory').value,
             projectType: document.getElementById('pCategory').value,
-            clientWebsite: "",
+            requesterEmail: CURRENT_USER.email,
+            createdBy: CURRENT_USER.name,
             assignedEditor: CURRENT_USER.role === 'client' ? '' : CURRENT_USER.name,
             editorEmail: CURRENT_USER.role === 'client' ? '' : CURRENT_USER.email,
             role: CURRENT_USER.role,
             deadline: document.getElementById('pDeadline').value,
+            priority: document.getElementById('pPriority')?.value || 'Normal',
             budget: parseFloat(document.getElementById('pBudget').value) || 0,
-            createdBy: CURRENT_USER.name
+            status: 'Pending',
+            approval: 'Pending'
         };
 
         try {
@@ -719,9 +751,10 @@
                 toggleModal('pModal', false);
                 setTimeout(initDashboard, 1500);
             } else {
-                alert("Error: " + sanitizeText(response.error));
+                alert("Error: " + sanitizeText(response.error || 'Failed to create project'));
             }
         } catch (err) {
+            console.error('Project creation error:', err);
             alert("Error: " + sanitizeText(err.message));
         } finally {
             btn.disabled = false;
