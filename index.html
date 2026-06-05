@@ -609,7 +609,7 @@
 
 
             <!-- Portfolio Section Begin -->
-            <section class="portfolio spad">
+    <section class="portfolio spad">
                 <h2>Work</h2>
                 <p>Check out some of the projects I’ve worked on and my creative
                     work.</p>
@@ -635,7 +635,7 @@
                     </div>
 
                     <!-- Portfolio Items -->
-                    <div class="row portfolio__gallery">
+                    <div class="row portfolio__gallery" id="portfolioGallery">
 
                         <!-- SHORTS / REELS -->
                         <div
@@ -939,8 +939,23 @@
                             <div class="portfolio__item">
                                 <div class="portfolio__item__video">
                                     <iframe
-                                        data-src="https://www.youtube.com/embed/0b-fhxmIdMc"
+data-src="https://www.youtube.com/embed/0b-fhxmIdMc?rel=0&modestbranding=1&playsinline=1&vq=hd1080&enablejsapi=1"
                                         frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NEW: YouTube Video -->
+                        <div
+                            class="col-lg-6 col-md-6 col-sm-6 mix youtube-video">
+                            <div class="portfolio__item">
+                                <div class="portfolio__item__video">
+                                    <iframe
+data-src="https://www.youtube.com/embed/_2axx4IaALU?rel=0&modestbranding=1&playsinline=1&vq=hd1080&enablejsapi=1"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowfullscreen></iframe>
                                 </div>
                             </div>
@@ -1513,7 +1528,10 @@
                                 <p>by Adobe Premier Pro, Adobe After Effect,
                                     Adobe
                                     Audition</p>
-                                <a href="services.html">Start your stories</a>
+                                <div class="callto__actions">
+                                    <a href="services.html">Start your stories</a>
+                                    <a class="fiverr-profile-link" href="https://www.fiverr.com/naimurrahmanemo" target="_blank" rel="noopener">Fiverr Profile</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1707,6 +1725,39 @@
     
 </script>
 
+            <!-- YouTube Iframe API (single-video playback) -->
+            <script src="https://www.youtube.com/iframe_api"></script>
+            <script>
+              window.__ytPlayers = window.__ytPlayers || {};
+              window.__ytActivePlayer = window.__ytActivePlayer || null;
+
+              function onYouTubeIframeAPIReady() {
+                // Create players for all iframes that have enablejsapi=1 (including lazy-loaded src)
+                document.querySelectorAll('iframe[data-src*="enablejsapi=1"], iframe[src*="enablejsapi=1"]').forEach((iframe) => {
+                  const iframeEl = iframe; // after lazy-load it becomes actual iframe src
+                  const id = iframeEl.id || ('yt_iframe_' + Math.random().toString(16).slice(2));
+                  iframeEl.id = id;
+
+                  if (!window.__ytPlayers[id]) {
+                    window.__ytPlayers[id] = new YT.Player(id, {
+                      events: {
+                        onStateChange: (event) => {
+                          // -1 unstarted, 0 ended, 1 playing, 2 paused
+                          if (event.data === 1) {
+                            // stop previous player
+                            if (window.__ytActivePlayer && window.__ytActivePlayer !== id) {
+                              try { window.__ytPlayers[window.__ytActivePlayer].stopVideo(); } catch (e) {}
+                            }
+                            window.__ytActivePlayer = id;
+                          }
+                        }
+                      }
+                    });
+                  }
+                });
+              }
+            </script>
+
             <script src="js/jquery-3.3.1.min.js"></script>
             <script src="js/bootstrap.min.js"></script>
             <script src="js/jquery.magnific-popup.min.js"></script>
@@ -1725,11 +1776,14 @@
     });
   </script>
 
-            <script>
+<script>
 document.addEventListener('DOMContentLoaded', function () {
 
     const filters = document.querySelectorAll('.portfolio__filter li');
-    const items = document.querySelectorAll('.portfolio__gallery .mix');
+    const gallery = document.getElementById('portfolioGallery');
+    const items = gallery ? gallery.querySelectorAll('.mix') : document.querySelectorAll('.portfolio__gallery .mix');
+
+    const perLoad = 6; // per category load step
 
     // Lazy load iframe only when item is shown
     function loadIframe(item) {
@@ -1739,32 +1793,135 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Show/hide items based on filter
-    function showItems(filterClass) {
+    function getFilterClass(filterClass) {
+        return filterClass && filterClass.startsWith('.') ? filterClass.slice(1) : filterClass;
+    }
+
+    // Track how many items are visible per category
+    const visibleCountByClass = {};
+
+    function ensureStateForClass(className) {
+        if (visibleCountByClass[className] == null) {
+            visibleCountByClass[className] = perLoad; // initial visible
+        }
+    }
+
+    // Create per-category Load More UI
+    let loadMoreWrap = null;
+    let loadMoreBtn = null;
+
+    function buildLoadMoreUIOnce() {
+        // Always create (if missing), because earlier scripts may have removed/reset it.
+        if (loadMoreBtn) return;
+
+
+        loadMoreWrap = document.createElement('div');
+        loadMoreWrap.className = 'text-center mt-4 portfolio-loadmore-wrap';
+
+        loadMoreBtn = document.createElement('button');
+        loadMoreBtn.id = 'portfolioLoadMoreBtn';
+        loadMoreBtn.className = 'btn btn-cta';
+        loadMoreBtn.textContent = 'Load More ↓';
+        loadMoreBtn.type = 'button';
+
+        loadMoreWrap.appendChild(loadMoreBtn);
+
+        const container = gallery ? gallery.closest('.container') : document.querySelector('.portfolio .container');
+        if (container) container.appendChild(loadMoreWrap);
+    }
+
+    function hideAllNonMatching(filterClass) {
+        const className = getFilterClass(filterClass);
         items.forEach(item => {
-            const className = filterClass.replace('.', ''); // remove dot for classList check
-            if (filterClass === '*' || item.classList.contains(className)) {
-                item.style.display = 'block'; // JS handles show
-                loadIframe(item); // lazy load iframe
+            const matches = !filterClass || filterClass === '*' || item.classList.contains(className);
+            item.style.display = matches ? 'block' : 'none';
+        });
+    }
+
+    function applyVisibilityForFilter(filterClass) {
+        const className = getFilterClass(filterClass);
+        ensureStateForClass(className);
+
+
+        // Collect visible candidates for this category
+        const candidates = Array.from(items).filter(item => {
+            if (filterClass === '*' || !filterClass) return true;
+            return item.classList.contains(className);
+        });
+
+        const visibleCount = visibleCountByClass[className];
+
+        candidates.forEach((item, idx) => {
+            if (idx < visibleCount) {
+                item.style.display = 'block';
+                loadIframe(item);
             } else {
-                item.style.display = 'none'; // JS handles hide
+                item.style.display = 'none';
             }
         });
+    }
+
+    function getActiveFilterClass() {
+        const active = document.querySelector('.portfolio__filter li.active');
+        if (!active) return 'youtube-video';
+        return active.dataset.filter || 'youtube-video';
+    }
+
+    function updateLoadMoreButton(filterClass) {
+        buildLoadMoreUIOnce();
+
+        const className = getFilterClass(filterClass);
+        const candidates = Array.from(items).filter(item => {
+            if (filterClass === '*' || !filterClass) return true;
+            return item.classList.contains(className);
+        });
+
+        const visibleCount = visibleCountByClass[className];
+        const hasMore = visibleCount < candidates.length;
+
+        loadMoreBtn.style.display = hasMore ? 'inline-block' : 'none';
+    }
+
+    function showItems(filterClass, isReset = false) {
+        const className = getFilterClass(filterClass);
+
+        // reset visible count on first switch to this class (or explicit reset)
+        if (isReset || visibleCountByClass[className] == null) {
+            visibleCountByClass[className] = perLoad;
+        }
+
+        // Hide everything that doesn't match first
+        hideAllNonMatching(filterClass);
+
+        applyVisibilityForFilter(filterClass);
+        updateLoadMoreButton(filterClass);
+    }
+
+    // Load More click
+    function handleLoadMoreClick() {
+        const filterClass = getActiveFilterClass();
+        const className = getFilterClass(filterClass);
+
+        visibleCountByClass[className] = (visibleCountByClass[className] || perLoad) + perLoad;
+        applyVisibilityForFilter(filterClass);
+        updateLoadMoreButton(filterClass);
     }
 
     // Initially show YouTube videos
     showItems('youtube-video');
 
-    // Filter click event
     filters.forEach(filter => {
         filter.addEventListener('click', function () {
             filters.forEach(f => f.classList.remove('active'));
             this.classList.add('active');
 
             const filterClass = this.dataset.filter;
-            showItems(filterClass);
+            showItems(filterClass, false);
         });
     });
+
+    buildLoadMoreUIOnce();
+    loadMoreBtn.addEventListener('click', handleLoadMoreClick);
 
 });
 

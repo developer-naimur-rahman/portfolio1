@@ -237,7 +237,7 @@
                             <div class="portfolio__item">
                                 <div class="portfolio__item__video">
                                     <iframe
-                                        data-src="https://www.youtube.com/embed/ERswzQv30r8"
+data-src="https://www.youtube.com/embed/ERswzQv30r8?rel=0&modestbranding=1&playsinline=1&vq=hd1080&enablejsapi=1"
                                         frameborder="0"
                                         allowfullscreen></iframe>
                                 </div>
@@ -260,6 +260,19 @@
                                 <div class="portfolio__item__video">
                                     <iframe
                                         data-src="https://www.youtube.com/embed/_gOUbs8KsUA"
+                                        frameborder="0"
+                                        allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NEW: YouTube Video -->
+                        <div
+                            class="col-lg-6 col-md-6 col-sm-6 mix talking-head">
+                            <div class="portfolio__item">
+                                <div class="portfolio__item__video">
+                                    <iframe
+data-src="https://www.youtube.com/embed/_2axx4IaALU?rel=0&modestbranding=1&playsinline=1&vq=hd1080&enablejsapi=1"
                                         frameborder="0"
                                         allowfullscreen></iframe>
                                 </div>
@@ -859,6 +872,35 @@
     
     
 </script>
+
+            <script src="https://www.youtube.com/iframe_api"></script>
+            <script>
+              window.__ytPlayers = window.__ytPlayers || {};
+              window.__ytActivePlayer = window.__ytActivePlayer || null;
+
+              function onYouTubeIframeAPIReady() {
+                document.querySelectorAll('iframe[data-src*="enablejsapi=1"], iframe[src*="enablejsapi=1"]').forEach((iframe) => {
+                  const iframeEl = iframe;
+                  const id = iframeEl.id || ('yt_iframe_' + Math.random().toString(16).slice(2));
+                  iframeEl.id = id;
+
+                  if (!window.__ytPlayers[id]) {
+                    window.__ytPlayers[id] = new YT.Player(id, {
+                      events: {
+                        onStateChange: (event) => {
+                          if (event.data === 1) {
+                            if (window.__ytActivePlayer && window.__ytActivePlayer !== id) {
+                              try { window.__ytPlayers[window.__ytActivePlayer].stopVideo(); } catch (e) {}
+                            }
+                            window.__ytActivePlayer = id;
+                          }
+                        }
+                      }
+                    });
+                  }
+                });
+              }
+            </script>
 
             <script src="js/jquery-3.3.1.min.js"></script>
             <script src="js/bootstrap.min.js"></script>
