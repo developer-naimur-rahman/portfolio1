@@ -1057,64 +1057,74 @@ body {
 }
 
 /* Fiverr testimonials styles */
-.fiverr-testimonials .section-title { margin-bottom: 30px; }
+.fiverr-testimonials .section-title {
+  margin-bottom: 30px;
+}
+
 .fiverr-slider .fiverr-card {
-  padding: 18px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.04);
+  padding: 0;
+  background: transparent;
+  border: none;
   border-radius: 12px;
   margin: 8px;
+  overflow: hidden;
 }
-.fiverr-card-inner { display:flex; gap:18px; align-items:flex-start; }
-.fiverr-photo img { width:96px; height:96px; object-fit:cover; border-radius:8px; }
-.fiverr-screenshot img { width:100%; height:auto; object-fit:contain; border-radius:8px; display:block; margin-bottom:12px; }
 
-/* layout when screenshot used: stack screenshot above content on small widths */
-.fiverr-card-inner.screenshot-layout { flex-direction: column; }
-.fiverr-content { flex:1; }
-.fiverr-name { margin:0 0 4px 0; font-size:18px; }
-.fiverr-rating { color: #ffd166; margin-bottom:8px; font-size:16px; }
-.fiverr-text { color:#cbd5f6; margin-bottom:10px; }
-.fiverr-link { color:#00bfe7; font-weight:700; text-decoration:none; }
+/* screenshot only */
+.fiverr-photo img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  transition: transform 0.3s ease;
+}
 
+.fiverr-photo img:hover {
+  transform: scale(1.02);
+}
+
+/* optional wrapper (if you keep inner div) */
+.fiverr-card-inner {
+  display: block;
+}
+
+/* mobile */
 @media (max-width: 700px) {
-  .fiverr-card-inner { flex-direction:column; align-items:center; text-align:center }
-  .fiverr-photo img { width:120px; height:120px; }
+  .fiverr-slider .fiverr-card {
+    margin: 6px;
+  }
 }
 
-
-/* Responsive: Counter + Team */
+/* Responsive: Counter + Team (unchanged) */
 @media (max-width: 992px) {
-    .team__item {
-        flex: 0 0 calc(50% - 10px);
-        max-width: calc(50% - 10px);
-    }
+  .team__item {
+    flex: 0 0 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+  }
 }
 
 @media (max-width: 768px) {
-    .counter__item {
-        transform: rotate(0deg) !important;
-    }
-    .counter__item__text {
-        transform: rotate(0deg) !important;
-    }
+  .counter__item {
+    transform: rotate(0deg) !important;
+  }
+  .counter__item__text {
+    transform: rotate(0deg) !important;
+  }
 }
 
 @media (max-width: 576px) {
-    .team__item {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-    .counter__item {
-        transform: rotate(0deg) !important;
-    }
-    .counter__item__text {
-        transform: rotate(0deg) !important;
-    }
+  .team__item {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  .counter__item {
+    transform: rotate(0deg) !important;
+  }
+  .counter__item__text {
+    transform: rotate(0deg) !important;
+  }
 }
-
-
-
  
 /*---------------------
   Footer - Futuristic Glass Style (FIXED)
