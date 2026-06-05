@@ -1125,6 +1125,27 @@ body {
     transform: rotate(0deg) !important;
   }
 }
+
+.fiverr-more-btn {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.fiverr-more-btn a {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 30px;
+  background: #00bfe7;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.fiverr-more-btn a:hover {
+  background: #009dc0;
+  transform: translateY(-2px);
+}
  
 /*---------------------
   Footer - Futuristic Glass Style (FIXED)
@@ -2044,11 +2065,12 @@ body, .services, .specialty {
   overflow: hidden;
 }
 .logo__carousel.owl-carousel .owl-item img {
+  width: 170px;
   max-width: 100%;
   max-height: 90px;
-  width: auto;
-  height: auto;
+  height: 100%;
   object-fit: contain;
+  object-position: center;
   position: relative;
   z-index: 2;
   filter: brightness(0.95);
@@ -2056,6 +2078,34 @@ body, .services, .specialty {
   display: block;
   margin: 0 auto;
 }
+
+/* keep items consistent for “perfect size” */
+.logo__carousel.owl-carousel .owl-item {
+  min-height: 110px;
+}
+
+
+/* Ensure thumbnails are always perfectly visible + rounded */
+.logo__carousel.owl-carousel .logo__item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo__carousel.owl-carousel .owl-item img {
+  border-radius: 16px;
+}
+
+.logo__carousel.owl-carousel .owl-item {
+  padding: 18px;
+  border-radius: 22px;
+}
+
+.logo__carousel.owl-carousel .owl-item::before {
+  border-radius: 22px;
+}
+
 
 .logo__carousel.owl-carousel .owl-item:hover img {
   transform: scale(1.08);
